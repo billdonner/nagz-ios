@@ -1,0 +1,684 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		022785549CA30F29EE5D1189 /* EscalationBadge.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E6DEEBE1B334FC5685FC4E5 /* EscalationBadge.swift */; };
+		09ABEFE60F83398710D571FB /* JoinFamilyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CCC28A3FD2C73A684280A8B /* JoinFamilyView.swift */; };
+		09F05C30C15A7DD1691B8E69 /* FamilyModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3103D76E83889066B4CDC006 /* FamilyModels.swift */; };
+		10648AB653519F63339D0BA7 /* SignupViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A04D8ECCD329BE62D5CABEC /* SignupViewModel.swift */; };
+		19D475F6D49A24E958EB4E00 /* AuthModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C807C8B04BC360E1936FACD /* AuthModels.swift */; };
+		2622990D0DCE09B21DB99D10 /* EnvironmentValues+API.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B70AA17D1E21D3916FD048C /* EnvironmentValues+API.swift */; };
+		2A63ED0A586E3570ED2CDA8D /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72F118F344FB4C3411FAAEC4 /* LoginView.swift */; };
+		2C5C0179A7849D66DDBE2A57 /* MemberListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAD16D6E59A98D9D44F48D03 /* MemberListViewModel.swift */; };
+		350FB4B166D078DD5BC0EEC9 /* CreateNagViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D5DE9C0FB044817490BD132 /* CreateNagViewModel.swift */; };
+		396E4226730469AEA60B71D9 /* NagListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3EC5EC449162BDDDA1AEA55E /* NagListViewModel.swift */; };
+		41624A0FA5DBA542A0351B6C /* EscalationModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04D5AC512A990EFC2E729F29 /* EscalationModels.swift */; };
+		424953649E34B0D46C75BD5F /* ModelDecodingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1FBFCDE4C04F3EC809309128 /* ModelDecodingTests.swift */; };
+		4440085F3A155A314DC293BE /* PushNotificationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17D33EACD9E91105C8BA2127 /* PushNotificationService.swift */; };
+		48F29924A9EAEE816CE948E5 /* NagDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83E67D051966AD3EDD9F8D7C /* NagDetailView.swift */; };
+		505CA8990F29CD58610ABF47 /* AuthenticatedTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E89A05814372C9BCE15E6EC /* AuthenticatedTabView.swift */; };
+		577DDC65B9F769BBF403122F /* KeychainAccess in Frameworks */ = {isa = PBXBuildFile; productRef = 545A46357975BAA1644730CE /* KeychainAccess */; };
+		69B2329CBD7DCE0EF5D4EF2E /* MemberListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07D0EAC9F8FFBA5872FD80CF /* MemberListView.swift */; };
+		6A9785BA9A4D40BF26A27C1A /* APIEndpoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = F73099FD428BA8EC44A85ECB /* APIEndpoint.swift */; };
+		7647521DEFBD599A206F7591 /* MemberRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3BF64C56EBAEE04E21E7452 /* MemberRowView.swift */; };
+		7A6DD790F8FADCFDDB11E379 /* PaginatedResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A69383318CB720FC401D0D7 /* PaginatedResponse.swift */; };
+		81C74DBDC5B5C4147B3B99D7 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3EDC2854A3127F68733D4958 /* ContentView.swift */; };
+		8C6174B2DB97D37F62276D73 /* CreateNagView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E84EB1DEEB1724609FA6FFC9 /* CreateNagView.swift */; };
+		8D8F30C0E7EAE400C16C0C77 /* AuthManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AC6950A07FD4A8909F73946 /* AuthManager.swift */; };
+		9E3B5FA1D29A914B45079842 /* NagModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B64AA3271570CA97B005E91 /* NagModels.swift */; };
+		A162D3663B6E637EFC3AC318 /* LoginViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AA44AE0BEBA58C043C996A1 /* LoginViewModel.swift */; };
+		A922A5B3B8F9CDCF4BD36533 /* APIClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9690A2B5BD1CBA627F52AF4E /* APIClient.swift */; };
+		A99865BA24EB19746267C03B /* AppEnvironment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E621A4F0EDD94F399E2C9DA /* AppEnvironment.swift */; };
+		A9C26BD7772B632CECDF917E /* NagRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C524E4F6DAAD0936C7DC24B /* NagRowView.swift */; };
+		AAAD4B3DA334581D8040E835 /* Date+Formatting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F8430225ED802B793D2E6C2 /* Date+Formatting.swift */; };
+		AEFCF8156E0CF766CC91D2B2 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2524FDBBE8F215CAB498AD90 /* Constants.swift */; };
+		B45D7C13CBAF43DDD2DC7EF7 /* CreateFamilyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 478FD6A5253FF850A9EC7832 /* CreateFamilyView.swift */; };
+		B8924A914C8E48A117B9E506 /* Enums.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5243F4CFE024BC04B61879D1 /* Enums.swift */; };
+		BC3F961DC9D45F8A5813CA82 /* SignupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE0B9F4BCBAB9DA56A1A82E9 /* SignupView.swift */; };
+		BED7041B5A270167EA6FD99B /* NagListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A03B64D4D5A805C21596C5F0 /* NagListView.swift */; };
+		C4511CD48BEEB9803576A532 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 799222C076E18C851FFF7C9E /* AppDelegate.swift */; };
+		C6AD093090BB94EE3660E7B1 /* ErrorModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8AEE80ECDC2335FED6F07DD /* ErrorModels.swift */; };
+		C8ED407409D4BBED50982A85 /* KeychainService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62B0E5FF945FF5C1DF5EA1D3 /* KeychainService.swift */; };
+		CCFE2834956D7B50CA7BBFD6 /* FamilyViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C48EF0BFA6111245B86B2971 /* FamilyViewModel.swift */; };
+		DA6060AE8EAE463303B6F915 /* NagzApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAF6A3CE8CF93F2302F54967 /* NagzApp.swift */; };
+		E1500DDC1F96E93ED0A0D906 /* DeviceModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3304DDCA502144AB4F456FB /* DeviceModels.swift */; };
+		F527047B44CB0A89B8A82E21 /* NagDetailViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D8B860496CD6D4BE858F1F2 /* NagDetailViewModel.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		EBA8838393C257AA0A8F2391 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 07D2A0280A1C8F115CEAD3AB /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = E2CABC3A37EAE0C3A3E1F72D;
+			remoteInfo = Nagz;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		04D5AC512A990EFC2E729F29 /* EscalationModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EscalationModels.swift; sourceTree = "<group>"; };
+		07D0EAC9F8FFBA5872FD80CF /* MemberListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemberListView.swift; sourceTree = "<group>"; };
+		0AA44AE0BEBA58C043C996A1 /* LoginViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewModel.swift; sourceTree = "<group>"; };
+		0C807C8B04BC360E1936FACD /* AuthModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthModels.swift; sourceTree = "<group>"; };
+		0D8B860496CD6D4BE858F1F2 /* NagDetailViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NagDetailViewModel.swift; sourceTree = "<group>"; };
+		17C15105D93BCA259662041F /* Nagz.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Nagz.entitlements; sourceTree = "<group>"; };
+		17D33EACD9E91105C8BA2127 /* PushNotificationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PushNotificationService.swift; sourceTree = "<group>"; };
+		1AC6950A07FD4A8909F73946 /* AuthManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthManager.swift; sourceTree = "<group>"; };
+		1E89A05814372C9BCE15E6EC /* AuthenticatedTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticatedTabView.swift; sourceTree = "<group>"; };
+		1FBFCDE4C04F3EC809309128 /* ModelDecodingTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelDecodingTests.swift; sourceTree = "<group>"; };
+		2524FDBBE8F215CAB498AD90 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
+		2D5DE9C0FB044817490BD132 /* CreateNagViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateNagViewModel.swift; sourceTree = "<group>"; };
+		3103D76E83889066B4CDC006 /* FamilyModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FamilyModels.swift; sourceTree = "<group>"; };
+		3B64AA3271570CA97B005E91 /* NagModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NagModels.swift; sourceTree = "<group>"; };
+		3EC5EC449162BDDDA1AEA55E /* NagListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NagListViewModel.swift; sourceTree = "<group>"; };
+		3EDC2854A3127F68733D4958 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		478FD6A5253FF850A9EC7832 /* CreateFamilyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateFamilyView.swift; sourceTree = "<group>"; };
+		4CCC28A3FD2C73A684280A8B /* JoinFamilyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JoinFamilyView.swift; sourceTree = "<group>"; };
+		5243F4CFE024BC04B61879D1 /* Enums.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Enums.swift; sourceTree = "<group>"; };
+		5A69383318CB720FC401D0D7 /* PaginatedResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaginatedResponse.swift; sourceTree = "<group>"; };
+		5C524E4F6DAAD0936C7DC24B /* NagRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NagRowView.swift; sourceTree = "<group>"; };
+		62B0E5FF945FF5C1DF5EA1D3 /* KeychainService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeychainService.swift; sourceTree = "<group>"; };
+		6E621A4F0EDD94F399E2C9DA /* AppEnvironment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppEnvironment.swift; sourceTree = "<group>"; };
+		72F118F344FB4C3411FAAEC4 /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
+		799222C076E18C851FFF7C9E /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		7B70AA17D1E21D3916FD048C /* EnvironmentValues+API.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "EnvironmentValues+API.swift"; sourceTree = "<group>"; };
+		83E67D051966AD3EDD9F8D7C /* NagDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NagDetailView.swift; sourceTree = "<group>"; };
+		88BCE00F95D3F26F9BD4F880 /* NagzTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = NagzTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		8F8430225ED802B793D2E6C2 /* Date+Formatting.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Date+Formatting.swift"; sourceTree = "<group>"; };
+		9690A2B5BD1CBA627F52AF4E /* APIClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIClient.swift; sourceTree = "<group>"; };
+		9A04D8ECCD329BE62D5CABEC /* SignupViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignupViewModel.swift; sourceTree = "<group>"; };
+		9E6DEEBE1B334FC5685FC4E5 /* EscalationBadge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EscalationBadge.swift; sourceTree = "<group>"; };
+		A03B64D4D5A805C21596C5F0 /* NagListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NagListView.swift; sourceTree = "<group>"; };
+		A88D52E67BB456B1C310B4A3 /* Nagz.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = Nagz.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		A8AEE80ECDC2335FED6F07DD /* ErrorModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorModels.swift; sourceTree = "<group>"; };
+		AAF6A3CE8CF93F2302F54967 /* NagzApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NagzApp.swift; sourceTree = "<group>"; };
+		AE0B9F4BCBAB9DA56A1A82E9 /* SignupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignupView.swift; sourceTree = "<group>"; };
+		C3304DDCA502144AB4F456FB /* DeviceModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceModels.swift; sourceTree = "<group>"; };
+		C48EF0BFA6111245B86B2971 /* FamilyViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FamilyViewModel.swift; sourceTree = "<group>"; };
+		D3BF64C56EBAEE04E21E7452 /* MemberRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemberRowView.swift; sourceTree = "<group>"; };
+		DAD16D6E59A98D9D44F48D03 /* MemberListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemberListViewModel.swift; sourceTree = "<group>"; };
+		E84EB1DEEB1724609FA6FFC9 /* CreateNagView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateNagView.swift; sourceTree = "<group>"; };
+		F73099FD428BA8EC44A85ECB /* APIEndpoint.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIEndpoint.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		984626961107C13FE83039FF /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				577DDC65B9F769BBF403122F /* KeychainAccess in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		0A740E1700A8B69EB3A5DB91 /* Nags */ = {
+			isa = PBXGroup;
+			children = (
+				E84EB1DEEB1724609FA6FFC9 /* CreateNagView.swift */,
+				83E67D051966AD3EDD9F8D7C /* NagDetailView.swift */,
+				A03B64D4D5A805C21596C5F0 /* NagListView.swift */,
+			);
+			path = Nags;
+			sourceTree = "<group>";
+		};
+		0FA30C570EC8C33D010A9F2E /* Nagz */ = {
+			isa = PBXGroup;
+			children = (
+				799222C076E18C851FFF7C9E /* AppDelegate.swift */,
+				17C15105D93BCA259662041F /* Nagz.entitlements */,
+				AAF6A3CE8CF93F2302F54967 /* NagzApp.swift */,
+				998CCC12A2469D03613D59A1 /* Config */,
+				7D8CF6F23E599D0784C2095F /* Extensions */,
+				B337BE27330FC5BDD6DF7393 /* Models */,
+				EBA462D4633FB7AFB7C79EED /* Navigation */,
+				CFB239385BA15A1C2BBE9C22 /* Services */,
+				F25C983ADF72DD78A90EB077 /* ViewModels */,
+				4DB96EA334C05B7155CCE478 /* Views */,
+			);
+			path = Nagz;
+			sourceTree = "<group>";
+		};
+		4D3CC44B0C07A86AD308A8BE /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				A88D52E67BB456B1C310B4A3 /* Nagz.app */,
+				88BCE00F95D3F26F9BD4F880 /* NagzTests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		4DB96EA334C05B7155CCE478 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				D59D9B456A0D9F660CDF8790 /* Auth */,
+				D088B41B923A66EE9F11DF1B /* Components */,
+				A90A96E0F7275AB252AB99C4 /* Family */,
+				0A740E1700A8B69EB3A5DB91 /* Nags */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		709F1D592B96CDD8AB13BE93 = {
+			isa = PBXGroup;
+			children = (
+				0FA30C570EC8C33D010A9F2E /* Nagz */,
+				EFC42ED55F75194D27D42A94 /* NagzTests */,
+				4D3CC44B0C07A86AD308A8BE /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		7D8CF6F23E599D0784C2095F /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				8F8430225ED802B793D2E6C2 /* Date+Formatting.swift */,
+				7B70AA17D1E21D3916FD048C /* EnvironmentValues+API.swift */,
+			);
+			path = Extensions;
+			sourceTree = "<group>";
+		};
+		998CCC12A2469D03613D59A1 /* Config */ = {
+			isa = PBXGroup;
+			children = (
+				6E621A4F0EDD94F399E2C9DA /* AppEnvironment.swift */,
+				2524FDBBE8F215CAB498AD90 /* Constants.swift */,
+			);
+			path = Config;
+			sourceTree = "<group>";
+		};
+		A90A96E0F7275AB252AB99C4 /* Family */ = {
+			isa = PBXGroup;
+			children = (
+				478FD6A5253FF850A9EC7832 /* CreateFamilyView.swift */,
+				4CCC28A3FD2C73A684280A8B /* JoinFamilyView.swift */,
+				07D0EAC9F8FFBA5872FD80CF /* MemberListView.swift */,
+			);
+			path = Family;
+			sourceTree = "<group>";
+		};
+		B337BE27330FC5BDD6DF7393 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				0C807C8B04BC360E1936FACD /* AuthModels.swift */,
+				C3304DDCA502144AB4F456FB /* DeviceModels.swift */,
+				5243F4CFE024BC04B61879D1 /* Enums.swift */,
+				A8AEE80ECDC2335FED6F07DD /* ErrorModels.swift */,
+				04D5AC512A990EFC2E729F29 /* EscalationModels.swift */,
+				3103D76E83889066B4CDC006 /* FamilyModels.swift */,
+				3B64AA3271570CA97B005E91 /* NagModels.swift */,
+				5A69383318CB720FC401D0D7 /* PaginatedResponse.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		CFB239385BA15A1C2BBE9C22 /* Services */ = {
+			isa = PBXGroup;
+			children = (
+				9690A2B5BD1CBA627F52AF4E /* APIClient.swift */,
+				F73099FD428BA8EC44A85ECB /* APIEndpoint.swift */,
+				1AC6950A07FD4A8909F73946 /* AuthManager.swift */,
+				62B0E5FF945FF5C1DF5EA1D3 /* KeychainService.swift */,
+				17D33EACD9E91105C8BA2127 /* PushNotificationService.swift */,
+			);
+			path = Services;
+			sourceTree = "<group>";
+		};
+		D088B41B923A66EE9F11DF1B /* Components */ = {
+			isa = PBXGroup;
+			children = (
+				9E6DEEBE1B334FC5685FC4E5 /* EscalationBadge.swift */,
+				D3BF64C56EBAEE04E21E7452 /* MemberRowView.swift */,
+				5C524E4F6DAAD0936C7DC24B /* NagRowView.swift */,
+			);
+			path = Components;
+			sourceTree = "<group>";
+		};
+		D59D9B456A0D9F660CDF8790 /* Auth */ = {
+			isa = PBXGroup;
+			children = (
+				72F118F344FB4C3411FAAEC4 /* LoginView.swift */,
+				AE0B9F4BCBAB9DA56A1A82E9 /* SignupView.swift */,
+			);
+			path = Auth;
+			sourceTree = "<group>";
+		};
+		EBA462D4633FB7AFB7C79EED /* Navigation */ = {
+			isa = PBXGroup;
+			children = (
+				1E89A05814372C9BCE15E6EC /* AuthenticatedTabView.swift */,
+				3EDC2854A3127F68733D4958 /* ContentView.swift */,
+			);
+			path = Navigation;
+			sourceTree = "<group>";
+		};
+		EFC42ED55F75194D27D42A94 /* NagzTests */ = {
+			isa = PBXGroup;
+			children = (
+				1FBFCDE4C04F3EC809309128 /* ModelDecodingTests.swift */,
+			);
+			path = NagzTests;
+			sourceTree = "<group>";
+		};
+		F25C983ADF72DD78A90EB077 /* ViewModels */ = {
+			isa = PBXGroup;
+			children = (
+				2D5DE9C0FB044817490BD132 /* CreateNagViewModel.swift */,
+				C48EF0BFA6111245B86B2971 /* FamilyViewModel.swift */,
+				0AA44AE0BEBA58C043C996A1 /* LoginViewModel.swift */,
+				DAD16D6E59A98D9D44F48D03 /* MemberListViewModel.swift */,
+				0D8B860496CD6D4BE858F1F2 /* NagDetailViewModel.swift */,
+				3EC5EC449162BDDDA1AEA55E /* NagListViewModel.swift */,
+				9A04D8ECCD329BE62D5CABEC /* SignupViewModel.swift */,
+			);
+			path = ViewModels;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		AF7ECADC057C5EAFED94AF8E /* NagzTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 9371CC9D6834A3D3B0D5820E /* Build configuration list for PBXNativeTarget "NagzTests" */;
+			buildPhases = (
+				903BF3A2CB019D47DDA4638F /* Sources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				EB66E4305D2F86796461BCE9 /* PBXTargetDependency */,
+			);
+			name = NagzTests;
+			packageProductDependencies = (
+			);
+			productName = NagzTests;
+			productReference = 88BCE00F95D3F26F9BD4F880 /* NagzTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		E2CABC3A37EAE0C3A3E1F72D /* Nagz */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 4A4F2BA48023B0A68B707FEA /* Build configuration list for PBXNativeTarget "Nagz" */;
+			buildPhases = (
+				43B3521E741ABE83F8C31AD0 /* Sources */,
+				984626961107C13FE83039FF /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = Nagz;
+			packageProductDependencies = (
+				545A46357975BAA1644730CE /* KeychainAccess */,
+			);
+			productName = Nagz;
+			productReference = A88D52E67BB456B1C310B4A3 /* Nagz.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		07D2A0280A1C8F115CEAD3AB /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = YES;
+				LastUpgradeCheck = 1600;
+				TargetAttributes = {
+					E2CABC3A37EAE0C3A3E1F72D = {
+						ProvisioningStyle = Automatic;
+					};
+				};
+			};
+			buildConfigurationList = 45F141232C0CBBB4CF2B45DE /* Build configuration list for PBXProject "Nagz" */;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				Base,
+				en,
+			);
+			mainGroup = 709F1D592B96CDD8AB13BE93;
+			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				DB471355E3D294EFBC7ABD99 /* XCRemoteSwiftPackageReference "KeychainAccess" */,
+			);
+			preferredProjectObjectVersion = 77;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				E2CABC3A37EAE0C3A3E1F72D /* Nagz */,
+				AF7ECADC057C5EAFED94AF8E /* NagzTests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXSourcesBuildPhase section */
+		43B3521E741ABE83F8C31AD0 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A922A5B3B8F9CDCF4BD36533 /* APIClient.swift in Sources */,
+				6A9785BA9A4D40BF26A27C1A /* APIEndpoint.swift in Sources */,
+				C4511CD48BEEB9803576A532 /* AppDelegate.swift in Sources */,
+				A99865BA24EB19746267C03B /* AppEnvironment.swift in Sources */,
+				8D8F30C0E7EAE400C16C0C77 /* AuthManager.swift in Sources */,
+				19D475F6D49A24E958EB4E00 /* AuthModels.swift in Sources */,
+				505CA8990F29CD58610ABF47 /* AuthenticatedTabView.swift in Sources */,
+				AEFCF8156E0CF766CC91D2B2 /* Constants.swift in Sources */,
+				81C74DBDC5B5C4147B3B99D7 /* ContentView.swift in Sources */,
+				B45D7C13CBAF43DDD2DC7EF7 /* CreateFamilyView.swift in Sources */,
+				8C6174B2DB97D37F62276D73 /* CreateNagView.swift in Sources */,
+				350FB4B166D078DD5BC0EEC9 /* CreateNagViewModel.swift in Sources */,
+				AAAD4B3DA334581D8040E835 /* Date+Formatting.swift in Sources */,
+				E1500DDC1F96E93ED0A0D906 /* DeviceModels.swift in Sources */,
+				B8924A914C8E48A117B9E506 /* Enums.swift in Sources */,
+				2622990D0DCE09B21DB99D10 /* EnvironmentValues+API.swift in Sources */,
+				C6AD093090BB94EE3660E7B1 /* ErrorModels.swift in Sources */,
+				022785549CA30F29EE5D1189 /* EscalationBadge.swift in Sources */,
+				41624A0FA5DBA542A0351B6C /* EscalationModels.swift in Sources */,
+				09F05C30C15A7DD1691B8E69 /* FamilyModels.swift in Sources */,
+				CCFE2834956D7B50CA7BBFD6 /* FamilyViewModel.swift in Sources */,
+				09ABEFE60F83398710D571FB /* JoinFamilyView.swift in Sources */,
+				C8ED407409D4BBED50982A85 /* KeychainService.swift in Sources */,
+				2A63ED0A586E3570ED2CDA8D /* LoginView.swift in Sources */,
+				A162D3663B6E637EFC3AC318 /* LoginViewModel.swift in Sources */,
+				69B2329CBD7DCE0EF5D4EF2E /* MemberListView.swift in Sources */,
+				2C5C0179A7849D66DDBE2A57 /* MemberListViewModel.swift in Sources */,
+				7647521DEFBD599A206F7591 /* MemberRowView.swift in Sources */,
+				48F29924A9EAEE816CE948E5 /* NagDetailView.swift in Sources */,
+				F527047B44CB0A89B8A82E21 /* NagDetailViewModel.swift in Sources */,
+				BED7041B5A270167EA6FD99B /* NagListView.swift in Sources */,
+				396E4226730469AEA60B71D9 /* NagListViewModel.swift in Sources */,
+				9E3B5FA1D29A914B45079842 /* NagModels.swift in Sources */,
+				A9C26BD7772B632CECDF917E /* NagRowView.swift in Sources */,
+				DA6060AE8EAE463303B6F915 /* NagzApp.swift in Sources */,
+				7A6DD790F8FADCFDDB11E379 /* PaginatedResponse.swift in Sources */,
+				4440085F3A155A314DC293BE /* PushNotificationService.swift in Sources */,
+				BC3F961DC9D45F8A5813CA82 /* SignupView.swift in Sources */,
+				10648AB653519F63339D0BA7 /* SignupViewModel.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		903BF3A2CB019D47DDA4638F /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				424953649E34B0D46C75BD5F /* ModelDecodingTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		EB66E4305D2F86796461BCE9 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = E2CABC3A37EAE0C3A3E1F72D /* Nagz */;
+			targetProxy = EBA8838393C257AA0A8F2391 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		0642D9163230E15B17C28837 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+		17C79A9694C16D355F7AF52A /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				GENERATE_INFOPLIST_FILE = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.nagz.NagzTests;
+				SDKROOT = iphoneos;
+				SWIFT_VERSION = 6.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Nagz.app/Nagz";
+			};
+			name = Release;
+		};
+		61A6F13180B57F234A89B279 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = Nagz/Nagz.entitlements;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.nagz.app;
+				SDKROOT = iphoneos;
+				SWIFT_VERSION = 6.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		67EA40E3CD0E561CB68DCBC0 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					"DEBUG=1",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		AF549D8387255FF561FBE1B1 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = Nagz/Nagz.entitlements;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.nagz.app;
+				SDKROOT = iphoneos;
+				SWIFT_VERSION = 6.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		EA754CD25E50E065590A2D91 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				GENERATE_INFOPLIST_FILE = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.nagz.NagzTests;
+				SDKROOT = iphoneos;
+				SWIFT_VERSION = 6.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Nagz.app/Nagz";
+			};
+			name = Debug;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		45F141232C0CBBB4CF2B45DE /* Build configuration list for PBXProject "Nagz" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				67EA40E3CD0E561CB68DCBC0 /* Debug */,
+				0642D9163230E15B17C28837 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		4A4F2BA48023B0A68B707FEA /* Build configuration list for PBXNativeTarget "Nagz" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				61A6F13180B57F234A89B279 /* Debug */,
+				AF549D8387255FF561FBE1B1 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		9371CC9D6834A3D3B0D5820E /* Build configuration list for PBXNativeTarget "NagzTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				EA754CD25E50E065590A2D91 /* Debug */,
+				17C79A9694C16D355F7AF52A /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+/* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		DB471355E3D294EFBC7ABD99 /* XCRemoteSwiftPackageReference "KeychainAccess" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/kishikawakatsumi/KeychainAccess.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 4.2.2;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		545A46357975BAA1644730CE /* KeychainAccess */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = DB471355E3D294EFBC7ABD99 /* XCRemoteSwiftPackageReference "KeychainAccess" */;
+			productName = KeychainAccess;
+		};
+/* End XCSwiftPackageProductDependency section */
+	};
+	rootObject = 07D2A0280A1C8F115CEAD3AB /* Project object */;
+}

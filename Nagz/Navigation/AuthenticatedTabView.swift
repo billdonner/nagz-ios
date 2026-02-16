@@ -1,0 +1,137 @@
+import SwiftUI
+
+struct AuthenticatedTabView: View {
+    let authManager: AuthManager
+    let apiClient: APIClient
+    let pushService: PushNotificationService
+
+    @State private var familyViewModel: FamilyViewModel
+    @State private var selectedNagId: UUID?
+
+    init(authManager: AuthManager, apiClient: APIClient, pushService: PushNotificationService) {
+        self.authManager = authManager
+        self.apiClient = apiClient
+        self.pushService = pushService
+        _familyViewModel = State(initialValue: FamilyViewModel(apiClient: apiClient))
+    }
+
+    private var currentUserId: UUID {
+        authManager.currentUser?.id ?? UUID()
+    }
+
+    private var isGuardian: Bool {
+        familyViewModel.members.first(where: { $0.userId == currentUserId })?.role == .guardian
+    }
+
+    var body: some View {
+        TabView {
+            nagsTab
+            familyTab
+        }
+        .task {
+            pushService.requestPermissionAndRegister()
+        }
+        .onChange(of: pushService.pendingNagId) { _, newValue in
+            if newValue != nil {
+                selectedNagId = newValue
+                pushService.clearPendingNag()
+            }
+        }
+    }
+
+    private var nagsTab: some View {
+        NavigationStack {
+            if let family = familyViewModel.family {
+                NagListView(apiClient: apiClient, familyId: family.familyId, isGuardian: isGuardian)
+                    .navigationDestination(for: UUID.self) { nagId in
+                        NagDetailView(apiClient: apiClient, nagId: nagId, currentUserId: currentUserId)
+                    }
+            } else {
+                ContentUnavailableView {
+                    Label("No Family", systemImage: "house")
+                } description: {
+                    Text("Create or join a family first.")
+                }
+            }
+        }
+        .tabItem {
+            Label("Nags", systemImage: "bell.fill")
+        }
+    }
+
+    private var familyTab: some View {
+        NavigationStack {
+            FamilyTabContent(
+                viewModel: familyViewModel,
+                apiClient: apiClient,
+                authManager: authManager
+            )
+        }
+        .tabItem {
+            Label("Family", systemImage: "person.3.fill")
+        }
+    }
+}
+
+private struct FamilyTabContent: View {
+    @Bindable var viewModel: FamilyViewModel
+    let apiClient: APIClient
+    let authManager: AuthManager
+
+    var body: some View {
+        Group {
+            if viewModel.isLoading {
+                ProgressView()
+            } else if let family = viewModel.family {
+                List {
+                    Section("Family") {
+                        LabeledContent("Name", value: family.name)
+                        NavigationLink("Members") {
+                            MemberListView(apiClient: apiClient, familyId: family.familyId)
+                        }
+                    }
+
+                    Section {
+                        Button("Log Out", role: .destructive) {
+                            Task { await authManager.logout() }
+                        }
+                    }
+                }
+                .navigationTitle(family.name)
+            } else {
+                VStack(spacing: 20) {
+                    Text("Welcome to Nagz!")
+                        .font(.title2.weight(.semibold))
+
+                    Text("Create a family or join an existing one to get started.")
+                        .foregroundStyle(.secondary)
+                        .multilineTextAlignment(.center)
+
+                    Button("Create Family") {
+                        viewModel.showCreateSheet = true
+                    }
+                    .buttonStyle(.borderedProminent)
+
+                    Button("Join Family") {
+                        viewModel.showJoinSheet = true
+                    }
+                    .buttonStyle(.bordered)
+
+                    Spacer()
+
+                    Button("Log Out", role: .destructive) {
+                        Task { await authManager.logout() }
+                    }
+                }
+                .padding()
+                .navigationTitle("Family")
+            }
+        }
+        .sheet(isPresented: $viewModel.showCreateSheet) {
+            CreateFamilyView(viewModel: viewModel)
+        }
+        .sheet(isPresented: $viewModel.showJoinSheet) {
+            JoinFamilyView(viewModel: viewModel)
+        }
+    }
+}

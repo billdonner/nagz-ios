@@ -1,0 +1,53 @@
+import Foundation
+
+struct NagResponse: Decodable, Identifiable, Sendable {
+    let id: UUID
+    let familyId: UUID
+    let creatorId: UUID
+    let recipientId: UUID
+    let dueAt: Date
+    let category: NagCategory
+    let doneDefinition: DoneDefinition
+    let description: String?
+    let strategyTemplate: StrategyTemplate
+    let status: NagStatus
+    let createdAt: Date
+}
+
+struct NagCreate: Encodable {
+    let familyId: UUID
+    let recipientId: UUID
+    let dueAt: Date
+    let category: NagCategory
+    let doneDefinition: DoneDefinition
+    let description: String?
+    let strategyTemplate: StrategyTemplate
+
+    init(
+        familyId: UUID,
+        recipientId: UUID,
+        dueAt: Date,
+        category: NagCategory,
+        doneDefinition: DoneDefinition,
+        description: String? = nil,
+        strategyTemplate: StrategyTemplate = .friendlyReminder
+    ) {
+        self.familyId = familyId
+        self.recipientId = recipientId
+        self.dueAt = dueAt
+        self.category = category
+        self.doneDefinition = doneDefinition
+        self.description = description
+        self.strategyTemplate = strategyTemplate
+    }
+}
+
+struct NagStatusUpdate: Encodable {
+    let status: NagStatus
+    let note: String?
+
+    init(status: NagStatus, note: String? = nil) {
+        self.status = status
+        self.note = note
+    }
+}
