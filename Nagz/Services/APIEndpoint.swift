@@ -123,10 +123,154 @@ struct APIEndpoint {
         )
     }
 
+    static func updateNag(nagId: UUID, update: NagUpdate) -> APIEndpoint {
+        APIEndpoint(
+            path: "/nags/\(nagId)",
+            method: .patch,
+            body: update
+        )
+    }
+
     // MARK: - Escalation
 
     static func getEscalation(nagId: UUID) -> APIEndpoint {
         APIEndpoint(path: "/nags/\(nagId)/escalation")
+    }
+
+    // MARK: - Family Members
+
+    static func addMember(familyId: UUID, userId: UUID, role: FamilyRole) -> APIEndpoint {
+        APIEndpoint(
+            path: "/families/\(familyId)/members",
+            method: .post,
+            body: MemberAdd(userId: userId, role: role)
+        )
+    }
+
+    static func createMember(familyId: UUID, displayName: String, role: FamilyRole) -> APIEndpoint {
+        APIEndpoint(
+            path: "/families/\(familyId)/members/create",
+            method: .post,
+            body: MemberCreateAndAdd(displayName: displayName, role: role)
+        )
+    }
+
+    static func removeMember(familyId: UUID, userId: UUID) -> APIEndpoint {
+        APIEndpoint(
+            path: "/families/\(familyId)/members/\(userId)",
+            method: .delete
+        )
+    }
+
+    // MARK: - Preferences
+
+    static func getPreferences(familyId: UUID) -> APIEndpoint {
+        APIEndpoint(
+            path: "/preferences",
+            queryItems: [URLQueryItem(name: "family_id", value: familyId.uuidString)]
+        )
+    }
+
+    static func updatePreferences(familyId: UUID, prefs: [String: AnyCodableValue]) -> APIEndpoint {
+        APIEndpoint(
+            path: "/preferences",
+            method: .patch,
+            body: PreferenceUpdate(prefsJson: prefs),
+            queryItems: [URLQueryItem(name: "family_id", value: familyId.uuidString)]
+        )
+    }
+
+    // MARK: - Consents
+
+    static func listConsents(familyId: UUID, limit: Int = Constants.Pagination.defaultLimit, offset: Int = 0) -> APIEndpoint {
+        APIEndpoint(
+            path: "/consents",
+            queryItems: [
+                URLQueryItem(name: "family_id", value: familyId.uuidString),
+                URLQueryItem(name: "limit", value: "\(limit)"),
+                URLQueryItem(name: "offset", value: "\(offset)")
+            ]
+        )
+    }
+
+    static func grantConsent(familyId: UUID?, consentType: ConsentType) -> APIEndpoint {
+        APIEndpoint(
+            path: "/consents",
+            method: .post,
+            body: ConsentCreate(familyId: familyId, consentType: consentType)
+        )
+    }
+
+    static func revokeConsent(consentId: UUID) -> APIEndpoint {
+        APIEndpoint(
+            path: "/consents/\(consentId)",
+            method: .patch,
+            body: ConsentUpdate(revoked: true)
+        )
+    }
+
+    // MARK: - Gamification
+
+    static func gamificationSummary(familyId: UUID) -> APIEndpoint {
+        APIEndpoint(
+            path: "/gamification/summary",
+            queryItems: [URLQueryItem(name: "family_id", value: familyId.uuidString)]
+        )
+    }
+
+    static func gamificationLeaderboard(familyId: UUID) -> APIEndpoint {
+        APIEndpoint(
+            path: "/gamification/leaderboard",
+            queryItems: [URLQueryItem(name: "family_id", value: familyId.uuidString)]
+        )
+    }
+
+    static func gamificationEvents(userId: UUID, familyId: UUID? = nil, limit: Int = Constants.Pagination.defaultLimit, offset: Int = 0) -> APIEndpoint {
+        var items = [
+            URLQueryItem(name: "user_id", value: userId.uuidString),
+            URLQueryItem(name: "limit", value: "\(limit)"),
+            URLQueryItem(name: "offset", value: "\(offset)")
+        ]
+        if let familyId {
+            items.append(URLQueryItem(name: "family_id", value: familyId.uuidString))
+        }
+        return APIEndpoint(path: "/gamification/events", queryItems: items)
+    }
+
+    // MARK: - Incentive Rules
+
+    static func listIncentiveRules(familyId: UUID, limit: Int = Constants.Pagination.defaultLimit, offset: Int = 0) -> APIEndpoint {
+        APIEndpoint(
+            path: "/incentive-rules",
+            queryItems: [
+                URLQueryItem(name: "family_id", value: familyId.uuidString),
+                URLQueryItem(name: "limit", value: "\(limit)"),
+                URLQueryItem(name: "offset", value: "\(offset)")
+            ]
+        )
+    }
+
+    static func createIncentiveRule(_ rule: IncentiveRuleCreate) -> APIEndpoint {
+        APIEndpoint(path: "/incentive-rules", method: .post, body: rule)
+    }
+
+    static func updateIncentiveRule(ruleId: UUID, update: IncentiveRuleUpdate) -> APIEndpoint {
+        APIEndpoint(
+            path: "/incentive-rules/\(ruleId)",
+            method: .patch,
+            body: update
+        )
+    }
+
+    static func listIncentiveEvents(nagId: UUID, limit: Int = Constants.Pagination.defaultLimit, offset: Int = 0) -> APIEndpoint {
+        APIEndpoint(
+            path: "/incentive-events",
+            queryItems: [
+                URLQueryItem(name: "nag_id", value: nagId.uuidString),
+                URLQueryItem(name: "limit", value: "\(limit)"),
+                URLQueryItem(name: "offset", value: "\(offset)")
+            ]
+        )
     }
 
     // MARK: - Devices

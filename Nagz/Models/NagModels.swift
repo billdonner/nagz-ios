@@ -51,3 +51,15 @@ struct NagStatusUpdate: Encodable {
         self.note = note
     }
 }
+
+struct NagUpdate: Encodable {
+    let dueAt: Date?
+    let category: NagCategory?
+    let doneDefinition: DoneDefinition?
+
+    init(dueAt: Date? = nil, category: NagCategory? = nil, doneDefinition: DoneDefinition? = nil) {
+        self.dueAt = dueAt
+        self.category = category
+        self.doneDefinition = doneDefinition
+    }
+}

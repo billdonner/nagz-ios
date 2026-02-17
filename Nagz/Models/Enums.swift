@@ -94,3 +94,40 @@ enum DevicePlatform: String, Codable {
     case ipados
     case macos
 }
+
+enum ConsentType: String, Codable, CaseIterable {
+    case childAccountCreation = "child_account_creation"
+    case smsOptIn = "sms_opt_in"
+    case aiMediation = "ai_mediation"
+    case gamificationParticipation = "gamification_participation"
+
+    var displayName: String {
+        switch self {
+        case .childAccountCreation: "Child Account Creation"
+        case .smsOptIn: "SMS Notifications"
+        case .aiMediation: "AI Mediation"
+        case .gamificationParticipation: "Gamification"
+        }
+    }
+
+    var description: String {
+        switch self {
+        case .childAccountCreation: "Allow creating child accounts in this family"
+        case .smsOptIn: "Receive SMS notifications for nag updates"
+        case .aiMediation: "Allow AI to mediate nag excuses and pushback"
+        case .gamificationParticipation: "Enable points, streaks, and leaderboards"
+        }
+    }
+}
+
+enum IncentiveApprovalMode: String, Codable, CaseIterable {
+    case auto
+    case guardianConfirmed = "guardian_confirmed"
+
+    var displayName: String {
+        switch self {
+        case .auto: "Automatic"
+        case .guardianConfirmed: "Guardian Confirmed"
+        }
+    }
+}

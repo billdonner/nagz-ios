@@ -74,6 +74,7 @@ final class ModelDecodingTests: XCTestCase {
         {
             "family_id": "550e8400-e29b-41d4-a716-446655440010",
             "name": "The Smiths",
+            "invite_code": "ABC123",
             "created_at": "2026-02-16T14:12:00+00:00"
         }
         """.data(using: .utf8)!

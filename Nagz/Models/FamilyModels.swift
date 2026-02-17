@@ -40,3 +40,8 @@ struct MemberAdd: Encodable {
     let userId: UUID
     let role: FamilyRole
 }
+
+struct MemberCreateAndAdd: Encodable {
+    let displayName: String
+    let role: FamilyRole
+}

@@ -4,11 +4,16 @@ struct NagDetailView: View {
     @State private var viewModel: NagDetailViewModel
     @State private var completionNote = ""
     @State private var showNoteField = false
+    @State private var showEditSheet = false
+    let apiClient: APIClient
     let currentUserId: UUID
+    let isGuardian: Bool
 
-    init(apiClient: APIClient, nagId: UUID, currentUserId: UUID) {
+    init(apiClient: APIClient, nagId: UUID, currentUserId: UUID, isGuardian: Bool = false) {
+        self.apiClient = apiClient
         _viewModel = State(initialValue: NagDetailViewModel(apiClient: apiClient, nagId: nagId))
         self.currentUserId = currentUserId
+        self.isGuardian = isGuardian
     }
 
     var body: some View {
@@ -96,6 +101,27 @@ struct NagDetailView: View {
             }
         }
         .navigationTitle("Nag Detail")
+        .toolbar {
+            if isGuardian, let nag = viewModel.nag, nag.status == .open {
+                ToolbarItem(placement: .primaryAction) {
+                    Button {
+                        showEditSheet = true
+                    } label: {
+                        Image(systemName: "pencil")
+                    }
+                }
+            }
+        }
+        .sheet(isPresented: $showEditSheet) {
+            if let nag = viewModel.nag {
+                EditNagView(apiClient: apiClient, nag: nag)
+            }
+        }
+        .onChange(of: showEditSheet) { _, isPresented in
+            if !isPresented {
+                Task { await viewModel.load() }
+            }
+        }
         .task { await viewModel.load() }
     }
 }

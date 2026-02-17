@@ -11,8 +11,11 @@
 		09ABEFE60F83398710D571FB /* JoinFamilyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CCC28A3FD2C73A684280A8B /* JoinFamilyView.swift */; };
 		09F05C30C15A7DD1691B8E69 /* FamilyModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3103D76E83889066B4CDC006 /* FamilyModels.swift */; };
 		10648AB653519F63339D0BA7 /* SignupViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A04D8ECCD329BE62D5CABEC /* SignupViewModel.swift */; };
+		1658C0AC112FE37CF766DA78 /* GamificationModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = F596ADE9A04C40C7E3174959 /* GamificationModels.swift */; };
 		19D475F6D49A24E958EB4E00 /* AuthModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C807C8B04BC360E1936FACD /* AuthModels.swift */; };
+		20AE20BCBFB7382743294AC6 /* ConsentViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A2167A24BA46966A1CC5F470 /* ConsentViewModel.swift */; };
 		2622990D0DCE09B21DB99D10 /* EnvironmentValues+API.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B70AA17D1E21D3916FD048C /* EnvironmentValues+API.swift */; };
+		286523391EC02803D1DD724E /* EditNagView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 185EF763DF413C6E39A88743 /* EditNagView.swift */; };
 		2A63ED0A586E3570ED2CDA8D /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72F118F344FB4C3411FAAEC4 /* LoginView.swift */; };
 		2C5C0179A7849D66DDBE2A57 /* MemberListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAD16D6E59A98D9D44F48D03 /* MemberListViewModel.swift */; };
 		350FB4B166D078DD5BC0EEC9 /* CreateNagViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D5DE9C0FB044817490BD132 /* CreateNagViewModel.swift */; };
@@ -23,19 +26,30 @@
 		48F29924A9EAEE816CE948E5 /* NagDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83E67D051966AD3EDD9F8D7C /* NagDetailView.swift */; };
 		505CA8990F29CD58610ABF47 /* AuthenticatedTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E89A05814372C9BCE15E6EC /* AuthenticatedTabView.swift */; };
 		577DDC65B9F769BBF403122F /* KeychainAccess in Frameworks */ = {isa = PBXBuildFile; productRef = 545A46357975BAA1644730CE /* KeychainAccess */; };
+		58997B57F6EEF60B40681A54 /* GamificationViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9DBB9A681F612EC3473C6868 /* GamificationViewModel.swift */; };
 		69B2329CBD7DCE0EF5D4EF2E /* MemberListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07D0EAC9F8FFBA5872FD80CF /* MemberListView.swift */; };
 		6A9785BA9A4D40BF26A27C1A /* APIEndpoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = F73099FD428BA8EC44A85ECB /* APIEndpoint.swift */; };
+		71BEF3575BABE9D8B29022D3 /* ManageMembersViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95C278AF89622477580059EE /* ManageMembersViewModel.swift */; };
 		7647521DEFBD599A206F7591 /* MemberRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3BF64C56EBAEE04E21E7452 /* MemberRowView.swift */; };
+		791570AA436243B5E505AD63 /* ConsentListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59967DFB14517E9CBB7944FC /* ConsentListView.swift */; };
 		7A6DD790F8FADCFDDB11E379 /* PaginatedResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A69383318CB720FC401D0D7 /* PaginatedResponse.swift */; };
+		7D06F9B2EB4D57AB93B9628F /* PreferencesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 117B176A8976E69A3F640E02 /* PreferencesView.swift */; };
 		81C74DBDC5B5C4147B3B99D7 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3EDC2854A3127F68733D4958 /* ContentView.swift */; };
+		8465FF82F8BB7D1B40E1D8DC /* PreferenceModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9555685DE01F4548E6AC6A0 /* PreferenceModels.swift */; };
 		8C6174B2DB97D37F62276D73 /* CreateNagView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E84EB1DEEB1724609FA6FFC9 /* CreateNagView.swift */; };
 		8D8F30C0E7EAE400C16C0C77 /* AuthManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AC6950A07FD4A8909F73946 /* AuthManager.swift */; };
+		96E14843B3D9DAFC0F5F5012 /* PreferencesViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C4FEFE928E873F8975C711D /* PreferencesViewModel.swift */; };
+		987CCC9B527CF1206510F370 /* EditNagViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6518A68E624AD12C6521FA5 /* EditNagViewModel.swift */; };
+		9B56D91A72953824D2A02C83 /* GamificationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD3190FAD0A5DD8A6323C69C /* GamificationView.swift */; };
+		9DA8639D59F1348334A51445 /* IncentiveRulesViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC1268A6068C60F603BC606E /* IncentiveRulesViewModel.swift */; };
 		9E3B5FA1D29A914B45079842 /* NagModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B64AA3271570CA97B005E91 /* NagModels.swift */; };
 		A162D3663B6E637EFC3AC318 /* LoginViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AA44AE0BEBA58C043C996A1 /* LoginViewModel.swift */; };
 		A922A5B3B8F9CDCF4BD36533 /* APIClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9690A2B5BD1CBA627F52AF4E /* APIClient.swift */; };
 		A99865BA24EB19746267C03B /* AppEnvironment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E621A4F0EDD94F399E2C9DA /* AppEnvironment.swift */; };
 		A9C26BD7772B632CECDF917E /* NagRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C524E4F6DAAD0936C7DC24B /* NagRowView.swift */; };
 		AAAD4B3DA334581D8040E835 /* Date+Formatting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F8430225ED802B793D2E6C2 /* Date+Formatting.swift */; };
+		AB9FA232D246AB19B4EA262F /* ConsentModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA264D3B7744A48AB3904C2F /* ConsentModels.swift */; };
+		ABE7491D55FBA095F89BFD3A /* ManageMembersView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 615BFEFFC265637815DB1707 /* ManageMembersView.swift */; };
 		AEFCF8156E0CF766CC91D2B2 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2524FDBBE8F215CAB498AD90 /* Constants.swift */; };
 		B45D7C13CBAF43DDD2DC7EF7 /* CreateFamilyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 478FD6A5253FF850A9EC7832 /* CreateFamilyView.swift */; };
 		B8924A914C8E48A117B9E506 /* Enums.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5243F4CFE024BC04B61879D1 /* Enums.swift */; };
@@ -46,7 +60,9 @@
 		C8ED407409D4BBED50982A85 /* KeychainService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62B0E5FF945FF5C1DF5EA1D3 /* KeychainService.swift */; };
 		CCFE2834956D7B50CA7BBFD6 /* FamilyViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C48EF0BFA6111245B86B2971 /* FamilyViewModel.swift */; };
 		DA6060AE8EAE463303B6F915 /* NagzApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAF6A3CE8CF93F2302F54967 /* NagzApp.swift */; };
+		E14CC869FBBD0CCCF71E2B65 /* IncentiveModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49E63852FE42057F07D13A9E /* IncentiveModels.swift */; };
 		E1500DDC1F96E93ED0A0D906 /* DeviceModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3304DDCA502144AB4F456FB /* DeviceModels.swift */; };
+		E6C2D67EBC5D812CF590C0AD /* IncentiveRulesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1618B20BD4EBDD00C94901B5 /* IncentiveRulesView.swift */; };
 		F527047B44CB0A89B8A82E21 /* NagDetailViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D8B860496CD6D4BE858F1F2 /* NagDetailViewModel.swift */; };
 /* End PBXBuildFile section */
 
@@ -66,8 +82,11 @@
 		0AA44AE0BEBA58C043C996A1 /* LoginViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewModel.swift; sourceTree = "<group>"; };
 		0C807C8B04BC360E1936FACD /* AuthModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthModels.swift; sourceTree = "<group>"; };
 		0D8B860496CD6D4BE858F1F2 /* NagDetailViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NagDetailViewModel.swift; sourceTree = "<group>"; };
+		117B176A8976E69A3F640E02 /* PreferencesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreferencesView.swift; sourceTree = "<group>"; };
+		1618B20BD4EBDD00C94901B5 /* IncentiveRulesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IncentiveRulesView.swift; sourceTree = "<group>"; };
 		17C15105D93BCA259662041F /* Nagz.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Nagz.entitlements; sourceTree = "<group>"; };
 		17D33EACD9E91105C8BA2127 /* PushNotificationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PushNotificationService.swift; sourceTree = "<group>"; };
+		185EF763DF413C6E39A88743 /* EditNagView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditNagView.swift; sourceTree = "<group>"; };
 		1AC6950A07FD4A8909F73946 /* AuthManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthManager.swift; sourceTree = "<group>"; };
 		1D21CD1CA6DC50F3409A8834 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		1E89A05814372C9BCE15E6EC /* AuthenticatedTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticatedTabView.swift; sourceTree = "<group>"; };
@@ -76,13 +95,17 @@
 		2D5DE9C0FB044817490BD132 /* CreateNagViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateNagViewModel.swift; sourceTree = "<group>"; };
 		3103D76E83889066B4CDC006 /* FamilyModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FamilyModels.swift; sourceTree = "<group>"; };
 		3B64AA3271570CA97B005E91 /* NagModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NagModels.swift; sourceTree = "<group>"; };
+		3C4FEFE928E873F8975C711D /* PreferencesViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreferencesViewModel.swift; sourceTree = "<group>"; };
 		3EC5EC449162BDDDA1AEA55E /* NagListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NagListViewModel.swift; sourceTree = "<group>"; };
 		3EDC2854A3127F68733D4958 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		478FD6A5253FF850A9EC7832 /* CreateFamilyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateFamilyView.swift; sourceTree = "<group>"; };
+		49E63852FE42057F07D13A9E /* IncentiveModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IncentiveModels.swift; sourceTree = "<group>"; };
 		4CCC28A3FD2C73A684280A8B /* JoinFamilyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JoinFamilyView.swift; sourceTree = "<group>"; };
 		5243F4CFE024BC04B61879D1 /* Enums.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Enums.swift; sourceTree = "<group>"; };
+		59967DFB14517E9CBB7944FC /* ConsentListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConsentListView.swift; sourceTree = "<group>"; };
 		5A69383318CB720FC401D0D7 /* PaginatedResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaginatedResponse.swift; sourceTree = "<group>"; };
 		5C524E4F6DAAD0936C7DC24B /* NagRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NagRowView.swift; sourceTree = "<group>"; };
+		615BFEFFC265637815DB1707 /* ManageMembersView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManageMembersView.swift; sourceTree = "<group>"; };
 		62B0E5FF945FF5C1DF5EA1D3 /* KeychainService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeychainService.swift; sourceTree = "<group>"; };
 		6E621A4F0EDD94F399E2C9DA /* AppEnvironment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppEnvironment.swift; sourceTree = "<group>"; };
 		72F118F344FB4C3411FAAEC4 /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
@@ -91,20 +114,29 @@
 		83E67D051966AD3EDD9F8D7C /* NagDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NagDetailView.swift; sourceTree = "<group>"; };
 		88BCE00F95D3F26F9BD4F880 /* NagzTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = NagzTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		8F8430225ED802B793D2E6C2 /* Date+Formatting.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Date+Formatting.swift"; sourceTree = "<group>"; };
+		95C278AF89622477580059EE /* ManageMembersViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManageMembersViewModel.swift; sourceTree = "<group>"; };
 		9690A2B5BD1CBA627F52AF4E /* APIClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIClient.swift; sourceTree = "<group>"; };
 		9A04D8ECCD329BE62D5CABEC /* SignupViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignupViewModel.swift; sourceTree = "<group>"; };
+		9DBB9A681F612EC3473C6868 /* GamificationViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GamificationViewModel.swift; sourceTree = "<group>"; };
 		9E6DEEBE1B334FC5685FC4E5 /* EscalationBadge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EscalationBadge.swift; sourceTree = "<group>"; };
 		A03B64D4D5A805C21596C5F0 /* NagListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NagListView.swift; sourceTree = "<group>"; };
+		A2167A24BA46966A1CC5F470 /* ConsentViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConsentViewModel.swift; sourceTree = "<group>"; };
 		A88D52E67BB456B1C310B4A3 /* Nagz.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = Nagz.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A8AEE80ECDC2335FED6F07DD /* ErrorModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorModels.swift; sourceTree = "<group>"; };
+		AA264D3B7744A48AB3904C2F /* ConsentModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConsentModels.swift; sourceTree = "<group>"; };
 		AAF6A3CE8CF93F2302F54967 /* NagzApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NagzApp.swift; sourceTree = "<group>"; };
+		AD3190FAD0A5DD8A6323C69C /* GamificationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GamificationView.swift; sourceTree = "<group>"; };
 		AE0B9F4BCBAB9DA56A1A82E9 /* SignupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignupView.swift; sourceTree = "<group>"; };
 		C3304DDCA502144AB4F456FB /* DeviceModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceModels.swift; sourceTree = "<group>"; };
 		C48EF0BFA6111245B86B2971 /* FamilyViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FamilyViewModel.swift; sourceTree = "<group>"; };
+		C9555685DE01F4548E6AC6A0 /* PreferenceModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreferenceModels.swift; sourceTree = "<group>"; };
 		D3BF64C56EBAEE04E21E7452 /* MemberRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemberRowView.swift; sourceTree = "<group>"; };
+		D6518A68E624AD12C6521FA5 /* EditNagViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditNagViewModel.swift; sourceTree = "<group>"; };
 		DAD16D6E59A98D9D44F48D03 /* MemberListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemberListViewModel.swift; sourceTree = "<group>"; };
 		E84EB1DEEB1724609FA6FFC9 /* CreateNagView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateNagView.swift; sourceTree = "<group>"; };
+		F596ADE9A04C40C7E3174959 /* GamificationModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GamificationModels.swift; sourceTree = "<group>"; };
 		F73099FD428BA8EC44A85ECB /* APIEndpoint.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIEndpoint.swift; sourceTree = "<group>"; };
+		FC1268A6068C60F603BC606E /* IncentiveRulesViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IncentiveRulesViewModel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -123,6 +155,7 @@
 			isa = PBXGroup;
 			children = (
 				E84EB1DEEB1724609FA6FFC9 /* CreateNagView.swift */,
+				185EF763DF413C6E39A88743 /* EditNagView.swift */,
 				83E67D051966AD3EDD9F8D7C /* NagDetailView.swift */,
 				A03B64D4D5A805C21596C5F0 /* NagListView.swift */,
 			);
@@ -147,6 +180,15 @@
 			path = Nagz;
 			sourceTree = "<group>";
 		};
+		1EBD9D3165D1A844B322E43D /* Gamification */ = {
+			isa = PBXGroup;
+			children = (
+				AD3190FAD0A5DD8A6323C69C /* GamificationView.swift */,
+				1618B20BD4EBDD00C94901B5 /* IncentiveRulesView.swift */,
+			);
+			path = Gamification;
+			sourceTree = "<group>";
+		};
 		4D3CC44B0C07A86AD308A8BE /* Products */ = {
 			isa = PBXGroup;
 			children = (
@@ -162,6 +204,7 @@
 				D59D9B456A0D9F660CDF8790 /* Auth */,
 				D088B41B923A66EE9F11DF1B /* Components */,
 				A90A96E0F7275AB252AB99C4 /* Family */,
+				1EBD9D3165D1A844B322E43D /* Gamification */,
 				0A740E1700A8B69EB3A5DB91 /* Nags */,
 			);
 			path = Views;
@@ -197,9 +240,12 @@
 		A90A96E0F7275AB252AB99C4 /* Family */ = {
 			isa = PBXGroup;
 			children = (
+				59967DFB14517E9CBB7944FC /* ConsentListView.swift */,
 				478FD6A5253FF850A9EC7832 /* CreateFamilyView.swift */,
 				4CCC28A3FD2C73A684280A8B /* JoinFamilyView.swift */,
+				615BFEFFC265637815DB1707 /* ManageMembersView.swift */,
 				07D0EAC9F8FFBA5872FD80CF /* MemberListView.swift */,
+				117B176A8976E69A3F640E02 /* PreferencesView.swift */,
 			);
 			path = Family;
 			sourceTree = "<group>";
@@ -208,13 +254,17 @@
 			isa = PBXGroup;
 			children = (
 				0C807C8B04BC360E1936FACD /* AuthModels.swift */,
+				AA264D3B7744A48AB3904C2F /* ConsentModels.swift */,
 				C3304DDCA502144AB4F456FB /* DeviceModels.swift */,
 				5243F4CFE024BC04B61879D1 /* Enums.swift */,
 				A8AEE80ECDC2335FED6F07DD /* ErrorModels.swift */,
 				04D5AC512A990EFC2E729F29 /* EscalationModels.swift */,
 				3103D76E83889066B4CDC006 /* FamilyModels.swift */,
+				F596ADE9A04C40C7E3174959 /* GamificationModels.swift */,
+				49E63852FE42057F07D13A9E /* IncentiveModels.swift */,
 				3B64AA3271570CA97B005E91 /* NagModels.swift */,
 				5A69383318CB720FC401D0D7 /* PaginatedResponse.swift */,
+				C9555685DE01F4548E6AC6A0 /* PreferenceModels.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -270,12 +320,18 @@
 		F25C983ADF72DD78A90EB077 /* ViewModels */ = {
 			isa = PBXGroup;
 			children = (
+				A2167A24BA46966A1CC5F470 /* ConsentViewModel.swift */,
 				2D5DE9C0FB044817490BD132 /* CreateNagViewModel.swift */,
+				D6518A68E624AD12C6521FA5 /* EditNagViewModel.swift */,
 				C48EF0BFA6111245B86B2971 /* FamilyViewModel.swift */,
+				9DBB9A681F612EC3473C6868 /* GamificationViewModel.swift */,
+				FC1268A6068C60F603BC606E /* IncentiveRulesViewModel.swift */,
 				0AA44AE0BEBA58C043C996A1 /* LoginViewModel.swift */,
+				95C278AF89622477580059EE /* ManageMembersViewModel.swift */,
 				DAD16D6E59A98D9D44F48D03 /* MemberListViewModel.swift */,
 				0D8B860496CD6D4BE858F1F2 /* NagDetailViewModel.swift */,
 				3EC5EC449162BDDDA1AEA55E /* NagListViewModel.swift */,
+				3C4FEFE928E873F8975C711D /* PreferencesViewModel.swift */,
 				9A04D8ECCD329BE62D5CABEC /* SignupViewModel.swift */,
 			);
 			path = ViewModels;
@@ -370,6 +426,9 @@
 				8D8F30C0E7EAE400C16C0C77 /* AuthManager.swift in Sources */,
 				19D475F6D49A24E958EB4E00 /* AuthModels.swift in Sources */,
 				505CA8990F29CD58610ABF47 /* AuthenticatedTabView.swift in Sources */,
+				791570AA436243B5E505AD63 /* ConsentListView.swift in Sources */,
+				AB9FA232D246AB19B4EA262F /* ConsentModels.swift in Sources */,
+				20AE20BCBFB7382743294AC6 /* ConsentViewModel.swift in Sources */,
 				AEFCF8156E0CF766CC91D2B2 /* Constants.swift in Sources */,
 				81C74DBDC5B5C4147B3B99D7 /* ContentView.swift in Sources */,
 				B45D7C13CBAF43DDD2DC7EF7 /* CreateFamilyView.swift in Sources */,
@@ -377,6 +436,8 @@
 				350FB4B166D078DD5BC0EEC9 /* CreateNagViewModel.swift in Sources */,
 				AAAD4B3DA334581D8040E835 /* Date+Formatting.swift in Sources */,
 				E1500DDC1F96E93ED0A0D906 /* DeviceModels.swift in Sources */,
+				286523391EC02803D1DD724E /* EditNagView.swift in Sources */,
+				987CCC9B527CF1206510F370 /* EditNagViewModel.swift in Sources */,
 				B8924A914C8E48A117B9E506 /* Enums.swift in Sources */,
 				2622990D0DCE09B21DB99D10 /* EnvironmentValues+API.swift in Sources */,
 				C6AD093090BB94EE3660E7B1 /* ErrorModels.swift in Sources */,
@@ -384,10 +445,18 @@
 				41624A0FA5DBA542A0351B6C /* EscalationModels.swift in Sources */,
 				09F05C30C15A7DD1691B8E69 /* FamilyModels.swift in Sources */,
 				CCFE2834956D7B50CA7BBFD6 /* FamilyViewModel.swift in Sources */,
+				1658C0AC112FE37CF766DA78 /* GamificationModels.swift in Sources */,
+				9B56D91A72953824D2A02C83 /* GamificationView.swift in Sources */,
+				58997B57F6EEF60B40681A54 /* GamificationViewModel.swift in Sources */,
+				E14CC869FBBD0CCCF71E2B65 /* IncentiveModels.swift in Sources */,
+				E6C2D67EBC5D812CF590C0AD /* IncentiveRulesView.swift in Sources */,
+				9DA8639D59F1348334A51445 /* IncentiveRulesViewModel.swift in Sources */,
 				09ABEFE60F83398710D571FB /* JoinFamilyView.swift in Sources */,
 				C8ED407409D4BBED50982A85 /* KeychainService.swift in Sources */,
 				2A63ED0A586E3570ED2CDA8D /* LoginView.swift in Sources */,
 				A162D3663B6E637EFC3AC318 /* LoginViewModel.swift in Sources */,
+				ABE7491D55FBA095F89BFD3A /* ManageMembersView.swift in Sources */,
+				71BEF3575BABE9D8B29022D3 /* ManageMembersViewModel.swift in Sources */,
 				69B2329CBD7DCE0EF5D4EF2E /* MemberListView.swift in Sources */,
 				2C5C0179A7849D66DDBE2A57 /* MemberListViewModel.swift in Sources */,
 				7647521DEFBD599A206F7591 /* MemberRowView.swift in Sources */,
@@ -399,6 +468,9 @@
 				A9C26BD7772B632CECDF917E /* NagRowView.swift in Sources */,
 				DA6060AE8EAE463303B6F915 /* NagzApp.swift in Sources */,
 				7A6DD790F8FADCFDDB11E379 /* PaginatedResponse.swift in Sources */,
+				8465FF82F8BB7D1B40E1D8DC /* PreferenceModels.swift in Sources */,
+				7D06F9B2EB4D57AB93B9628F /* PreferencesView.swift in Sources */,
+				96E14843B3D9DAFC0F5F5012 /* PreferencesViewModel.swift in Sources */,
 				4440085F3A155A314DC293BE /* PushNotificationService.swift in Sources */,
 				BC3F961DC9D45F8A5813CA82 /* SignupView.swift in Sources */,
 				10648AB653519F63339D0BA7 /* SignupViewModel.swift in Sources */,

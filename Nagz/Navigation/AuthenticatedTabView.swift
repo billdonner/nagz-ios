@@ -44,7 +44,7 @@ struct AuthenticatedTabView: View {
             if let family = familyViewModel.family {
                 NagListView(apiClient: apiClient, familyId: family.familyId, isGuardian: isGuardian)
                     .navigationDestination(for: UUID.self) { nagId in
-                        NagDetailView(apiClient: apiClient, nagId: nagId, currentUserId: currentUserId)
+                        NagDetailView(apiClient: apiClient, nagId: nagId, currentUserId: currentUserId, isGuardian: isGuardian)
                     }
             } else {
                 ContentUnavailableView {
@@ -64,7 +64,9 @@ struct AuthenticatedTabView: View {
             FamilyTabContent(
                 viewModel: familyViewModel,
                 apiClient: apiClient,
-                authManager: authManager
+                authManager: authManager,
+                isGuardian: isGuardian,
+                currentUserId: currentUserId
             )
         }
         .tabItem {
@@ -77,6 +79,8 @@ private struct FamilyTabContent: View {
     @Bindable var viewModel: FamilyViewModel
     let apiClient: APIClient
     let authManager: AuthManager
+    let isGuardian: Bool
+    let currentUserId: UUID
 
     var body: some View {
         Group {
@@ -88,6 +92,36 @@ private struct FamilyTabContent: View {
                         LabeledContent("Name", value: family.name)
                         NavigationLink("Members") {
                             MemberListView(apiClient: apiClient, familyId: family.familyId)
+                        }
+                        if isGuardian {
+                            NavigationLink("Manage Members") {
+                                ManageMembersView(apiClient: apiClient, familyId: family.familyId)
+                            }
+                        }
+                    }
+
+                    Section("Settings") {
+                        NavigationLink("Preferences") {
+                            PreferencesView(apiClient: apiClient, familyId: family.familyId)
+                        }
+                        NavigationLink("Consents") {
+                            ConsentListView(apiClient: apiClient, familyId: family.familyId)
+                        }
+                    }
+
+                    Section("Gamification") {
+                        NavigationLink("Points & Streaks") {
+                            GamificationView(
+                                apiClient: apiClient,
+                                familyId: family.familyId,
+                                userId: currentUserId,
+                                members: viewModel.members
+                            )
+                        }
+                        if isGuardian {
+                            NavigationLink("Incentive Rules") {
+                                IncentiveRulesView(apiClient: apiClient, familyId: family.familyId)
+                            }
                         }
                     }
 
