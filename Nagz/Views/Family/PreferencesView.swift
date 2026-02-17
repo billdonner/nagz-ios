@@ -36,6 +36,24 @@ struct PreferencesView: View {
                 }
             }
 
+            Section("Notifications") {
+                Picker("Frequency", selection: $viewModel.notificationFrequency) {
+                    Text("Always").tag("always")
+                    Text("Once per phase").tag("once_per_phase")
+                    Text("Daily digest").tag("daily_digest")
+                }
+
+                Picker("Channel", selection: $viewModel.deliveryChannel) {
+                    Text("Push").tag("push")
+                    Text("SMS").tag("sms")
+                    Text("Both").tag("both")
+                }
+
+                Text("Controls how often and where nag notifications are delivered.")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
+
             if let error = viewModel.errorMessage {
                 Section {
                     Text(error).foregroundStyle(.red).font(.callout)

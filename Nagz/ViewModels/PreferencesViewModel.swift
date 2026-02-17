@@ -8,6 +8,8 @@ final class PreferencesViewModel {
     var quietHoursEnabled = false
     var quietHoursStart = "22:00"
     var quietHoursEnd = "07:00"
+    var notificationFrequency = "always"
+    var deliveryChannel = "push"
     var isLoading = false
     var isSaving = false
     var errorMessage: String?
@@ -46,6 +48,8 @@ final class PreferencesViewModel {
             prefs["quiet_hours_start"] = .string(quietHoursStart)
             prefs["quiet_hours_end"] = .string(quietHoursEnd)
         }
+        prefs["notification_frequency"] = .string(notificationFrequency)
+        prefs["delivery_channel"] = .string(deliveryChannel)
         do {
             let _: PreferenceResponse = try await apiClient.request(
                 .updatePreferences(familyId: familyId, prefs: prefs)
@@ -64,5 +68,7 @@ final class PreferencesViewModel {
         quietHoursEnabled = prefs["quiet_hours_enabled"]?.boolValue ?? false
         quietHoursStart = prefs["quiet_hours_start"]?.stringValue ?? "22:00"
         quietHoursEnd = prefs["quiet_hours_end"]?.stringValue ?? "07:00"
+        notificationFrequency = prefs["notification_frequency"]?.stringValue ?? "always"
+        deliveryChannel = prefs["delivery_channel"]?.stringValue ?? "push"
     }
 }
