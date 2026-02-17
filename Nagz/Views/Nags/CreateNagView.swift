@@ -4,6 +4,7 @@ struct CreateNagView: View {
     @State private var viewModel: CreateNagViewModel
     @State private var members: [MemberDetail] = []
     @State private var isLoadingMembers = true
+    @State private var memberLoadError: String?
     @Environment(\.dismiss) private var dismiss
     private let apiClient: APIClient
     private let familyId: UUID
@@ -20,6 +21,10 @@ struct CreateNagView: View {
                 Section("Recipient") {
                     if isLoadingMembers {
                         ProgressView("Loading members...")
+                    } else if let memberError = memberLoadError {
+                        ErrorBanner(message: memberError) {
+                            await loadMembers()
+                        }
                     } else {
                         Picker("Send to", selection: $viewModel.recipientId) {
                             Text("Select...").tag(nil as UUID?)
@@ -64,9 +69,7 @@ struct CreateNagView: View {
 
                 if let error = viewModel.errorMessage {
                     Section {
-                        Text(error)
-                            .foregroundStyle(.red)
-                            .font(.callout)
+                        ErrorBanner(message: error)
                     }
                 }
 
@@ -99,13 +102,17 @@ struct CreateNagView: View {
     }
 
     private func loadMembers() async {
+        isLoadingMembers = true
+        memberLoadError = nil
         do {
             let response: PaginatedResponse<MemberDetail> = try await apiClient.request(
                 .listMembers(familyId: familyId)
             )
             members = response.items
+        } catch let error as APIError {
+            memberLoadError = error.errorDescription
         } catch {
-            // Use empty list on error
+            memberLoadError = "Failed to load family members."
         }
         isLoadingMembers = false
     }

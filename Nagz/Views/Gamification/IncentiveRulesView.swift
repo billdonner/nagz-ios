@@ -42,7 +42,7 @@ struct IncentiveRulesView: View {
             }
 
             if let error = viewModel.errorMessage {
-                Text(error).foregroundStyle(.red).font(.callout)
+                ErrorBanner(message: error)
             }
         }
         .navigationTitle("Incentive Rules")
@@ -112,7 +112,7 @@ private struct CreateIncentiveRuleSheet: View {
 
                 if let error = viewModel.errorMessage {
                     Section {
-                        Text(error).foregroundStyle(.red).font(.callout)
+                        ErrorBanner(message: error)
                     }
                 }
             }

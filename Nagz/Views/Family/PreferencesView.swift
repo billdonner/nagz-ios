@@ -56,7 +56,7 @@ struct PreferencesView: View {
 
             if let error = viewModel.errorMessage {
                 Section {
-                    Text(error).foregroundStyle(.red).font(.callout)
+                    ErrorBanner(message: error)
                 }
             }
 

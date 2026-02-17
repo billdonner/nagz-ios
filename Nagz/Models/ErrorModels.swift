@@ -20,6 +20,7 @@ enum APIError: Error, LocalizedError {
     case unauthorized
     case forbidden
     case notFound
+    case rateLimited
     case validationError(String)
     case serverError(String)
     case networkError(Error)
@@ -29,23 +30,42 @@ enum APIError: Error, LocalizedError {
     var errorDescription: String? {
         switch self {
         case .invalidURL:
-            "Invalid URL"
+            return "Invalid URL"
         case .unauthorized:
-            "Session expired. Please log in again."
+            return "Session expired. Please log in again."
         case .forbidden:
-            "You don't have permission for this action."
+            return "You don't have permission for this action."
         case .notFound:
-            "The requested resource was not found."
+            return "The requested resource was not found."
+        case .rateLimited:
+            return "Too many requests. Please wait a moment and try again."
         case .validationError(let message):
-            message
+            return message
         case .serverError(let message):
-            "Server error: \(message)"
+            return "Server error: \(message)"
         case .networkError(let error):
-            "Network error: \(error.localizedDescription)"
+            let nsError = error as NSError
+            if nsError.code == NSURLErrorNotConnectedToInternet {
+                return "No internet connection. Please check your network."
+            }
+            if nsError.code == NSURLErrorTimedOut {
+                return "Request timed out. Please try again."
+            }
+            return "Network error: \(error.localizedDescription)"
         case .decodingError(let error):
-            "Data error: \(error.localizedDescription)"
+            return "Data error: \(error.localizedDescription)"
         case .unknown(let code, let message):
-            "Error \(code): \(message)"
+            return "Error \(code): \(message)"
+        }
+    }
+
+    /// Whether this error is likely transient and retrying may succeed.
+    var isRetryable: Bool {
+        switch self {
+        case .networkError, .serverError, .rateLimited:
+            true
+        default:
+            false
         }
     }
 }

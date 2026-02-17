@@ -67,8 +67,7 @@ struct PolicyDetailView: View {
 
             if let error = viewModel.error {
                 Section {
-                    Text(error)
-                        .foregroundStyle(.red)
+                    ErrorBanner(message: error)
                 }
             }
         }

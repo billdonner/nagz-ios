@@ -165,6 +165,7 @@ actor APIClient {
             case 403: return .forbidden
             case 404: return .notFound
             case 422: return .validationError(msg)
+            case 429: return .rateLimited
             case 500...599: return .serverError(msg)
             default: return .unknown(statusCode, msg)
             }

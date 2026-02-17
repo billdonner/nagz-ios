@@ -45,6 +45,7 @@
 		886438D017AF431894B099E7 /* ReportModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = BAA9ECF7D3600FB6AF4C758C /* ReportModels.swift */; };
 		8C6174B2DB97D37F62276D73 /* CreateNagView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E84EB1DEEB1724609FA6FFC9 /* CreateNagView.swift */; };
 		8D8F30C0E7EAE400C16C0C77 /* AuthManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AC6950A07FD4A8909F73946 /* AuthManager.swift */; };
+		8FDC13F68CD74018BD19792D /* ErrorBanner.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4390EE8B448189A83504758C /* ErrorBanner.swift */; };
 		8FE044ED4C9F9F4B97EBED73 /* VersionChecker.swift in Sources */ = {isa = PBXBuildFile; fileRef = D917295C9B5550C0BE6F63EF /* VersionChecker.swift */; };
 		92B2DE215E9885838392AED3 /* PolicyListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBD44C1B308F9911F7BCBC0C /* PolicyListView.swift */; };
 		96E14843B3D9DAFC0F5F5012 /* PreferencesViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C4FEFE928E873F8975C711D /* PreferencesViewModel.swift */; };
@@ -118,6 +119,7 @@
 		3C4FEFE928E873F8975C711D /* PreferencesViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreferencesViewModel.swift; sourceTree = "<group>"; };
 		3EC5EC449162BDDDA1AEA55E /* NagListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NagListViewModel.swift; sourceTree = "<group>"; };
 		3EDC2854A3127F68733D4958 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		4390EE8B448189A83504758C /* ErrorBanner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorBanner.swift; sourceTree = "<group>"; };
 		478FD6A5253FF850A9EC7832 /* CreateFamilyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateFamilyView.swift; sourceTree = "<group>"; };
 		49E63852FE42057F07D13A9E /* IncentiveModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IncentiveModels.swift; sourceTree = "<group>"; };
 		4CCC28A3FD2C73A684280A8B /* JoinFamilyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JoinFamilyView.swift; sourceTree = "<group>"; };
@@ -338,6 +340,7 @@
 		D088B41B923A66EE9F11DF1B /* Components */ = {
 			isa = PBXGroup;
 			children = (
+				4390EE8B448189A83504758C /* ErrorBanner.swift */,
 				9E6DEEBE1B334FC5685FC4E5 /* EscalationBadge.swift */,
 				D3BF64C56EBAEE04E21E7452 /* MemberRowView.swift */,
 				5C524E4F6DAAD0936C7DC24B /* NagRowView.swift */,
@@ -511,6 +514,7 @@
 				987CCC9B527CF1206510F370 /* EditNagViewModel.swift in Sources */,
 				B8924A914C8E48A117B9E506 /* Enums.swift in Sources */,
 				2622990D0DCE09B21DB99D10 /* EnvironmentValues+API.swift in Sources */,
+				8FDC13F68CD74018BD19792D /* ErrorBanner.swift in Sources */,
 				C6AD093090BB94EE3660E7B1 /* ErrorModels.swift in Sources */,
 				022785549CA30F29EE5D1189 /* EscalationBadge.swift in Sources */,
 				41624A0FA5DBA542A0351B6C /* EscalationModels.swift in Sources */,

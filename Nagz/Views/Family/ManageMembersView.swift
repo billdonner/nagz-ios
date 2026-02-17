@@ -31,7 +31,7 @@ struct ManageMembersView: View {
             }
 
             if let error = viewModel.errorMessage {
-                Text(error).foregroundStyle(.red).font(.callout)
+                ErrorBanner(message: error)
             }
         }
         .navigationTitle("Manage Members")
@@ -81,7 +81,7 @@ private struct CreateMemberSheet: View {
 
                 if let error = viewModel.errorMessage {
                     Section {
-                        Text(error).foregroundStyle(.red).font(.callout)
+                        ErrorBanner(message: error)
                     }
                 }
             }
