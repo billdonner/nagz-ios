@@ -8,6 +8,7 @@ struct NagzApp: App {
     private let apiClient: APIClient
     @State private var authManager: AuthManager
     @State private var pushService: PushNotificationService
+    @State private var versionChecker: VersionChecker
 
     init() {
         let keychain = KeychainService()
@@ -15,11 +16,13 @@ struct NagzApp: App {
         let auth = AuthManager(apiClient: api, keychainService: keychain)
         let push = PushNotificationService()
         push.configure(apiClient: api)
+        let checker = VersionChecker(apiClient: api)
 
         self.keychainService = keychain
         self.apiClient = api
         _authManager = State(initialValue: auth)
         _pushService = State(initialValue: push)
+        _versionChecker = State(initialValue: checker)
     }
 
     var body: some Scene {
@@ -27,7 +30,8 @@ struct NagzApp: App {
             ContentView(
                 authManager: authManager,
                 apiClient: apiClient,
-                pushService: pushService
+                pushService: pushService,
+                versionChecker: versionChecker
             )
             .environment(\.apiClient, apiClient)
             .onAppear {

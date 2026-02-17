@@ -28,6 +28,12 @@ struct APIEndpoint {
         case delete = "DELETE"
     }
 
+    // MARK: - Version
+
+    static func getVersion() -> APIEndpoint {
+        APIEndpoint(path: "/version", requiresAuth: false)
+    }
+
     // MARK: - Auth
 
     static func signup(email: String, password: String, displayName: String?) -> APIEndpoint {

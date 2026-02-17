@@ -29,6 +29,7 @@
 		505CA8990F29CD58610ABF47 /* AuthenticatedTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E89A05814372C9BCE15E6EC /* AuthenticatedTabView.swift */; };
 		577DDC65B9F769BBF403122F /* KeychainAccess in Frameworks */ = {isa = PBXBuildFile; productRef = 545A46357975BAA1644730CE /* KeychainAccess */; };
 		58997B57F6EEF60B40681A54 /* GamificationViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9DBB9A681F612EC3473C6868 /* GamificationViewModel.swift */; };
+		648A714E50978D32602CF46C /* VersionModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCA86773FC15EB5B201B38D0 /* VersionModels.swift */; };
 		69072BBDECA8680C5104363E /* AccountView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D2C31A6C1CA6645B991FD667 /* AccountView.swift */; };
 		69B2329CBD7DCE0EF5D4EF2E /* MemberListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07D0EAC9F8FFBA5872FD80CF /* MemberListView.swift */; };
 		6A9785BA9A4D40BF26A27C1A /* APIEndpoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = F73099FD428BA8EC44A85ECB /* APIEndpoint.swift */; };
@@ -43,6 +44,7 @@
 		886438D017AF431894B099E7 /* ReportModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = BAA9ECF7D3600FB6AF4C758C /* ReportModels.swift */; };
 		8C6174B2DB97D37F62276D73 /* CreateNagView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E84EB1DEEB1724609FA6FFC9 /* CreateNagView.swift */; };
 		8D8F30C0E7EAE400C16C0C77 /* AuthManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AC6950A07FD4A8909F73946 /* AuthManager.swift */; };
+		8FE044ED4C9F9F4B97EBED73 /* VersionChecker.swift in Sources */ = {isa = PBXBuildFile; fileRef = D917295C9B5550C0BE6F63EF /* VersionChecker.swift */; };
 		96E14843B3D9DAFC0F5F5012 /* PreferencesViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C4FEFE928E873F8975C711D /* PreferencesViewModel.swift */; };
 		987CCC9B527CF1206510F370 /* EditNagViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6518A68E624AD12C6521FA5 /* EditNagViewModel.swift */; };
 		9B56D91A72953824D2A02C83 /* GamificationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD3190FAD0A5DD8A6323C69C /* GamificationView.swift */; };
@@ -151,9 +153,11 @@
 		C3304DDCA502144AB4F456FB /* DeviceModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceModels.swift; sourceTree = "<group>"; };
 		C48EF0BFA6111245B86B2971 /* FamilyViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FamilyViewModel.swift; sourceTree = "<group>"; };
 		C9555685DE01F4548E6AC6A0 /* PreferenceModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreferenceModels.swift; sourceTree = "<group>"; };
+		CCA86773FC15EB5B201B38D0 /* VersionModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VersionModels.swift; sourceTree = "<group>"; };
 		D2C31A6C1CA6645B991FD667 /* AccountView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountView.swift; sourceTree = "<group>"; };
 		D3BF64C56EBAEE04E21E7452 /* MemberRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemberRowView.swift; sourceTree = "<group>"; };
 		D6518A68E624AD12C6521FA5 /* EditNagViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditNagViewModel.swift; sourceTree = "<group>"; };
+		D917295C9B5550C0BE6F63EF /* VersionChecker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VersionChecker.swift; sourceTree = "<group>"; };
 		DAD16D6E59A98D9D44F48D03 /* MemberListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemberListViewModel.swift; sourceTree = "<group>"; };
 		E4A715516D53FF9CD1661B2E /* ReportsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReportsView.swift; sourceTree = "<group>"; };
 		E84EB1DEEB1724609FA6FFC9 /* CreateNagView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateNagView.swift; sourceTree = "<group>"; };
@@ -305,6 +309,7 @@
 				C9555685DE01F4548E6AC6A0 /* PreferenceModels.swift */,
 				BAA9ECF7D3600FB6AF4C758C /* ReportModels.swift */,
 				A14A7ACF3D604B6E110A26B4 /* SafetyModels.swift */,
+				CCA86773FC15EB5B201B38D0 /* VersionModels.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -317,6 +322,7 @@
 				1AC6950A07FD4A8909F73946 /* AuthManager.swift */,
 				62B0E5FF945FF5C1DF5EA1D3 /* KeychainService.swift */,
 				17D33EACD9E91105C8BA2127 /* PushNotificationService.swift */,
+				D917295C9B5550C0BE6F63EF /* VersionChecker.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -538,6 +544,8 @@
 				B9EC5FC025893AEFB863FA97 /* SafetyViewModel.swift in Sources */,
 				BC3F961DC9D45F8A5813CA82 /* SignupView.swift in Sources */,
 				10648AB653519F63339D0BA7 /* SignupViewModel.swift in Sources */,
+				8FE044ED4C9F9F4B97EBED73 /* VersionChecker.swift in Sources */,
+				648A714E50978D32602CF46C /* VersionModels.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
