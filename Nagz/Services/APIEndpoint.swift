@@ -297,6 +297,110 @@ struct APIEndpoint {
         )
     }
 
+    // MARK: - Reports
+
+    static func weeklyReport(familyId: UUID) -> APIEndpoint {
+        APIEndpoint(
+            path: "/reports/family/weekly",
+            queryItems: [URLQueryItem(name: "family_id", value: familyId.uuidString)]
+        )
+    }
+
+    static func familyMetrics(familyId: UUID, from: Date? = nil, to: Date? = nil) -> APIEndpoint {
+        var items = [URLQueryItem(name: "family_id", value: familyId.uuidString)]
+        if let from {
+            items.append(URLQueryItem(name: "from_date", value: ISO8601DateFormatter().string(from: from)))
+        }
+        if let to {
+            items.append(URLQueryItem(name: "to_date", value: ISO8601DateFormatter().string(from: to)))
+        }
+        return APIEndpoint(path: "/reports/family/metrics", queryItems: items)
+    }
+
+    // MARK: - Deliveries
+
+    static func listDeliveries(nagId: UUID, limit: Int = Constants.Pagination.defaultLimit, offset: Int = 0) -> APIEndpoint {
+        APIEndpoint(
+            path: "/deliveries",
+            queryItems: [
+                URLQueryItem(name: "nag_id", value: nagId.uuidString),
+                URLQueryItem(name: "limit", value: "\(limit)"),
+                URLQueryItem(name: "offset", value: "\(offset)")
+            ]
+        )
+    }
+
+    // MARK: - Policies
+
+    static func getPolicy(id: UUID) -> APIEndpoint {
+        APIEndpoint(path: "/policies/\(id)")
+    }
+
+    static func updatePolicy(policyId: UUID, update: PolicyUpdate) -> APIEndpoint {
+        APIEndpoint(
+            path: "/policies/\(policyId)",
+            method: .patch,
+            body: update
+        )
+    }
+
+    static func createApproval(policyId: UUID, comment: String? = nil) -> APIEndpoint {
+        APIEndpoint(
+            path: "/policies/\(policyId)/approvals",
+            method: .post,
+            body: ApprovalCreate(comment: comment)
+        )
+    }
+
+    static func listApprovals(policyId: UUID, limit: Int = Constants.Pagination.defaultLimit, offset: Int = 0) -> APIEndpoint {
+        APIEndpoint(
+            path: "/policies/\(policyId)/approvals",
+            queryItems: [
+                URLQueryItem(name: "limit", value: "\(limit)"),
+                URLQueryItem(name: "offset", value: "\(offset)")
+            ]
+        )
+    }
+
+    // MARK: - Safety
+
+    static func createAbuseReport(targetId: UUID, reason: String) -> APIEndpoint {
+        APIEndpoint(
+            path: "/abuse-reports",
+            method: .post,
+            body: AbuseReportCreate(targetId: targetId, reason: reason)
+        )
+    }
+
+    static func getAbuseReport(id: UUID) -> APIEndpoint {
+        APIEndpoint(path: "/abuse-reports/\(id)")
+    }
+
+    static func createBlock(targetId: UUID) -> APIEndpoint {
+        APIEndpoint(
+            path: "/blocks",
+            method: .post,
+            body: BlockCreateRequest(targetId: targetId)
+        )
+    }
+
+    static func updateBlock(blockId: UUID, state: BlockState) -> APIEndpoint {
+        APIEndpoint(
+            path: "/blocks/\(blockId)",
+            method: .patch,
+            body: BlockUpdateRequest(state: state)
+        )
+    }
+
+    // MARK: - Accounts
+
+    static func deleteAccount(userId: UUID) -> APIEndpoint {
+        APIEndpoint(
+            path: "/accounts/\(userId)",
+            method: .delete
+        )
+    }
+
     // MARK: - Devices
 
     static func registerDevice(platform: DevicePlatform, token: String) -> APIEndpoint {

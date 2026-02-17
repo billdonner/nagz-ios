@@ -117,6 +117,12 @@ private struct FamilyTabContent: View {
                                 ConsentListView(apiClient: apiClient, familyId: family.familyId)
                             }
                         }
+
+                        Section("Guardian Dashboard") {
+                            NavigationLink("Reports") {
+                                ReportsView(apiClient: apiClient, familyId: family.familyId)
+                            }
+                        }
                     }
 
                     Section("Gamification") {
@@ -132,6 +138,23 @@ private struct FamilyTabContent: View {
                             NavigationLink("Incentive Rules") {
                                 IncentiveRulesView(apiClient: apiClient, familyId: family.familyId)
                             }
+                        }
+                    }
+
+                    Section("Safety & Account") {
+                        NavigationLink("Safety") {
+                            SafetyView(
+                                apiClient: apiClient,
+                                members: viewModel.members,
+                                currentUserId: currentUserId
+                            )
+                        }
+                        NavigationLink("Account") {
+                            AccountView(
+                                apiClient: apiClient,
+                                authManager: authManager,
+                                currentUserId: currentUserId
+                            )
                         }
                     }
 

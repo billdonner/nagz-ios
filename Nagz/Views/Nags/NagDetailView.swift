@@ -122,21 +122,28 @@ struct NagDetailView: View {
                         }
                     }
 
-                    // Escalation Recompute (guardian only)
-                    if isGuardian && nag.status == .open {
+                    // Guardian actions
+                    if isGuardian {
                         Section("Guardian Actions") {
-                            Button {
-                                Task { await viewModel.recomputeEscalation() }
-                            } label: {
-                                if viewModel.isRecomputing {
-                                    ProgressView()
-                                        .frame(maxWidth: .infinity)
-                                } else {
-                                    Label("Recompute Escalation", systemImage: "arrow.clockwise")
-                                        .frame(maxWidth: .infinity)
+                            if nag.status == .open {
+                                Button {
+                                    Task { await viewModel.recomputeEscalation() }
+                                } label: {
+                                    if viewModel.isRecomputing {
+                                        ProgressView()
+                                            .frame(maxWidth: .infinity)
+                                    } else {
+                                        Label("Recompute Escalation", systemImage: "arrow.clockwise")
+                                            .frame(maxWidth: .infinity)
+                                    }
                                 }
+                                .disabled(viewModel.isRecomputing)
                             }
-                            .disabled(viewModel.isRecomputing)
+                            NavigationLink {
+                                DeliveryHistoryView(apiClient: apiClient, nagId: nag.id)
+                            } label: {
+                                Label("Delivery History", systemImage: "paperplane")
+                            }
                         }
                     }
 
