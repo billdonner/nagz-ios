@@ -27,6 +27,7 @@
 		4440085F3A155A314DC293BE /* PushNotificationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17D33EACD9E91105C8BA2127 /* PushNotificationService.swift */; };
 		48F29924A9EAEE816CE948E5 /* NagDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83E67D051966AD3EDD9F8D7C /* NagDetailView.swift */; };
 		505CA8990F29CD58610ABF47 /* AuthenticatedTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E89A05814372C9BCE15E6EC /* AuthenticatedTabView.swift */; };
+		5623F365A067F7E33C395F7D /* PolicyDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6ED1D6F2ECDC7A749F865DCD /* PolicyDetailView.swift */; };
 		577DDC65B9F769BBF403122F /* KeychainAccess in Frameworks */ = {isa = PBXBuildFile; productRef = 545A46357975BAA1644730CE /* KeychainAccess */; };
 		58997B57F6EEF60B40681A54 /* GamificationViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9DBB9A681F612EC3473C6868 /* GamificationViewModel.swift */; };
 		648A714E50978D32602CF46C /* VersionModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCA86773FC15EB5B201B38D0 /* VersionModels.swift */; };
@@ -45,6 +46,7 @@
 		8C6174B2DB97D37F62276D73 /* CreateNagView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E84EB1DEEB1724609FA6FFC9 /* CreateNagView.swift */; };
 		8D8F30C0E7EAE400C16C0C77 /* AuthManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AC6950A07FD4A8909F73946 /* AuthManager.swift */; };
 		8FE044ED4C9F9F4B97EBED73 /* VersionChecker.swift in Sources */ = {isa = PBXBuildFile; fileRef = D917295C9B5550C0BE6F63EF /* VersionChecker.swift */; };
+		92B2DE215E9885838392AED3 /* PolicyListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBD44C1B308F9911F7BCBC0C /* PolicyListView.swift */; };
 		96E14843B3D9DAFC0F5F5012 /* PreferencesViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C4FEFE928E873F8975C711D /* PreferencesViewModel.swift */; };
 		987CCC9B527CF1206510F370 /* EditNagViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6518A68E624AD12C6521FA5 /* EditNagViewModel.swift */; };
 		9B56D91A72953824D2A02C83 /* GamificationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD3190FAD0A5DD8A6323C69C /* GamificationView.swift */; };
@@ -70,6 +72,7 @@
 		C8ED407409D4BBED50982A85 /* KeychainService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62B0E5FF945FF5C1DF5EA1D3 /* KeychainService.swift */; };
 		C8FE07CDAE40C2B50B1E6B9C /* DeliveryHistoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B16BEEBE6F3B1BEACF53FFAC /* DeliveryHistoryView.swift */; };
 		CCFE2834956D7B50CA7BBFD6 /* FamilyViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C48EF0BFA6111245B86B2971 /* FamilyViewModel.swift */; };
+		D64A4632685509BEB0018D5E /* PolicyViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A32FE9E4FB799832D5C3B0B5 /* PolicyViewModel.swift */; };
 		DA6060AE8EAE463303B6F915 /* NagzApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAF6A3CE8CF93F2302F54967 /* NagzApp.swift */; };
 		DD88847671E998BB509F2919 /* PolicyModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB2AF689B606E365EF7055E5 /* PolicyModels.swift */; };
 		E14CC869FBBD0CCCF71E2B65 /* IncentiveModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49E63852FE42057F07D13A9E /* IncentiveModels.swift */; };
@@ -126,6 +129,7 @@
 		62B0E5FF945FF5C1DF5EA1D3 /* KeychainService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeychainService.swift; sourceTree = "<group>"; };
 		6919F4ECE9F941CEA3558B8C /* ReportsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReportsViewModel.swift; sourceTree = "<group>"; };
 		6E621A4F0EDD94F399E2C9DA /* AppEnvironment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppEnvironment.swift; sourceTree = "<group>"; };
+		6ED1D6F2ECDC7A749F865DCD /* PolicyDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PolicyDetailView.swift; sourceTree = "<group>"; };
 		72F118F344FB4C3411FAAEC4 /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
 		799222C076E18C851FFF7C9E /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		7B70AA17D1E21D3916FD048C /* EnvironmentValues+API.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "EnvironmentValues+API.swift"; sourceTree = "<group>"; };
@@ -142,6 +146,7 @@
 		A03B64D4D5A805C21596C5F0 /* NagListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NagListView.swift; sourceTree = "<group>"; };
 		A14A7ACF3D604B6E110A26B4 /* SafetyModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SafetyModels.swift; sourceTree = "<group>"; };
 		A2167A24BA46966A1CC5F470 /* ConsentViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConsentViewModel.swift; sourceTree = "<group>"; };
+		A32FE9E4FB799832D5C3B0B5 /* PolicyViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PolicyViewModel.swift; sourceTree = "<group>"; };
 		A88D52E67BB456B1C310B4A3 /* Nagz.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = Nagz.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A8AEE80ECDC2335FED6F07DD /* ErrorModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorModels.swift; sourceTree = "<group>"; };
 		AA264D3B7744A48AB3904C2F /* ConsentModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConsentModels.swift; sourceTree = "<group>"; };
@@ -161,6 +166,7 @@
 		DAD16D6E59A98D9D44F48D03 /* MemberListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemberListViewModel.swift; sourceTree = "<group>"; };
 		E4A715516D53FF9CD1661B2E /* ReportsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReportsView.swift; sourceTree = "<group>"; };
 		E84EB1DEEB1724609FA6FFC9 /* CreateNagView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateNagView.swift; sourceTree = "<group>"; };
+		EBD44C1B308F9911F7BCBC0C /* PolicyListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PolicyListView.swift; sourceTree = "<group>"; };
 		F596ADE9A04C40C7E3174959 /* GamificationModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GamificationModels.swift; sourceTree = "<group>"; };
 		F73099FD428BA8EC44A85ECB /* APIEndpoint.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIEndpoint.swift; sourceTree = "<group>"; };
 		FB2AF689B606E365EF7055E5 /* PolicyModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PolicyModels.swift; sourceTree = "<group>"; };
@@ -253,6 +259,8 @@
 			isa = PBXGroup;
 			children = (
 				B16BEEBE6F3B1BEACF53FFAC /* DeliveryHistoryView.swift */,
+				6ED1D6F2ECDC7A749F865DCD /* PolicyDetailView.swift */,
+				EBD44C1B308F9911F7BCBC0C /* PolicyListView.swift */,
 				E4A715516D53FF9CD1661B2E /* ReportsView.swift */,
 			);
 			path = Guardian;
@@ -378,6 +386,7 @@
 				DAD16D6E59A98D9D44F48D03 /* MemberListViewModel.swift */,
 				0D8B860496CD6D4BE858F1F2 /* NagDetailViewModel.swift */,
 				3EC5EC449162BDDDA1AEA55E /* NagListViewModel.swift */,
+				A32FE9E4FB799832D5C3B0B5 /* PolicyViewModel.swift */,
 				3C4FEFE928E873F8975C711D /* PreferencesViewModel.swift */,
 				6919F4ECE9F941CEA3558B8C /* ReportsViewModel.swift */,
 				90C1EED5F97864A105AE2117 /* SafetyViewModel.swift */,
@@ -531,7 +540,10 @@
 				A9C26BD7772B632CECDF917E /* NagRowView.swift in Sources */,
 				DA6060AE8EAE463303B6F915 /* NagzApp.swift in Sources */,
 				7A6DD790F8FADCFDDB11E379 /* PaginatedResponse.swift in Sources */,
+				5623F365A067F7E33C395F7D /* PolicyDetailView.swift in Sources */,
+				92B2DE215E9885838392AED3 /* PolicyListView.swift in Sources */,
 				DD88847671E998BB509F2919 /* PolicyModels.swift in Sources */,
+				D64A4632685509BEB0018D5E /* PolicyViewModel.swift in Sources */,
 				8465FF82F8BB7D1B40E1D8DC /* PreferenceModels.swift in Sources */,
 				7D06F9B2EB4D57AB93B9628F /* PreferencesView.swift in Sources */,
 				96E14843B3D9DAFC0F5F5012 /* PreferencesViewModel.swift in Sources */,

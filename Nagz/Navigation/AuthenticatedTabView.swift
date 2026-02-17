@@ -122,6 +122,9 @@ private struct FamilyTabContent: View {
                             NavigationLink("Reports") {
                                 ReportsView(apiClient: apiClient, familyId: family.familyId)
                             }
+                            NavigationLink("Policies") {
+                                PolicyListView(apiClient: apiClient, familyId: family.familyId, members: viewModel.members)
+                            }
                         }
                     }
 

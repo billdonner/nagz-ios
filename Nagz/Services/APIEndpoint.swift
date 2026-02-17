@@ -338,6 +338,17 @@ struct APIEndpoint {
 
     // MARK: - Policies
 
+    static func listPolicies(familyId: UUID, limit: Int = Constants.Pagination.defaultLimit, offset: Int = 0) -> APIEndpoint {
+        APIEndpoint(
+            path: "/policies",
+            queryItems: [
+                URLQueryItem(name: "family_id", value: familyId.uuidString),
+                URLQueryItem(name: "limit", value: "\(limit)"),
+                URLQueryItem(name: "offset", value: "\(offset)")
+            ]
+        )
+    }
+
     static func getPolicy(id: UUID) -> APIEndpoint {
         APIEndpoint(path: "/policies/\(id)")
     }
