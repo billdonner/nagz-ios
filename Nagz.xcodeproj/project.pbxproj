@@ -18,6 +18,7 @@
 		286523391EC02803D1DD724E /* EditNagView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 185EF763DF413C6E39A88743 /* EditNagView.swift */; };
 		2A63ED0A586E3570ED2CDA8D /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72F118F344FB4C3411FAAEC4 /* LoginView.swift */; };
 		2C5C0179A7849D66DDBE2A57 /* MemberListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAD16D6E59A98D9D44F48D03 /* MemberListViewModel.swift */; };
+		30FE0CA1C7AE1A7C39EBC6A1 /* ExcuseModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 159D7C43D155D86EE40E00A7 /* ExcuseModels.swift */; };
 		350FB4B166D078DD5BC0EEC9 /* CreateNagViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D5DE9C0FB044817490BD132 /* CreateNagViewModel.swift */; };
 		396E4226730469AEA60B71D9 /* NagListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3EC5EC449162BDDDA1AEA55E /* NagListViewModel.swift */; };
 		41624A0FA5DBA542A0351B6C /* EscalationModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04D5AC512A990EFC2E729F29 /* EscalationModels.swift */; };
@@ -83,6 +84,7 @@
 		0C807C8B04BC360E1936FACD /* AuthModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthModels.swift; sourceTree = "<group>"; };
 		0D8B860496CD6D4BE858F1F2 /* NagDetailViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NagDetailViewModel.swift; sourceTree = "<group>"; };
 		117B176A8976E69A3F640E02 /* PreferencesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreferencesView.swift; sourceTree = "<group>"; };
+		159D7C43D155D86EE40E00A7 /* ExcuseModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExcuseModels.swift; sourceTree = "<group>"; };
 		1618B20BD4EBDD00C94901B5 /* IncentiveRulesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IncentiveRulesView.swift; sourceTree = "<group>"; };
 		17C15105D93BCA259662041F /* Nagz.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Nagz.entitlements; sourceTree = "<group>"; };
 		17D33EACD9E91105C8BA2127 /* PushNotificationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PushNotificationService.swift; sourceTree = "<group>"; };
@@ -259,6 +261,7 @@
 				5243F4CFE024BC04B61879D1 /* Enums.swift */,
 				A8AEE80ECDC2335FED6F07DD /* ErrorModels.swift */,
 				04D5AC512A990EFC2E729F29 /* EscalationModels.swift */,
+				159D7C43D155D86EE40E00A7 /* ExcuseModels.swift */,
 				3103D76E83889066B4CDC006 /* FamilyModels.swift */,
 				F596ADE9A04C40C7E3174959 /* GamificationModels.swift */,
 				49E63852FE42057F07D13A9E /* IncentiveModels.swift */,
@@ -443,6 +446,7 @@
 				C6AD093090BB94EE3660E7B1 /* ErrorModels.swift in Sources */,
 				022785549CA30F29EE5D1189 /* EscalationBadge.swift in Sources */,
 				41624A0FA5DBA542A0351B6C /* EscalationModels.swift in Sources */,
+				30FE0CA1C7AE1A7C39EBC6A1 /* ExcuseModels.swift in Sources */,
 				09F05C30C15A7DD1691B8E69 /* FamilyModels.swift in Sources */,
 				CCFE2834956D7B50CA7BBFD6 /* FamilyViewModel.swift in Sources */,
 				1658C0AC112FE37CF766DA78 /* GamificationModels.swift in Sources */,

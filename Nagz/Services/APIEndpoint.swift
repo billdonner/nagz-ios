@@ -131,10 +131,34 @@ struct APIEndpoint {
         )
     }
 
+    // MARK: - Excuses
+
+    static func listExcuses(nagId: UUID, limit: Int = Constants.Pagination.defaultLimit, offset: Int = 0) -> APIEndpoint {
+        APIEndpoint(
+            path: "/nags/\(nagId)/excuses",
+            queryItems: [
+                URLQueryItem(name: "limit", value: "\(limit)"),
+                URLQueryItem(name: "offset", value: "\(offset)")
+            ]
+        )
+    }
+
+    static func submitExcuse(nagId: UUID, text: String, category: String? = nil) -> APIEndpoint {
+        APIEndpoint(
+            path: "/nags/\(nagId)/excuses",
+            method: .post,
+            body: ExcuseCreate(text: text, category: category)
+        )
+    }
+
     // MARK: - Escalation
 
     static func getEscalation(nagId: UUID) -> APIEndpoint {
         APIEndpoint(path: "/nags/\(nagId)/escalation")
+    }
+
+    static func recomputeEscalation(nagId: UUID) -> APIEndpoint {
+        APIEndpoint(path: "/nags/\(nagId)/escalation/recompute", method: .post)
     }
 
     // MARK: - Family Members

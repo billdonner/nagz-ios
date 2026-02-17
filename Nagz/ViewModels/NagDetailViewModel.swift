@@ -6,8 +6,10 @@ import Observation
 final class NagDetailViewModel {
     var nag: NagResponse?
     var escalation: EscalationResponse?
+    var excuses: [ExcuseResponse] = []
     var isLoading = false
     var isUpdating = false
+    var isRecomputing = false
     var errorMessage: String?
 
     private let apiClient: APIClient
@@ -39,6 +41,14 @@ final class NagDetailViewModel {
             // Ignore escalation errors
         }
 
+        // Load excuses
+        do {
+            let response: PaginatedResponse<ExcuseResponse> = try await apiClient.request(.listExcuses(nagId: nagId))
+            excuses = response.items
+        } catch {
+            // Excuses might not exist
+        }
+
         isLoading = false
     }
 
@@ -56,5 +66,41 @@ final class NagDetailViewModel {
             errorMessage = error.localizedDescription
         }
         isUpdating = false
+    }
+
+    func submitExcuse(text: String) async {
+        isUpdating = true
+        errorMessage = nil
+        do {
+            let _: ExcuseResponse = try await apiClient.request(
+                .submitExcuse(nagId: nagId, text: text)
+            )
+            // Reload excuses
+            do {
+                let response: PaginatedResponse<ExcuseResponse> = try await apiClient.request(.listExcuses(nagId: nagId))
+                excuses = response.items
+            } catch {}
+        } catch let error as APIError {
+            errorMessage = error.errorDescription
+        } catch {
+            errorMessage = error.localizedDescription
+        }
+        isUpdating = false
+    }
+
+    func recomputeEscalation() async {
+        isRecomputing = true
+        errorMessage = nil
+        do {
+            let updated: EscalationResponse = try await apiClient.request(
+                .recomputeEscalation(nagId: nagId)
+            )
+            escalation = updated
+        } catch let error as APIError {
+            errorMessage = error.errorDescription
+        } catch {
+            errorMessage = error.localizedDescription
+        }
+        isRecomputing = false
     }
 }
