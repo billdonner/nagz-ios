@@ -186,6 +186,160 @@ final class ModelDecodingTests: XCTestCase {
         XCTAssertNil(device.lastUsedAt)
     }
 
+    func testNagResponseWithRecurrenceDecoding() throws {
+        let json = """
+        {
+            "id": "550e8400-e29b-41d4-a716-446655440001",
+            "family_id": "550e8400-e29b-41d4-a716-446655440002",
+            "creator_id": "550e8400-e29b-41d4-a716-446655440003",
+            "recipient_id": "550e8400-e29b-41d4-a716-446655440004",
+            "due_at": "2026-02-17T10:00:00+00:00",
+            "category": "meds",
+            "done_definition": "binary_check",
+            "description": "Take vitamins",
+            "strategy_template": "friendly_reminder",
+            "recurrence": "daily",
+            "status": "open",
+            "created_at": "2026-02-16T14:12:00+00:00"
+        }
+        """.data(using: .utf8)!
+
+        let nag = try decoder.decode(NagResponse.self, from: json)
+        XCTAssertEqual(nag.recurrence, .daily)
+        XCTAssertEqual(nag.category, .meds)
+        XCTAssertEqual(nag.doneDefinition, .binaryCheck)
+    }
+
+    func testNagResponseWithoutRecurrenceDecoding() throws {
+        let json = """
+        {
+            "id": "550e8400-e29b-41d4-a716-446655440001",
+            "family_id": "550e8400-e29b-41d4-a716-446655440002",
+            "creator_id": "550e8400-e29b-41d4-a716-446655440003",
+            "recipient_id": "550e8400-e29b-41d4-a716-446655440004",
+            "due_at": "2026-02-17T10:00:00+00:00",
+            "category": "chores",
+            "done_definition": "ack_only",
+            "strategy_template": "friendly_reminder",
+            "status": "completed",
+            "created_at": "2026-02-16T14:12:00+00:00"
+        }
+        """.data(using: .utf8)!
+
+        let nag = try decoder.decode(NagResponse.self, from: json)
+        XCTAssertNil(nag.recurrence)
+        XCTAssertEqual(nag.status, .completed)
+    }
+
+    func testVersionResponseDecoding() throws {
+        let json = """
+        {
+            "server_version": "0.2.0",
+            "api_version": "1.0.0",
+            "min_client_version": "1.0.0"
+        }
+        """.data(using: .utf8)!
+
+        let version = try decoder.decode(VersionResponse.self, from: json)
+        XCTAssertEqual(version.serverVersion, "0.2.0")
+        XCTAssertEqual(version.apiVersion, "1.0.0")
+        XCTAssertEqual(version.minClientVersion, "1.0.0")
+    }
+
+    func testPolicyResponseDecoding() throws {
+        let json = """
+        {
+            "id": "550e8400-e29b-41d4-a716-446655440060",
+            "family_id": "550e8400-e29b-41d4-a716-446655440061",
+            "owners": ["550e8400-e29b-41d4-a716-446655440062"],
+            "strategy_template": "friendly_reminder",
+            "constraints": {},
+            "status": "active"
+        }
+        """.data(using: .utf8)!
+
+        // PolicyResponse has custom CodingKeys — use plain decoder (no convertFromSnakeCase)
+        let plainDecoder = JSONDecoder()
+        let policy = try plainDecoder.decode(PolicyResponse.self, from: json)
+        XCTAssertEqual(policy.owners.count, 1)
+        XCTAssertEqual(policy.strategyTemplate, .friendlyReminder)
+        XCTAssertEqual(policy.status, "active")
+    }
+
+    func testPolicyResponseWithStringOwnersDecoding() throws {
+        let json = """
+        {
+            "id": "550e8400-e29b-41d4-a716-446655440060",
+            "family_id": "550e8400-e29b-41d4-a716-446655440061",
+            "owners": ["550e8400-e29b-41d4-a716-446655440062", "550e8400-e29b-41d4-a716-446655440063"],
+            "strategy_template": "friendly_reminder",
+            "constraints": {"max_nags": 5},
+            "status": "active"
+        }
+        """.data(using: .utf8)!
+
+        let plainDecoder = JSONDecoder()
+        let policy = try plainDecoder.decode(PolicyResponse.self, from: json)
+        XCTAssertEqual(policy.owners.count, 2)
+    }
+
+    func testApprovalResponseDecoding() throws {
+        let json = """
+        {
+            "id": "550e8400-e29b-41d4-a716-446655440070",
+            "policy_id": "550e8400-e29b-41d4-a716-446655440071",
+            "approver_id": "550e8400-e29b-41d4-a716-446655440072",
+            "approved_at": "2026-02-16T14:12:00+00:00",
+            "comment": "Looks good"
+        }
+        """.data(using: .utf8)!
+
+        let approval = try decoder.decode(ApprovalResponse.self, from: json)
+        XCTAssertEqual(approval.comment, "Looks good")
+    }
+
+    func testRecurrenceEnum() {
+        XCTAssertEqual(Recurrence.daily.rawValue, "daily")
+        XCTAssertEqual(Recurrence.weekly.rawValue, "weekly")
+        XCTAssertEqual(Recurrence.monthly.rawValue, "monthly")
+        XCTAssertEqual(Recurrence.daily.displayName, "Daily")
+    }
+
+    func testFamilyRolePermissions() {
+        XCTAssertTrue(FamilyRole.guardian.canCreateNags)
+        XCTAssertTrue(FamilyRole.participant.canCreateNags)
+        XCTAssertFalse(FamilyRole.child.canCreateNags)
+
+        XCTAssertTrue(FamilyRole.guardian.canViewAllNags)
+        XCTAssertFalse(FamilyRole.participant.canViewAllNags)
+        XCTAssertFalse(FamilyRole.child.canViewAllNags)
+
+        XCTAssertTrue(FamilyRole.guardian.isAdmin)
+        XCTAssertFalse(FamilyRole.participant.isAdmin)
+        XCTAssertFalse(FamilyRole.child.isAdmin)
+    }
+
+    @MainActor func testVersionCheckerEvaluateCompatible() {
+        let status = VersionChecker.evaluate(serverAPI: "1.0.0", minClient: "1.0.0")
+        if case .compatible = status {} else {
+            XCTFail("Expected compatible, got \(status)")
+        }
+    }
+
+    @MainActor func testVersionCheckerEvaluateUpdateRequired() {
+        let status = VersionChecker.evaluate(serverAPI: "2.0.0", minClient: "1.5.0")
+        if case .updateRequired = status {} else {
+            XCTFail("Expected updateRequired, got \(status)")
+        }
+    }
+
+    @MainActor func testVersionCheckerEvaluateUpdateRecommended() {
+        let status = VersionChecker.evaluate(serverAPI: "2.0.0", minClient: "1.0.0")
+        if case .updateRecommended = status {} else {
+            XCTFail("Expected updateRecommended, got \(status)")
+        }
+    }
+
     func testEnumRawValues() {
         XCTAssertEqual(NagCategory.chores.rawValue, "chores")
         XCTAssertEqual(DoneDefinition.ackOnly.rawValue, "ack_only")
