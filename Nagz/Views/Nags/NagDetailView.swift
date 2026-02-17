@@ -58,6 +58,11 @@ struct NagDetailView: View {
                         if let desc = nag.description {
                             Text(desc)
                         }
+                        if let recurrence = nag.recurrence {
+                            LabeledContent("Repeats") {
+                                Text(recurrence.displayName)
+                            }
+                        }
                     }
 
                     // Mark Complete section (recipient only, open nags)

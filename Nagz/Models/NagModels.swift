@@ -10,6 +10,7 @@ struct NagResponse: Decodable, Identifiable, Sendable {
     let doneDefinition: DoneDefinition
     let description: String?
     let strategyTemplate: StrategyTemplate
+    let recurrence: Recurrence?
     let status: NagStatus
     let createdAt: Date
 }
@@ -22,6 +23,7 @@ struct NagCreate: Encodable {
     let doneDefinition: DoneDefinition
     let description: String?
     let strategyTemplate: StrategyTemplate
+    let recurrence: Recurrence?
 
     init(
         familyId: UUID,
@@ -30,7 +32,8 @@ struct NagCreate: Encodable {
         category: NagCategory,
         doneDefinition: DoneDefinition,
         description: String? = nil,
-        strategyTemplate: StrategyTemplate = .friendlyReminder
+        strategyTemplate: StrategyTemplate = .friendlyReminder,
+        recurrence: Recurrence? = nil
     ) {
         self.familyId = familyId
         self.recipientId = recipientId
@@ -39,6 +42,7 @@ struct NagCreate: Encodable {
         self.doneDefinition = doneDefinition
         self.description = description
         self.strategyTemplate = strategyTemplate
+        self.recurrence = recurrence
     }
 }
 

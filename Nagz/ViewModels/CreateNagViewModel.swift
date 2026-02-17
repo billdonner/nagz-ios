@@ -9,6 +9,7 @@ final class CreateNagViewModel {
     var category: NagCategory = .chores
     var doneDefinition: DoneDefinition = .ackOnly
     var description = ""
+    var recurrence: Recurrence?
     var errorMessage: String?
     var isLoading = false
     var didCreate = false
@@ -36,7 +37,8 @@ final class CreateNagViewModel {
                 dueAt: dueAt,
                 category: category,
                 doneDefinition: doneDefinition,
-                description: description.isEmpty ? nil : description
+                description: description.isEmpty ? nil : description,
+                recurrence: recurrence
             )
             let _: NagResponse = try await apiClient.request(.createNag(nag))
             didCreate = true

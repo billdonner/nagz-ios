@@ -105,6 +105,16 @@ enum StrategyTemplate: String, Codable {
     case friendlyReminder = "friendly_reminder"
 }
 
+enum Recurrence: String, Codable, CaseIterable {
+    case daily
+    case weekly
+    case monthly
+
+    var displayName: String {
+        rawValue.capitalized
+    }
+}
+
 enum DevicePlatform: String, Codable {
     case ios
     case ipados

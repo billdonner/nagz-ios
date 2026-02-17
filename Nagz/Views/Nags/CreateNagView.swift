@@ -48,6 +48,15 @@ struct CreateNagView: View {
                     }
                 }
 
+                Section("Repeat") {
+                    Picker("Recurrence", selection: $viewModel.recurrence) {
+                        Text("None").tag(nil as Recurrence?)
+                        ForEach(Recurrence.allCases, id: \.self) { r in
+                            Text(r.displayName).tag(r as Recurrence?)
+                        }
+                    }
+                }
+
                 Section("Description (Optional)") {
                     TextField("What needs to be done?", text: $viewModel.description, axis: .vertical)
                         .lineLimit(3...6)
