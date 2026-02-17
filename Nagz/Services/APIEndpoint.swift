@@ -28,6 +28,12 @@ struct APIEndpoint {
         case delete = "DELETE"
     }
 
+    /// Key for in-memory caching, combining path and query parameters.
+    var cacheKey: String {
+        let query = queryItems.map { "\($0.name)=\($0.value ?? "")" }.sorted().joined(separator: "&")
+        return query.isEmpty ? path : "\(path)?\(query)"
+    }
+
     // MARK: - Version
 
     static func getVersion() -> APIEndpoint {

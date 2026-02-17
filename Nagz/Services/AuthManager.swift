@@ -78,6 +78,7 @@ final class AuthManager {
     func logout() async {
         try? await apiClient.requestVoid(.logout())
         try? await keychainService.clearTokens()
+        await apiClient.clearCache()
         state = .unauthenticated
     }
 }

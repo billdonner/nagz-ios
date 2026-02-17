@@ -27,8 +27,8 @@ final class PreferencesViewModel {
         isLoading = true
         errorMessage = nil
         do {
-            let response: PreferenceResponse = try await apiClient.request(
-                .getPreferences(familyId: familyId)
+            let response: PreferenceResponse = try await apiClient.cachedRequest(
+                .getPreferences(familyId: familyId), ttl: 600
             )
             applyPrefs(response.prefsJson)
         } catch {
@@ -54,6 +54,7 @@ final class PreferencesViewModel {
             let _: PreferenceResponse = try await apiClient.request(
                 .updatePreferences(familyId: familyId, prefs: prefs)
             )
+            await apiClient.invalidateCache(prefix: "/preferences")
             didSave = true
         } catch let error as APIError {
             errorMessage = error.errorDescription

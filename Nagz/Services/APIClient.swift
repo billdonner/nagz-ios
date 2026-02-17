@@ -7,6 +7,7 @@ actor APIClient {
     private let decoder: JSONDecoder
     private let encoder: JSONEncoder
     private var onUnauthorized: (@Sendable () -> Void)?
+    private var cache: [String: CacheEntry] = [:]
 
     init(baseURL: URL = AppEnvironment.current.baseURL, keychainService: KeychainService) {
         self.baseURL = baseURL
@@ -14,6 +15,7 @@ actor APIClient {
 
         let config = URLSessionConfiguration.default
         config.timeoutIntervalForRequest = 30
+        config.urlCache = URLCache(memoryCapacity: 10_000_000, diskCapacity: 50_000_000)
         self.session = URLSession(configuration: config)
 
         self.decoder = JSONDecoder()
@@ -49,8 +51,30 @@ actor APIClient {
         try await performRequest(endpoint, isRetry: false)
     }
 
+    /// Request with in-memory caching. Returns cached data if within TTL.
+    @discardableResult
+    func cachedRequest<T: Decodable & Sendable>(_ endpoint: APIEndpoint, ttl: TimeInterval = 300) async throws -> T {
+        let key = endpoint.cacheKey
+        if let entry = cache[key], !entry.isExpired, let data = entry.data as? T {
+            return data
+        }
+        let result: T = try await performRequest(endpoint, isRetry: false)
+        cache[key] = CacheEntry(data: result, ttl: ttl)
+        return result
+    }
+
     func requestVoid(_ endpoint: APIEndpoint) async throws {
         let _: EmptyResponse = try await performRequest(endpoint, isRetry: false)
+    }
+
+    /// Invalidate cached data matching a prefix (e.g. "families/" clears all family caches).
+    func invalidateCache(prefix: String) {
+        cache = cache.filter { !$0.key.hasPrefix(prefix) }
+    }
+
+    /// Clear all cached data.
+    func clearCache() {
+        cache.removeAll()
     }
 
     // MARK: - Private
@@ -171,6 +195,24 @@ actor APIClient {
             }
         }
         return .unknown(statusCode, "Unknown error")
+    }
+}
+
+// MARK: - Cache
+
+private struct CacheEntry {
+    let data: Any
+    let timestamp: Date
+    let ttl: TimeInterval
+
+    init(data: Any, ttl: TimeInterval) {
+        self.data = data
+        self.timestamp = Date()
+        self.ttl = ttl
+    }
+
+    var isExpired: Bool {
+        Date().timeIntervalSince(timestamp) > ttl
     }
 }
 

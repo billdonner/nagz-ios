@@ -29,11 +29,11 @@ final class FamilyViewModel {
         isLoading = true
         errorMessage = nil
         do {
-            let loadedFamily: FamilyResponse = try await apiClient.request(.getFamily(id: id))
+            let loadedFamily: FamilyResponse = try await apiClient.cachedRequest(.getFamily(id: id), ttl: 300)
             family = loadedFamily
 
-            let membersResponse: PaginatedResponse<MemberDetail> = try await apiClient.request(
-                .listMembers(familyId: id)
+            let membersResponse: PaginatedResponse<MemberDetail> = try await apiClient.cachedRequest(
+                .listMembers(familyId: id), ttl: 300
             )
             members = membersResponse.items
         } catch let error as APIError {
@@ -51,6 +51,7 @@ final class FamilyViewModel {
         errorMessage = nil
         do {
             let created: FamilyResponse = try await apiClient.request(.createFamily(name: name))
+            await apiClient.invalidateCache(prefix: "/families")
             family = created
             showCreateSheet = false
             let membersResponse: PaginatedResponse<MemberDetail> = try await apiClient.request(
@@ -75,6 +76,7 @@ final class FamilyViewModel {
         errorMessage = nil
         do {
             let member: MemberResponse = try await apiClient.request(.joinFamily(inviteCode: code))
+            await apiClient.invalidateCache(prefix: "/families")
             showJoinSheet = false
             await loadFamily(id: member.familyId)
         } catch let error as APIError {

@@ -41,6 +41,7 @@ final class CreateNagViewModel {
                 recurrence: recurrence
             )
             let _: NagResponse = try await apiClient.request(.createNag(nag))
+            await apiClient.invalidateCache(prefix: "/nags")
             didCreate = true
         } catch let error as APIError {
             errorMessage = error.errorDescription
