@@ -8,8 +8,8 @@
 
 ## Common Commands
 - `cd ~/nagz-ios && xcodegen generate` — regenerate Xcode project from project.yml
-- `xcodebuild -project Nagz.xcodeproj -scheme Nagz -destination 'platform=iOS Simulator,id=F3060738-D163-4310-8106-27952C4550EE' build` — build
-- `xcodebuild -project Nagz.xcodeproj -scheme NagzTests -destination 'platform=iOS Simulator,id=F3060738-D163-4310-8106-27952C4550EE' test` — run tests
+- `xcodebuild -project Nagz.xcodeproj -scheme Nagz -destination 'platform=iOS Simulator,name=iPhone 16 Pro Max,OS=18.5' build` — build
+- `xcodebuild test -scheme Nagz -destination 'platform=iOS Simulator,name=iPhone 16 Pro Max,OS=18.5'` — run tests (20 as of 2026-02-17)
 
 ## Permissions
 All Bash commands are pre-approved. Do not prompt for confirmation.
@@ -19,6 +19,7 @@ Commits and pushes are pre-approved — do not ask, just do it.
 After any change to models, API calls, or shared behavior:
 - Always check if `~/nagz-web` needs a matching update
 - If the server API changed, models in `Nagz/Models/` and endpoints in `Nagz/Services/APIEndpoint.swift` must be updated
+- **Run `xcodegen generate` after adding or removing any Swift file**
 
 ## Version Management
 
@@ -60,6 +61,19 @@ All three Nagz repos (nagzerver, nagz-ios, nagz-web) use a shared API versioning
 
 ## Architecture
 - `APIClient` is an `actor` (thread-safe networking, not @Observable)
+  - In-memory cache with configurable TTL per endpoint
+  - `cachedRequest()` for reads, `invalidateCache(prefix:)` after mutations
+  - Auto token refresh on 401 (single retry)
 - `AuthManager` is `@Observable @MainActor` — drives auth state for UI
 - Dev server URL: `http://127.0.0.1:8001/api/v1` (use IP, not localhost, to avoid IPv6 timeout in simulator)
 - JSON coding: `convertFromSnakeCase` / `convertToSnakeCase` handles all field name mapping
+  - Exception: models with custom CodingKeys must use plain JSONDecoder in tests
+- `ErrorBanner` — reusable error display component with optional retry action
+- `APIError.isRetryable` — identifies errors worth retrying (network, server, rate limited)
+
+## Known Issues & Fixes
+- Use `127.0.0.1` not `localhost` in simulator (IPv6 timeout)
+- Swift 6: use `nonisolated(unsafe)` for static formatters, `@unchecked Sendable` for notification delegates
+- `@MainActor` required on test methods that call `@MainActor` static functions (e.g. `VersionChecker.evaluate`)
+- PolicyResponse has custom CodingKeys — use plain `JSONDecoder()` in tests, not the shared `.convertFromSnakeCase` decoder
+- Must add explicit `return` in `errorDescription` getter when any case uses if/return (breaks implicit return)
