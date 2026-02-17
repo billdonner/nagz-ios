@@ -19,8 +19,16 @@ struct AuthenticatedTabView: View {
         authManager.currentUser?.id ?? UUID()
     }
 
+    private var myRole: FamilyRole? {
+        familyViewModel.members.first(where: { $0.userId == currentUserId })?.role
+    }
+
     private var isGuardian: Bool {
-        familyViewModel.members.first(where: { $0.userId == currentUserId })?.role == .guardian
+        myRole == .guardian
+    }
+
+    private var canCreateNags: Bool {
+        myRole?.canCreateNags ?? false
     }
 
     var body: some View {
@@ -42,7 +50,7 @@ struct AuthenticatedTabView: View {
     private var nagsTab: some View {
         NavigationStack {
             if let family = familyViewModel.family {
-                NagListView(apiClient: apiClient, familyId: family.familyId, isGuardian: isGuardian)
+                NagListView(apiClient: apiClient, familyId: family.familyId, canCreateNags: canCreateNags)
                     .navigationDestination(for: UUID.self) { nagId in
                         NagDetailView(apiClient: apiClient, nagId: nagId, currentUserId: currentUserId, isGuardian: isGuardian)
                     }
@@ -65,7 +73,7 @@ struct AuthenticatedTabView: View {
                 viewModel: familyViewModel,
                 apiClient: apiClient,
                 authManager: authManager,
-                isGuardian: isGuardian,
+                isAdmin: isGuardian,
                 currentUserId: currentUserId
             )
         }
@@ -79,7 +87,7 @@ private struct FamilyTabContent: View {
     @Bindable var viewModel: FamilyViewModel
     let apiClient: APIClient
     let authManager: AuthManager
-    let isGuardian: Bool
+    let isAdmin: Bool
     let currentUserId: UUID
 
     var body: some View {
@@ -93,19 +101,21 @@ private struct FamilyTabContent: View {
                         NavigationLink("Members") {
                             MemberListView(apiClient: apiClient, familyId: family.familyId)
                         }
-                        if isGuardian {
+                        if isAdmin {
                             NavigationLink("Manage Members") {
                                 ManageMembersView(apiClient: apiClient, familyId: family.familyId)
                             }
                         }
                     }
 
-                    Section("Settings") {
-                        NavigationLink("Preferences") {
-                            PreferencesView(apiClient: apiClient, familyId: family.familyId)
-                        }
-                        NavigationLink("Consents") {
-                            ConsentListView(apiClient: apiClient, familyId: family.familyId)
+                    if isAdmin {
+                        Section("Settings") {
+                            NavigationLink("Preferences") {
+                                PreferencesView(apiClient: apiClient, familyId: family.familyId)
+                            }
+                            NavigationLink("Consents") {
+                                ConsentListView(apiClient: apiClient, familyId: family.familyId)
+                            }
                         }
                     }
 
@@ -118,7 +128,7 @@ private struct FamilyTabContent: View {
                                 members: viewModel.members
                             )
                         }
-                        if isGuardian {
+                        if isAdmin {
                             NavigationLink("Incentive Rules") {
                                 IncentiveRulesView(apiClient: apiClient, familyId: family.familyId)
                             }

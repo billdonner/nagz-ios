@@ -2,15 +2,15 @@ import SwiftUI
 
 struct NagListView: View {
     @State var viewModel: NagListViewModel
-    let isGuardian: Bool
+    let canCreateNags: Bool
     let familyId: UUID
     @State private var showCreateNag = false
 
-    init(apiClient: APIClient, familyId: UUID, isGuardian: Bool) {
+    init(apiClient: APIClient, familyId: UUID, canCreateNags: Bool) {
         let vm = NagListViewModel(apiClient: apiClient)
         _viewModel = State(initialValue: vm)
         self.familyId = familyId
-        self.isGuardian = isGuardian
+        self.canCreateNags = canCreateNags
     }
 
     var body: some View {
@@ -64,7 +64,7 @@ struct NagListView: View {
         }
         .navigationTitle("Nags")
         .toolbar {
-            if isGuardian {
+            if canCreateNags {
                 ToolbarItem(placement: .primaryAction) {
                     Button {
                         showCreateNag = true

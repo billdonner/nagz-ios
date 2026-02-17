@@ -2,7 +2,23 @@ import Foundation
 
 enum FamilyRole: String, Codable, CaseIterable {
     case guardian
+    case participant
     case child
+
+    /// Can create nags for others
+    var canCreateNags: Bool {
+        self != .child
+    }
+
+    /// Can view all family nags (not just own)
+    var canViewAllNags: Bool {
+        self == .guardian
+    }
+
+    /// Has admin powers (manage members, preferences, consents, incentives)
+    var isAdmin: Bool {
+        self == .guardian
+    }
 }
 
 enum MembershipStatus: String, Codable {

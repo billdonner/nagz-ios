@@ -19,7 +19,7 @@ struct ManageMembersView: View {
                             .foregroundStyle(.secondary)
                     }
                     Spacer()
-                    if member.role == .child {
+                    if member.role != .guardian {
                         Button(role: .destructive) {
                             viewModel.memberToRemove = member
                             viewModel.showRemoveConfirmation = true
@@ -74,6 +74,7 @@ private struct CreateMemberSheet: View {
                     TextField("Display Name", text: $viewModel.newMemberName)
                     Picker("Role", selection: $viewModel.newMemberRole) {
                         Text("Child").tag(FamilyRole.child)
+                        Text("Participant").tag(FamilyRole.participant)
                         Text("Guardian").tag(FamilyRole.guardian)
                     }
                 }

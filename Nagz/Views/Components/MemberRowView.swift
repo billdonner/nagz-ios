@@ -5,9 +5,9 @@ struct MemberRowView: View {
 
     var body: some View {
         HStack(spacing: 12) {
-            Image(systemName: member.role == .guardian ? "person.badge.shield.checkmark" : "person.fill")
+            Image(systemName: iconName(for: member.role))
                 .font(.title3)
-                .foregroundStyle(member.role == .guardian ? .blue : .green)
+                .foregroundStyle(iconColor(for: member.role))
                 .frame(width: 32)
 
             VStack(alignment: .leading, spacing: 2) {
@@ -28,5 +28,21 @@ struct MemberRowView: View {
             }
         }
         .padding(.vertical, 2)
+    }
+
+    private func iconName(for role: FamilyRole) -> String {
+        switch role {
+        case .guardian: "person.badge.shield.checkmark"
+        case .participant: "person.badge.clock"
+        case .child: "person.fill"
+        }
+    }
+
+    private func iconColor(for role: FamilyRole) -> Color {
+        switch role {
+        case .guardian: .blue
+        case .participant: .orange
+        case .child: .green
+        }
     }
 }
