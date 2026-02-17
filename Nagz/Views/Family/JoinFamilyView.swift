@@ -7,12 +7,10 @@ struct JoinFamilyView: View {
     var body: some View {
         NavigationStack {
             Form {
-                Section("Family Details") {
-                    TextField("Family ID", text: $viewModel.joinFamilyId)
+                Section("Invite Code") {
+                    TextField("Paste invite code from guardian", text: $viewModel.joinInviteCode)
                         .textInputAutocapitalization(.never)
-
-                    TextField("Invite Code", text: $viewModel.joinInviteCode)
-                        .textInputAutocapitalization(.never)
+                        .autocorrectionDisabled()
                 }
 
                 if let error = viewModel.errorMessage {
@@ -35,7 +33,7 @@ struct JoinFamilyView: View {
                                 .frame(maxWidth: .infinity)
                         }
                     }
-                    .disabled(viewModel.joinFamilyId.isEmpty || viewModel.joinInviteCode.isEmpty || viewModel.isJoining)
+                    .disabled(viewModel.joinInviteCode.trimmingCharacters(in: .whitespaces).isEmpty || viewModel.isJoining)
                 }
             }
             .navigationTitle("Join Family")

@@ -15,7 +15,7 @@ enum AppEnvironment {
     var baseURL: URL {
         switch self {
         case .development:
-            URL(string: "http://localhost:8001/api/v1")!
+            URL(string: "http://127.0.0.1:8001/api/v1")!
         case .production:
             // TODO: Replace with production URL
             URL(string: "https://api.nagz.app/api/v1")!

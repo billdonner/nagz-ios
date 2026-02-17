@@ -16,7 +16,6 @@ final class FamilyViewModel {
     var isCreating = false
 
     // Join family fields
-    var joinFamilyId = ""
     var joinInviteCode = ""
     var isJoining = false
 
@@ -24,10 +23,6 @@ final class FamilyViewModel {
 
     init(apiClient: APIClient) {
         self.apiClient = apiClient
-    }
-
-    var currentUserRole: FamilyRole? {
-        nil // Determined by matching against members in the view layer
     }
 
     func loadFamily(id: UUID) async {
@@ -58,7 +53,6 @@ final class FamilyViewModel {
             let created: FamilyResponse = try await apiClient.request(.createFamily(name: name))
             family = created
             showCreateSheet = false
-            // Reload members
             let membersResponse: PaginatedResponse<MemberDetail> = try await apiClient.request(
                 .listMembers(familyId: created.familyId)
             )
@@ -72,10 +66,6 @@ final class FamilyViewModel {
     }
 
     func joinFamily() async {
-        guard let familyId = UUID(uuidString: joinFamilyId.trimmingCharacters(in: .whitespaces)) else {
-            errorMessage = "Invalid family ID"
-            return
-        }
         let code = joinInviteCode.trimmingCharacters(in: .whitespaces)
         guard !code.isEmpty else {
             errorMessage = "Invite code is required"
@@ -84,9 +74,9 @@ final class FamilyViewModel {
         isJoining = true
         errorMessage = nil
         do {
-            let _: MemberResponse = try await apiClient.request(.joinFamily(familyId: familyId, inviteCode: code))
+            let member: MemberResponse = try await apiClient.request(.joinFamily(inviteCode: code))
             showJoinSheet = false
-            await loadFamily(id: familyId)
+            await loadFamily(id: member.familyId)
         } catch let error as APIError {
             errorMessage = error.errorDescription
         } catch {

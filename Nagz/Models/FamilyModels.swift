@@ -3,6 +3,7 @@ import Foundation
 struct FamilyResponse: Decodable, Identifiable, Sendable {
     let familyId: UUID
     let name: String
+    let inviteCode: String
     let createdAt: Date
 
     var id: UUID { familyId }

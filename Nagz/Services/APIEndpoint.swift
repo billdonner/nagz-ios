@@ -75,9 +75,9 @@ struct APIEndpoint {
         APIEndpoint(path: "/families/\(id)")
     }
 
-    static func joinFamily(familyId: UUID, inviteCode: String) -> APIEndpoint {
+    static func joinFamily(inviteCode: String) -> APIEndpoint {
         APIEndpoint(
-            path: "/families/\(familyId)/join",
+            path: "/families/join",
             method: .post,
             body: JoinRequest(inviteCode: inviteCode)
         )

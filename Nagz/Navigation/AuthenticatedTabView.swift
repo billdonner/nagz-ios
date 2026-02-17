@@ -91,6 +91,22 @@ private struct FamilyTabContent: View {
                         }
                     }
 
+                    Section("Invite Code") {
+                        HStack {
+                            Text(family.inviteCode)
+                                .font(.system(.body, design: .monospaced))
+                            Spacer()
+                            Button {
+                                UIPasteboard.general.string = family.inviteCode
+                            } label: {
+                                Image(systemName: "doc.on.doc")
+                            }
+                        }
+                        Text("Share this code with family members so they can join.")
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                    }
+
                     Section {
                         Button("Log Out", role: .destructive) {
                             Task { await authManager.logout() }
