@@ -31,6 +31,7 @@ final class FamilyViewModel {
         do {
             let loadedFamily: FamilyResponse = try await apiClient.cachedRequest(.getFamily(id: id), ttl: 300)
             family = loadedFamily
+            UserDefaults.standard.set(loadedFamily.familyId.uuidString, forKey: "nagz_family_id")
 
             let membersResponse: PaginatedResponse<MemberDetail> = try await apiClient.cachedRequest(
                 .listMembers(familyId: id), ttl: 300
@@ -53,6 +54,7 @@ final class FamilyViewModel {
             let created: FamilyResponse = try await apiClient.request(.createFamily(name: name))
             await apiClient.invalidateCache(prefix: "/families")
             family = created
+            UserDefaults.standard.set(created.familyId.uuidString, forKey: "nagz_family_id")
             showCreateSheet = false
             let membersResponse: PaginatedResponse<MemberDetail> = try await apiClient.request(
                 .listMembers(familyId: created.familyId)

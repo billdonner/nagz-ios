@@ -10,6 +10,8 @@
 		022785549CA30F29EE5D1189 /* EscalationBadge.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E6DEEBE1B334FC5685FC4E5 /* EscalationBadge.swift */; };
 		09ABEFE60F83398710D571FB /* JoinFamilyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CCC28A3FD2C73A684280A8B /* JoinFamilyView.swift */; };
 		09F05C30C15A7DD1691B8E69 /* FamilyModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3103D76E83889066B4CDC006 /* FamilyModels.swift */; };
+		0B0A4DA780062CDF107BB721 /* CompleteNagIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = D9F6250F88777E53820A4F59 /* CompleteNagIntent.swift */; };
+		0C974A5579777FF4D5E242D6 /* FamilyStatusIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C70FE14961CC2F9E8593105 /* FamilyStatusIntent.swift */; };
 		10648AB653519F63339D0BA7 /* SignupViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A04D8ECCD329BE62D5CABEC /* SignupViewModel.swift */; };
 		1658C0AC112FE37CF766DA78 /* GamificationModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = F596ADE9A04C40C7E3174959 /* GamificationModels.swift */; };
 		19D475F6D49A24E958EB4E00 /* AuthModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C807C8B04BC360E1936FACD /* AuthModels.swift */; };
@@ -28,7 +30,10 @@
 		424953649E34B0D46C75BD5F /* ModelDecodingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1FBFCDE4C04F3EC809309128 /* ModelDecodingTests.swift */; };
 		4440085F3A155A314DC293BE /* PushNotificationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17D33EACD9E91105C8BA2127 /* PushNotificationService.swift */; };
 		46EEE8DB4387C89E94E33E66 /* GRDB in Frameworks */ = {isa = PBXBuildFile; productRef = 6AA6D2A0605204CDBCCED3B3 /* GRDB */; };
+		48E1985830A142888450B547 /* IntentServiceContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD1EC9622D9A307210DFE613 /* IntentServiceContainer.swift */; };
 		48F29924A9EAEE816CE948E5 /* NagDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83E67D051966AD3EDD9F8D7C /* NagDetailView.swift */; };
+		49E8DCA9F8BEADFF7072B9E0 /* NagzIntentError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74DEF78D6D5B4D5777557403 /* NagzIntentError.swift */; };
+		4B90156F8357D1396A095922 /* FamilyMemberEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 380014CE84898708152E95D9 /* FamilyMemberEntity.swift */; };
 		505CA8990F29CD58610ABF47 /* AuthenticatedTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E89A05814372C9BCE15E6EC /* AuthenticatedTabView.swift */; };
 		5623F365A067F7E33C395F7D /* PolicyDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6ED1D6F2ECDC7A749F865DCD /* PolicyDetailView.swift */; };
 		577DDC65B9F769BBF403122F /* KeychainAccess in Frameworks */ = {isa = PBXBuildFile; productRef = 545A46357975BAA1644730CE /* KeychainAccess */; };
@@ -37,11 +42,13 @@
 		69072BBDECA8680C5104363E /* AccountView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D2C31A6C1CA6645B991FD667 /* AccountView.swift */; };
 		69B2329CBD7DCE0EF5D4EF2E /* MemberListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07D0EAC9F8FFBA5872FD80CF /* MemberListView.swift */; };
 		6A9785BA9A4D40BF26A27C1A /* APIEndpoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = F73099FD428BA8EC44A85ECB /* APIEndpoint.swift */; };
+		6B2B1510A1A976D4A10E0ECC /* NagzShortcutsProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5B561981AFC048F7946AFD5 /* NagzShortcutsProvider.swift */; };
 		71BEF3575BABE9D8B29022D3 /* ManageMembersViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95C278AF89622477580059EE /* ManageMembersViewModel.swift */; };
 		7647521DEFBD599A206F7591 /* MemberRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3BF64C56EBAEE04E21E7452 /* MemberRowView.swift */; };
 		791570AA436243B5E505AD63 /* ConsentListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59967DFB14517E9CBB7944FC /* ConsentListView.swift */; };
 		7A6DD790F8FADCFDDB11E379 /* PaginatedResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A69383318CB720FC401D0D7 /* PaginatedResponse.swift */; };
 		7D06F9B2EB4D57AB93B9628F /* PreferencesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 117B176A8976E69A3F640E02 /* PreferencesView.swift */; };
+		7D61B95C5D243F455A2867D9 /* NagEntityQuery.swift in Sources */ = {isa = PBXBuildFile; fileRef = 641505646ADAEFC4E3E1EF8F /* NagEntityQuery.swift */; };
 		81C74DBDC5B5C4147B3B99D7 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3EDC2854A3127F68733D4958 /* ContentView.swift */; };
 		8465FF82F8BB7D1B40E1D8DC /* PreferenceModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9555685DE01F4548E6AC6A0 /* PreferenceModels.swift */; };
 		8776E95DB82675F3688BEB91 /* SafetyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9AB45B90E8BEC815179C22DF /* SafetyView.swift */; };
@@ -53,16 +60,21 @@
 		92B2DE215E9885838392AED3 /* PolicyListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EBD44C1B308F9911F7BCBC0C /* PolicyListView.swift */; };
 		96E14843B3D9DAFC0F5F5012 /* PreferencesViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C4FEFE928E873F8975C711D /* PreferencesViewModel.swift */; };
 		987CCC9B527CF1206510F370 /* EditNagViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6518A68E624AD12C6521FA5 /* EditNagViewModel.swift */; };
+		98CF40F3E91F9C6EE85093D9 /* SnoozeNagIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A5F3F576C762EADB7633DEF /* SnoozeNagIntent.swift */; };
+		9A67032E0886B847102D1DA1 /* CheckOverdueIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C57745D002D5B132D09F966 /* CheckOverdueIntent.swift */; };
 		9B56D91A72953824D2A02C83 /* GamificationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD3190FAD0A5DD8A6323C69C /* GamificationView.swift */; };
 		9DA8639D59F1348334A51445 /* IncentiveRulesViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC1268A6068C60F603BC606E /* IncentiveRulesViewModel.swift */; };
 		9E3B5FA1D29A914B45079842 /* NagModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B64AA3271570CA97B005E91 /* NagModels.swift */; };
+		9E9777788381B3FE5299DEF1 /* Phase2CoverageTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECE9137ED0D0FA304A0A8EAA /* Phase2CoverageTests.swift */; };
 		A162D3663B6E637EFC3AC318 /* LoginViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AA44AE0BEBA58C043C996A1 /* LoginViewModel.swift */; };
+		A1D1DFE47E74F80A86E4EDF0 /* Phase4ViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64A2FA953CD86193ED97EFAD /* Phase4ViewModelTests.swift */; };
 		A922A5B3B8F9CDCF4BD36533 /* APIClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9690A2B5BD1CBA627F52AF4E /* APIClient.swift */; };
 		A99865BA24EB19746267C03B /* AppEnvironment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E621A4F0EDD94F399E2C9DA /* AppEnvironment.swift */; };
 		A9C26BD7772B632CECDF917E /* NagRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C524E4F6DAAD0936C7DC24B /* NagRowView.swift */; };
 		AAAD4B3DA334581D8040E835 /* Date+Formatting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8F8430225ED802B793D2E6C2 /* Date+Formatting.swift */; };
 		AB9FA232D246AB19B4EA262F /* ConsentModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA264D3B7744A48AB3904C2F /* ConsentModels.swift */; };
 		ABE7491D55FBA095F89BFD3A /* ManageMembersView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 615BFEFFC265637815DB1707 /* ManageMembersView.swift */; };
+		ACBE1FC8906E623F15349BAA /* CreateNagIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4570F057307070C0CF2C47D /* CreateNagIntent.swift */; };
 		AEFCF8156E0CF766CC91D2B2 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2524FDBBE8F215CAB498AD90 /* Constants.swift */; };
 		B0F605FE26C3101FE56C4803 /* OnDeviceAIService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6CC10FBF6817DAB04DCE30B /* OnDeviceAIService.swift */; };
 		B4181171676EAD0BACA7E4AA /* DeliveryModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C2745952F84266C12B43D6F /* DeliveryModels.swift */; };
@@ -77,10 +89,14 @@
 		C6AD093090BB94EE3660E7B1 /* ErrorModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8AEE80ECDC2335FED6F07DD /* ErrorModels.swift */; };
 		C8ED407409D4BBED50982A85 /* KeychainService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62B0E5FF945FF5C1DF5EA1D3 /* KeychainService.swift */; };
 		C8FE07CDAE40C2B50B1E6B9C /* DeliveryHistoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B16BEEBE6F3B1BEACF53FFAC /* DeliveryHistoryView.swift */; };
+		CB7B9097C3114AF997C50D34 /* NagEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1C39F97A1E2D4580F9FA2ED /* NagEntity.swift */; };
 		CC898491EAE1236F629698BA /* SyncService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7321DCBD5A00F79FB61647A6 /* SyncService.swift */; };
 		CCFE2834956D7B50CA7BBFD6 /* FamilyViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C48EF0BFA6111245B86B2971 /* FamilyViewModel.swift */; };
+		CE5DC0B940DB0ECF0C011EE0 /* NagCategoryAppEnum.swift in Sources */ = {isa = PBXBuildFile; fileRef = E65F8952661E5F83A2872401 /* NagCategoryAppEnum.swift */; };
+		D6359AE98AC40702D93A1C6F /* IntentTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B53EA32F83C1765C5E316E83 /* IntentTests.swift */; };
 		D64A4632685509BEB0018D5E /* PolicyViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A32FE9E4FB799832D5C3B0B5 /* PolicyViewModel.swift */; };
 		DA6060AE8EAE463303B6F915 /* NagzApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAF6A3CE8CF93F2302F54967 /* NagzApp.swift */; };
+		DC17FA6987A2F88885F7B15F /* ListNagsIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 159F6509A2190F49906305DE /* ListNagsIntent.swift */; };
 		DD88847671E998BB509F2919 /* PolicyModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB2AF689B606E365EF7055E5 /* PolicyModels.swift */; };
 		E14CC869FBBD0CCCF71E2B65 /* IncentiveModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49E63852FE42057F07D13A9E /* IncentiveModels.swift */; };
 		E1500DDC1F96E93ED0A0D906 /* DeviceModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3304DDCA502144AB4F456FB /* DeviceModels.swift */; };
@@ -88,6 +104,7 @@
 		E6C2D67EBC5D812CF590C0AD /* IncentiveRulesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1618B20BD4EBDD00C94901B5 /* IncentiveRulesView.swift */; };
 		EBFA84D9138F0B611957E4B0 /* ReportsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4A715516D53FF9CD1661B2E /* ReportsView.swift */; };
 		F527047B44CB0A89B8A82E21 /* NagDetailViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D8B860496CD6D4BE858F1F2 /* NagDetailViewModel.swift */; };
+		F754AE5579AB840BF5144223 /* FamilyMemberQuery.swift in Sources */ = {isa = PBXBuildFile; fileRef = 900FB4265B1BED2475827172 /* FamilyMemberQuery.swift */; };
 		FDA477888348BFF5346924C4 /* AIModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8D5A1D2FBCFD9344C12FD96 /* AIModels.swift */; };
 /* End PBXBuildFile section */
 
@@ -112,17 +129,21 @@
 		10DD058430F66D0C0640ABB8 /* DeliveryHistoryViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeliveryHistoryViewModel.swift; sourceTree = "<group>"; };
 		117B176A8976E69A3F640E02 /* PreferencesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreferencesView.swift; sourceTree = "<group>"; };
 		159D7C43D155D86EE40E00A7 /* ExcuseModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExcuseModels.swift; sourceTree = "<group>"; };
+		159F6509A2190F49906305DE /* ListNagsIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListNagsIntent.swift; sourceTree = "<group>"; };
 		1618B20BD4EBDD00C94901B5 /* IncentiveRulesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IncentiveRulesView.swift; sourceTree = "<group>"; };
 		17C15105D93BCA259662041F /* Nagz.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Nagz.entitlements; sourceTree = "<group>"; };
 		17D33EACD9E91105C8BA2127 /* PushNotificationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PushNotificationService.swift; sourceTree = "<group>"; };
 		185EF763DF413C6E39A88743 /* EditNagView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditNagView.swift; sourceTree = "<group>"; };
+		1A5F3F576C762EADB7633DEF /* SnoozeNagIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SnoozeNagIntent.swift; sourceTree = "<group>"; };
 		1AC6950A07FD4A8909F73946 /* AuthManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthManager.swift; sourceTree = "<group>"; };
 		1D21CD1CA6DC50F3409A8834 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		1E89A05814372C9BCE15E6EC /* AuthenticatedTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticatedTabView.swift; sourceTree = "<group>"; };
 		1FBFCDE4C04F3EC809309128 /* ModelDecodingTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelDecodingTests.swift; sourceTree = "<group>"; };
 		2524FDBBE8F215CAB498AD90 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
+		2C57745D002D5B132D09F966 /* CheckOverdueIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckOverdueIntent.swift; sourceTree = "<group>"; };
 		2D5DE9C0FB044817490BD132 /* CreateNagViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateNagViewModel.swift; sourceTree = "<group>"; };
 		3103D76E83889066B4CDC006 /* FamilyModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FamilyModels.swift; sourceTree = "<group>"; };
+		380014CE84898708152E95D9 /* FamilyMemberEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FamilyMemberEntity.swift; sourceTree = "<group>"; };
 		3B64AA3271570CA97B005E91 /* NagModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NagModels.swift; sourceTree = "<group>"; };
 		3C2745952F84266C12B43D6F /* DeliveryModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeliveryModels.swift; sourceTree = "<group>"; };
 		3C4FEFE928E873F8975C711D /* PreferencesViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreferencesViewModel.swift; sourceTree = "<group>"; };
@@ -138,16 +159,21 @@
 		5C524E4F6DAAD0936C7DC24B /* NagRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NagRowView.swift; sourceTree = "<group>"; };
 		615BFEFFC265637815DB1707 /* ManageMembersView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManageMembersView.swift; sourceTree = "<group>"; };
 		62B0E5FF945FF5C1DF5EA1D3 /* KeychainService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeychainService.swift; sourceTree = "<group>"; };
+		641505646ADAEFC4E3E1EF8F /* NagEntityQuery.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NagEntityQuery.swift; sourceTree = "<group>"; };
+		64A2FA953CD86193ED97EFAD /* Phase4ViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Phase4ViewModelTests.swift; sourceTree = "<group>"; };
 		6919F4ECE9F941CEA3558B8C /* ReportsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReportsViewModel.swift; sourceTree = "<group>"; };
 		6E621A4F0EDD94F399E2C9DA /* AppEnvironment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppEnvironment.swift; sourceTree = "<group>"; };
 		6ED1D6F2ECDC7A749F865DCD /* PolicyDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PolicyDetailView.swift; sourceTree = "<group>"; };
 		72F118F344FB4C3411FAAEC4 /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
 		7321DCBD5A00F79FB61647A6 /* SyncService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncService.swift; sourceTree = "<group>"; };
+		74DEF78D6D5B4D5777557403 /* NagzIntentError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NagzIntentError.swift; sourceTree = "<group>"; };
 		799222C076E18C851FFF7C9E /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		7B70AA17D1E21D3916FD048C /* EnvironmentValues+API.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "EnvironmentValues+API.swift"; sourceTree = "<group>"; };
 		83E67D051966AD3EDD9F8D7C /* NagDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NagDetailView.swift; sourceTree = "<group>"; };
 		88BCE00F95D3F26F9BD4F880 /* NagzTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = NagzTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		8C70FE14961CC2F9E8593105 /* FamilyStatusIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FamilyStatusIntent.swift; sourceTree = "<group>"; };
 		8F8430225ED802B793D2E6C2 /* Date+Formatting.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Date+Formatting.swift"; sourceTree = "<group>"; };
+		900FB4265B1BED2475827172 /* FamilyMemberQuery.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FamilyMemberQuery.swift; sourceTree = "<group>"; };
 		90C1EED5F97864A105AE2117 /* SafetyViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SafetyViewModel.swift; sourceTree = "<group>"; };
 		95C278AF89622477580059EE /* ManageMembersViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManageMembersViewModel.swift; sourceTree = "<group>"; };
 		9690A2B5BD1CBA627F52AF4E /* APIClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIClient.swift; sourceTree = "<group>"; };
@@ -159,6 +185,7 @@
 		A14A7ACF3D604B6E110A26B4 /* SafetyModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SafetyModels.swift; sourceTree = "<group>"; };
 		A2167A24BA46966A1CC5F470 /* ConsentViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConsentViewModel.swift; sourceTree = "<group>"; };
 		A32FE9E4FB799832D5C3B0B5 /* PolicyViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PolicyViewModel.swift; sourceTree = "<group>"; };
+		A4570F057307070C0CF2C47D /* CreateNagIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateNagIntent.swift; sourceTree = "<group>"; };
 		A88D52E67BB456B1C310B4A3 /* Nagz.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = Nagz.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A8AEE80ECDC2335FED6F07DD /* ErrorModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorModels.swift; sourceTree = "<group>"; };
 		AA264D3B7744A48AB3904C2F /* ConsentModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConsentModels.swift; sourceTree = "<group>"; };
@@ -166,8 +193,11 @@
 		AD3190FAD0A5DD8A6323C69C /* GamificationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GamificationView.swift; sourceTree = "<group>"; };
 		AE0B9F4BCBAB9DA56A1A82E9 /* SignupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignupView.swift; sourceTree = "<group>"; };
 		B16BEEBE6F3B1BEACF53FFAC /* DeliveryHistoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeliveryHistoryView.swift; sourceTree = "<group>"; };
+		B1C39F97A1E2D4580F9FA2ED /* NagEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NagEntity.swift; sourceTree = "<group>"; };
 		B2070199AFE540C086F22328 /* AIService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AIService.swift; sourceTree = "<group>"; };
+		B53EA32F83C1765C5E316E83 /* IntentTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IntentTests.swift; sourceTree = "<group>"; };
 		BAA9ECF7D3600FB6AF4C758C /* ReportModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReportModels.swift; sourceTree = "<group>"; };
+		BD1EC9622D9A307210DFE613 /* IntentServiceContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IntentServiceContainer.swift; sourceTree = "<group>"; };
 		C3304DDCA502144AB4F456FB /* DeviceModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceModels.swift; sourceTree = "<group>"; };
 		C48EF0BFA6111245B86B2971 /* FamilyViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FamilyViewModel.swift; sourceTree = "<group>"; };
 		C6CC10FBF6817DAB04DCE30B /* OnDeviceAIService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnDeviceAIService.swift; sourceTree = "<group>"; };
@@ -178,10 +208,14 @@
 		D3BF64C56EBAEE04E21E7452 /* MemberRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemberRowView.swift; sourceTree = "<group>"; };
 		D6518A68E624AD12C6521FA5 /* EditNagViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditNagViewModel.swift; sourceTree = "<group>"; };
 		D917295C9B5550C0BE6F63EF /* VersionChecker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VersionChecker.swift; sourceTree = "<group>"; };
+		D9F6250F88777E53820A4F59 /* CompleteNagIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompleteNagIntent.swift; sourceTree = "<group>"; };
 		DAD16D6E59A98D9D44F48D03 /* MemberListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemberListViewModel.swift; sourceTree = "<group>"; };
 		E4A715516D53FF9CD1661B2E /* ReportsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReportsView.swift; sourceTree = "<group>"; };
+		E5B561981AFC048F7946AFD5 /* NagzShortcutsProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NagzShortcutsProvider.swift; sourceTree = "<group>"; };
+		E65F8952661E5F83A2872401 /* NagCategoryAppEnum.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NagCategoryAppEnum.swift; sourceTree = "<group>"; };
 		E84EB1DEEB1724609FA6FFC9 /* CreateNagView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateNagView.swift; sourceTree = "<group>"; };
 		EBD44C1B308F9911F7BCBC0C /* PolicyListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PolicyListView.swift; sourceTree = "<group>"; };
+		ECE9137ED0D0FA304A0A8EAA /* Phase2CoverageTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Phase2CoverageTests.swift; sourceTree = "<group>"; };
 		F596ADE9A04C40C7E3174959 /* GamificationModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GamificationModels.swift; sourceTree = "<group>"; };
 		F73099FD428BA8EC44A85ECB /* APIEndpoint.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIEndpoint.swift; sourceTree = "<group>"; };
 		FB2AF689B606E365EF7055E5 /* PolicyModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PolicyModels.swift; sourceTree = "<group>"; };
@@ -222,6 +256,7 @@
 				998CCC12A2469D03613D59A1 /* Config */,
 				9AFDB1019CA177F867593271 /* Database */,
 				7D8CF6F23E599D0784C2095F /* Extensions */,
+				FE909C3299303B17568357FF /* Intents */,
 				B337BE27330FC5BDD6DF7393 /* Models */,
 				EBA462D4633FB7AFB7C79EED /* Navigation */,
 				CFB239385BA15A1C2BBE9C22 /* Services */,
@@ -283,6 +318,16 @@
 			path = Guardian;
 			sourceTree = "<group>";
 		};
+		7D140DA06F2EC27CB2B4533E /* Entities */ = {
+			isa = PBXGroup;
+			children = (
+				380014CE84898708152E95D9 /* FamilyMemberEntity.swift */,
+				E65F8952661E5F83A2872401 /* NagCategoryAppEnum.swift */,
+				B1C39F97A1E2D4580F9FA2ED /* NagEntity.swift */,
+			);
+			path = Entities;
+			sourceTree = "<group>";
+		};
 		7D8CF6F23E599D0784C2095F /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
@@ -308,6 +353,15 @@
 				0859112BEE5F101B319AFE76 /* DatabaseManager.swift */,
 			);
 			path = Database;
+			sourceTree = "<group>";
+		};
+		9B74BF2EFAB43A9EAAC79F75 /* Queries */ = {
+			isa = PBXGroup;
+			children = (
+				900FB4265B1BED2475827172 /* FamilyMemberQuery.swift */,
+				641505646ADAEFC4E3E1EF8F /* NagEntityQuery.swift */,
+			);
+			path = Queries;
 			sourceTree = "<group>";
 		};
 		A90A96E0F7275AB252AB99C4 /* Family */ = {
@@ -385,6 +439,19 @@
 			path = Auth;
 			sourceTree = "<group>";
 		};
+		D80B0D76E60DA564256407A5 /* Actions */ = {
+			isa = PBXGroup;
+			children = (
+				2C57745D002D5B132D09F966 /* CheckOverdueIntent.swift */,
+				D9F6250F88777E53820A4F59 /* CompleteNagIntent.swift */,
+				A4570F057307070C0CF2C47D /* CreateNagIntent.swift */,
+				8C70FE14961CC2F9E8593105 /* FamilyStatusIntent.swift */,
+				159F6509A2190F49906305DE /* ListNagsIntent.swift */,
+				1A5F3F576C762EADB7633DEF /* SnoozeNagIntent.swift */,
+			);
+			path = Actions;
+			sourceTree = "<group>";
+		};
 		EBA462D4633FB7AFB7C79EED /* Navigation */ = {
 			isa = PBXGroup;
 			children = (
@@ -397,7 +464,10 @@
 		EFC42ED55F75194D27D42A94 /* NagzTests */ = {
 			isa = PBXGroup;
 			children = (
+				B53EA32F83C1765C5E316E83 /* IntentTests.swift */,
 				1FBFCDE4C04F3EC809309128 /* ModelDecodingTests.swift */,
+				ECE9137ED0D0FA304A0A8EAA /* Phase2CoverageTests.swift */,
+				64A2FA953CD86193ED97EFAD /* Phase4ViewModelTests.swift */,
 			);
 			path = NagzTests;
 			sourceTree = "<group>";
@@ -424,6 +494,19 @@
 				9A04D8ECCD329BE62D5CABEC /* SignupViewModel.swift */,
 			);
 			path = ViewModels;
+			sourceTree = "<group>";
+		};
+		FE909C3299303B17568357FF /* Intents */ = {
+			isa = PBXGroup;
+			children = (
+				BD1EC9622D9A307210DFE613 /* IntentServiceContainer.swift */,
+				74DEF78D6D5B4D5777557403 /* NagzIntentError.swift */,
+				E5B561981AFC048F7946AFD5 /* NagzShortcutsProvider.swift */,
+				D80B0D76E60DA564256407A5 /* Actions */,
+				7D140DA06F2EC27CB2B4533E /* Entities */,
+				9B74BF2EFAB43A9EAAC79F75 /* Queries */,
+			);
+			path = Intents;
 			sourceTree = "<group>";
 		};
 		FFC68F56169C9E4A2472EB43 /* Safety */ = {
@@ -530,12 +613,15 @@
 				19D475F6D49A24E958EB4E00 /* AuthModels.swift in Sources */,
 				505CA8990F29CD58610ABF47 /* AuthenticatedTabView.swift in Sources */,
 				3442D55AEDBE7F239642D7FF /* CachedRecords.swift in Sources */,
+				9A67032E0886B847102D1DA1 /* CheckOverdueIntent.swift in Sources */,
+				0B0A4DA780062CDF107BB721 /* CompleteNagIntent.swift in Sources */,
 				791570AA436243B5E505AD63 /* ConsentListView.swift in Sources */,
 				AB9FA232D246AB19B4EA262F /* ConsentModels.swift in Sources */,
 				20AE20BCBFB7382743294AC6 /* ConsentViewModel.swift in Sources */,
 				AEFCF8156E0CF766CC91D2B2 /* Constants.swift in Sources */,
 				81C74DBDC5B5C4147B3B99D7 /* ContentView.swift in Sources */,
 				B45D7C13CBAF43DDD2DC7EF7 /* CreateFamilyView.swift in Sources */,
+				ACBE1FC8906E623F15349BAA /* CreateNagIntent.swift in Sources */,
 				8C6174B2DB97D37F62276D73 /* CreateNagView.swift in Sources */,
 				350FB4B166D078DD5BC0EEC9 /* CreateNagViewModel.swift in Sources */,
 				33ECF4A54330D14672B855EB /* DatabaseManager.swift in Sources */,
@@ -553,7 +639,10 @@
 				022785549CA30F29EE5D1189 /* EscalationBadge.swift in Sources */,
 				41624A0FA5DBA542A0351B6C /* EscalationModels.swift in Sources */,
 				30FE0CA1C7AE1A7C39EBC6A1 /* ExcuseModels.swift in Sources */,
+				4B90156F8357D1396A095922 /* FamilyMemberEntity.swift in Sources */,
+				F754AE5579AB840BF5144223 /* FamilyMemberQuery.swift in Sources */,
 				09F05C30C15A7DD1691B8E69 /* FamilyModels.swift in Sources */,
+				0C974A5579777FF4D5E242D6 /* FamilyStatusIntent.swift in Sources */,
 				CCFE2834956D7B50CA7BBFD6 /* FamilyViewModel.swift in Sources */,
 				1658C0AC112FE37CF766DA78 /* GamificationModels.swift in Sources */,
 				9B56D91A72953824D2A02C83 /* GamificationView.swift in Sources */,
@@ -561,8 +650,10 @@
 				E14CC869FBBD0CCCF71E2B65 /* IncentiveModels.swift in Sources */,
 				E6C2D67EBC5D812CF590C0AD /* IncentiveRulesView.swift in Sources */,
 				9DA8639D59F1348334A51445 /* IncentiveRulesViewModel.swift in Sources */,
+				48E1985830A142888450B547 /* IntentServiceContainer.swift in Sources */,
 				09ABEFE60F83398710D571FB /* JoinFamilyView.swift in Sources */,
 				C8ED407409D4BBED50982A85 /* KeychainService.swift in Sources */,
+				DC17FA6987A2F88885F7B15F /* ListNagsIntent.swift in Sources */,
 				2A63ED0A586E3570ED2CDA8D /* LoginView.swift in Sources */,
 				A162D3663B6E637EFC3AC318 /* LoginViewModel.swift in Sources */,
 				ABE7491D55FBA095F89BFD3A /* ManageMembersView.swift in Sources */,
@@ -570,13 +661,18 @@
 				69B2329CBD7DCE0EF5D4EF2E /* MemberListView.swift in Sources */,
 				2C5C0179A7849D66DDBE2A57 /* MemberListViewModel.swift in Sources */,
 				7647521DEFBD599A206F7591 /* MemberRowView.swift in Sources */,
+				CE5DC0B940DB0ECF0C011EE0 /* NagCategoryAppEnum.swift in Sources */,
 				48F29924A9EAEE816CE948E5 /* NagDetailView.swift in Sources */,
 				F527047B44CB0A89B8A82E21 /* NagDetailViewModel.swift in Sources */,
+				CB7B9097C3114AF997C50D34 /* NagEntity.swift in Sources */,
+				7D61B95C5D243F455A2867D9 /* NagEntityQuery.swift in Sources */,
 				BED7041B5A270167EA6FD99B /* NagListView.swift in Sources */,
 				396E4226730469AEA60B71D9 /* NagListViewModel.swift in Sources */,
 				9E3B5FA1D29A914B45079842 /* NagModels.swift in Sources */,
 				A9C26BD7772B632CECDF917E /* NagRowView.swift in Sources */,
 				DA6060AE8EAE463303B6F915 /* NagzApp.swift in Sources */,
+				49E8DCA9F8BEADFF7072B9E0 /* NagzIntentError.swift in Sources */,
+				6B2B1510A1A976D4A10E0ECC /* NagzShortcutsProvider.swift in Sources */,
 				B0F605FE26C3101FE56C4803 /* OnDeviceAIService.swift in Sources */,
 				7A6DD790F8FADCFDDB11E379 /* PaginatedResponse.swift in Sources */,
 				5623F365A067F7E33C395F7D /* PolicyDetailView.swift in Sources */,
@@ -595,6 +691,7 @@
 				B9EC5FC025893AEFB863FA97 /* SafetyViewModel.swift in Sources */,
 				BC3F961DC9D45F8A5813CA82 /* SignupView.swift in Sources */,
 				10648AB653519F63339D0BA7 /* SignupViewModel.swift in Sources */,
+				98CF40F3E91F9C6EE85093D9 /* SnoozeNagIntent.swift in Sources */,
 				CC898491EAE1236F629698BA /* SyncService.swift in Sources */,
 				8FE044ED4C9F9F4B97EBED73 /* VersionChecker.swift in Sources */,
 				648A714E50978D32602CF46C /* VersionModels.swift in Sources */,
@@ -605,7 +702,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D6359AE98AC40702D93A1C6F /* IntentTests.swift in Sources */,
 				424953649E34B0D46C75BD5F /* ModelDecodingTests.swift in Sources */,
+				9E9777788381B3FE5299DEF1 /* Phase2CoverageTests.swift in Sources */,
+				A1D1DFE47E74F80A86E4EDF0 /* Phase4ViewModelTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

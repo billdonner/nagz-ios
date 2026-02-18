@@ -57,6 +57,7 @@ final class AuthManager {
             let response: AuthResponse = try await apiClient.request(.refresh(refreshToken: refreshToken))
             try await keychainService.saveTokens(access: response.accessToken, refresh: response.refreshToken)
             state = .authenticated(user: response.user)
+            UserDefaults.standard.set(response.user.id.uuidString, forKey: "nagz_user_id")
         } catch {
             try? await keychainService.clearTokens()
             state = .unauthenticated
@@ -67,18 +68,22 @@ final class AuthManager {
         let response: AuthResponse = try await apiClient.request(.login(email: email, password: password))
         try await keychainService.saveTokens(access: response.accessToken, refresh: response.refreshToken)
         state = .authenticated(user: response.user)
+        UserDefaults.standard.set(response.user.id.uuidString, forKey: "nagz_user_id")
     }
 
     func signup(email: String, password: String, displayName: String?) async throws {
         let response: AuthResponse = try await apiClient.request(.signup(email: email, password: password, displayName: displayName))
         try await keychainService.saveTokens(access: response.accessToken, refresh: response.refreshToken)
         state = .authenticated(user: response.user)
+        UserDefaults.standard.set(response.user.id.uuidString, forKey: "nagz_user_id")
     }
 
     func logout() async {
         try? await apiClient.requestVoid(.logout())
         try? await keychainService.clearTokens()
         await apiClient.clearCache()
+        UserDefaults.standard.removeObject(forKey: "nagz_user_id")
+        UserDefaults.standard.removeObject(forKey: "nagz_family_id")
         state = .unauthenticated
     }
 }

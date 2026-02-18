@@ -9,7 +9,7 @@
 ## Common Commands
 - `cd ~/nagz-ios && xcodegen generate` — regenerate Xcode project from project.yml
 - `xcodebuild -project Nagz.xcodeproj -scheme Nagz -destination 'platform=iOS Simulator,name=iPhone 16 Pro Max,OS=18.5' build` — build
-- `xcodebuild test -scheme Nagz -destination 'platform=iOS Simulator,name=iPhone 16 Pro Max,OS=18.5'` — run tests (166 as of 2026-02-18)
+- `xcodebuild test -scheme Nagz -destination 'platform=iOS Simulator,name=iPhone 16 Pro Max,OS=18.5'` — run tests (179 as of 2026-02-18)
 
 ## Permissions — MOVE AGGRESSIVELY
 
@@ -76,14 +76,16 @@ All three Nagz repos (nagzerver, nagz-ios, nagz-web) use a shared API versioning
 - `ErrorBanner` — reusable error display component with optional retry action
 - `APIError.isRetryable` — identifies errors worth retrying (network, server, rate limited)
 
-## Siri & Shortcuts (V2.0 — Planned)
-- Spec: `~/nagz/nagz/Docs/SIRI_SHORTCUTS.md`
+## Siri & Shortcuts (Implemented)
 - Framework: App Intents (iOS 16+), not deprecated SiriKit
-- 6 intents: CreateNag, CompleteNag, ListNags, CheckOverdue, SnoozeNag, FamilyStatus
-- Entities: NagEntity, FamilyMemberEntity, NagCategoryAppEnum
+- 6 intents in `Nagz/Intents/Actions/`: CreateNag, CompleteNag, ListNags, CheckOverdue, SnoozeNag, FamilyStatus
+- Entities in `Nagz/Intents/Entities/`: NagEntity, FamilyMemberEntity, NagCategoryAppEnum
+- Queries in `Nagz/Intents/Queries/`: NagEntityQuery, FamilyMemberQuery
+- `IntentServiceContainer` — shared lazy KeychainService + APIClient for intents
+- `NagzShortcutsProvider` — 6 shortcuts with 14 Siri phrases
+- User/family IDs persisted to UserDefaults for intent access (written by AuthManager/FamilyViewModel)
 - All intents run in-process (no extension target needed)
 - Interactive snippets deferred to iOS 26+
-- Files go in `Nagz/Intents/`
 
 ## Known Issues & Fixes
 - Use `127.0.0.1` not `localhost` in simulator (IPv6 timeout)

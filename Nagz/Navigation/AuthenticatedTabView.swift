@@ -1,4 +1,5 @@
 import SwiftUI
+import AppIntents
 
 struct AuthenticatedTabView: View {
     let authManager: AuthManager
@@ -38,6 +39,12 @@ struct AuthenticatedTabView: View {
         }
         .task {
             pushService.requestPermissionAndRegister()
+            if familyViewModel.family == nil,
+               let savedId = UserDefaults.standard.string(forKey: "nagz_family_id"),
+               let familyId = UUID(uuidString: savedId) {
+                await familyViewModel.loadFamily(id: familyId)
+            }
+            NagzShortcutsProvider.updateAppShortcutParameters()
         }
         .onChange(of: pushService.pendingNagId) { _, newValue in
             if newValue != nil {
