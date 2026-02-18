@@ -27,8 +27,10 @@ final class PolicyViewModel {
                 .listPolicies(familyId: familyId)
             )
             policies = response.items
-        } catch {
-            self.error = error.localizedDescription
+        } catch let err as APIError {
+            error = err.errorDescription
+        } catch let err {
+            error = err.localizedDescription
         }
         isLoading = false
     }
@@ -39,8 +41,10 @@ final class PolicyViewModel {
                 .listApprovals(policyId: policyId)
             )
             approvals = response.items
-        } catch {
-            self.error = error.localizedDescription
+        } catch let err as APIError {
+            error = err.errorDescription
+        } catch let err {
+            error = err.localizedDescription
         }
     }
 
@@ -52,8 +56,10 @@ final class PolicyViewModel {
                 .updatePolicy(policyId: policyId, update: update)
             )
             await loadPolicies()
-        } catch {
-            self.error = error.localizedDescription
+        } catch let err as APIError {
+            error = err.errorDescription
+        } catch let err {
+            error = err.localizedDescription
         }
         isSubmitting = false
     }
@@ -66,8 +72,10 @@ final class PolicyViewModel {
                 .createApproval(policyId: policyId, comment: comment)
             )
             await loadApprovals(policyId: policyId)
-        } catch {
-            self.error = error.localizedDescription
+        } catch let err as APIError {
+            error = err.errorDescription
+        } catch let err {
+            error = err.localizedDescription
         }
         isSubmitting = false
     }

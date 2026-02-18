@@ -104,11 +104,11 @@ actor DatabaseManager {
     // MARK: - Cleanup
 
     /// Remove events older than the retention period.
-    func pruneStaleData() throws {
+    func pruneStaleData() async throws {
         let eventCutoff = Calendar.current.date(byAdding: .day, value: -90, to: Date())!
         let nagCutoff = Calendar.current.date(byAdding: .day, value: -30, to: Date())!
 
-        try dbPool.write { db in
+        try await writer.write { db in
             try db.execute(sql: "DELETE FROM cached_nag_events WHERE at < ?", arguments: [eventCutoff])
             try db.execute(sql: "DELETE FROM cached_ai_mediation_events WHERE at < ?", arguments: [eventCutoff])
             try db.execute(sql: "DELETE FROM cached_gamification_events WHERE at < ?", arguments: [eventCutoff])
@@ -120,8 +120,8 @@ actor DatabaseManager {
     }
 
     /// Clear all cached data (e.g. on logout).
-    func clearAll() throws {
-        try dbPool.write { db in
+    func clearAll() async throws {
+        try await writer.write { db in
             try db.execute(sql: "DELETE FROM cached_nags")
             try db.execute(sql: "DELETE FROM cached_nag_events")
             try db.execute(sql: "DELETE FROM cached_ai_mediation_events")
