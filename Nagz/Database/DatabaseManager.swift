@@ -24,9 +24,11 @@ actor DatabaseManager {
         try Self.makeMigrator().migrate(dbPool)
     }
 
-    /// In-memory database for tests.
+    /// Temporary on-disk database for tests (DatabasePool requires a real file for WAL mode).
     static func inMemory() throws -> DatabaseManager {
-        try DatabaseManager(path: ":memory:")
+        let tmpDir = FileManager.default.temporaryDirectory
+        let path = tmpDir.appendingPathComponent("nagz-test-\(UUID().uuidString).sqlite").path
+        return try DatabaseManager(path: path)
     }
 
     var reader: DatabaseReader { dbPool }
