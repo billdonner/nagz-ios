@@ -73,7 +73,7 @@ actor OnDeviceAIService: AIService {
 
         return ToneSelectResponse(
             nagId: nagId, tone: tone,
-            missCount7d: missCount, streak: streak, reason: reason
+            missCount7D: missCount, streak: streak, reason: reason
         )
     }
 

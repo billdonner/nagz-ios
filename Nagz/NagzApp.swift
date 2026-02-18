@@ -22,7 +22,12 @@ struct NagzApp: App {
         let checker = VersionChecker(apiClient: api)
 
         // Local GRDB cache + sync
-        let db = try! DatabaseManager()
+        let db: DatabaseManager
+        do {
+            db = try DatabaseManager()
+        } catch {
+            fatalError("Failed to initialize database: \(error.localizedDescription)")
+        }
         let sync = SyncService(apiClient: api, db: db)
 
         // AI services: on-device with server fallback

@@ -595,12 +595,11 @@ final class ModelDecodingTests: XCTestCase {
     // MARK: - Report Models Decoding Tests
 
     func testReportModelsDecoding() throws {
-        // ReportMetrics has custom CodingKeys that conflict with convertFromSnakeCase
-        // (same issue as PolicyResponse). Use camelCase JSON keys + plain decoder.
+        // ReportMetrics no longer has custom CodingKeys — convertFromSnakeCase handles it
         let json = """
         {
-            "familyId": "550e8400-e29b-41d4-a716-446655440130",
-            "periodStart": "2026-02-10T00:00:00+00:00",
+            "family_id": "550e8400-e29b-41d4-a716-446655440130",
+            "period_start": "2026-02-10T00:00:00+00:00",
             "metrics": {
                 "total_nags": 20,
                 "completed": 15,
@@ -609,9 +608,7 @@ final class ModelDecodingTests: XCTestCase {
         }
         """.data(using: .utf8)!
 
-        let plainDecoder = JSONDecoder()
-        plainDecoder.dateDecodingStrategy = decoder.dateDecodingStrategy
-        let report = try plainDecoder.decode(WeeklyReportResponse.self, from: json)
+        let report = try decoder.decode(WeeklyReportResponse.self, from: json)
         XCTAssertEqual(report.familyId, UUID(uuidString: "550e8400-e29b-41d4-a716-446655440130"))
         XCTAssertEqual(report.metrics.totalNags, 20)
         XCTAssertEqual(report.metrics.completed, 15)

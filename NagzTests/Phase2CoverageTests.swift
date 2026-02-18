@@ -55,23 +55,20 @@ final class AIModelsDecodingTests: XCTestCase {
     // MARK: - ToneSelectResponse
 
     func testToneSelectResponseDecoding() throws {
-        // convertFromSnakeCase turns "miss_count_7d" into "missCount7D" (capital D),
-        // so we must use a plain decoder with the exact key "missCount7d".
-        let plainDecoder = JSONDecoder()
-        plainDecoder.dateDecodingStrategy = decoder.dateDecodingStrategy
+        // Use convertFromSnakeCase decoder — miss_count_7d → missCount7D
         let json = """
         {
-            "nagId": "550e8400-e29b-41d4-a716-446655440002",
+            "nag_id": "550e8400-e29b-41d4-a716-446655440002",
             "tone": "firm",
-            "missCount7d": 5,
+            "miss_count_7d": 5,
             "streak": 0,
             "reason": "5 misses in last 7 days"
         }
         """.data(using: .utf8)!
 
-        let response = try plainDecoder.decode(ToneSelectResponse.self, from: json)
+        let response = try decoder.decode(ToneSelectResponse.self, from: json)
         XCTAssertEqual(response.tone, .firm)
-        XCTAssertEqual(response.missCount7d, 5)
+        XCTAssertEqual(response.missCount7D, 5)
         XCTAssertEqual(response.streak, 0)
         XCTAssertEqual(response.reason, "5 misses in last 7 days")
     }

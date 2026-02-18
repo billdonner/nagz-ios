@@ -40,7 +40,7 @@ struct ToneSelectRequest: Encodable, Sendable {
 struct ToneSelectResponse: Decodable, Sendable {
     let nagId: UUID
     let tone: AITone
-    let missCount7d: Int
+    let missCount7D: Int
     let streak: Int
     let reason: String
 }
