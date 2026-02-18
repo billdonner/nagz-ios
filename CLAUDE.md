@@ -76,6 +76,15 @@ All three Nagz repos (nagzerver, nagz-ios, nagz-web) use a shared API versioning
 - `ErrorBanner` — reusable error display component with optional retry action
 - `APIError.isRetryable` — identifies errors worth retrying (network, server, rate limited)
 
+## Siri & Shortcuts (V2.0 — Planned)
+- Spec: `~/nagz/nagz/Docs/SIRI_SHORTCUTS.md`
+- Framework: App Intents (iOS 16+), not deprecated SiriKit
+- 6 intents: CreateNag, CompleteNag, ListNags, CheckOverdue, SnoozeNag, FamilyStatus
+- Entities: NagEntity, FamilyMemberEntity, NagCategoryAppEnum
+- All intents run in-process (no extension target needed)
+- Interactive snippets deferred to iOS 26+
+- Files go in `Nagz/Intents/`
+
 ## Known Issues & Fixes
 - Use `127.0.0.1` not `localhost` in simulator (IPv6 timeout)
 - Swift 6: use `nonisolated(unsafe)` for static formatters, `@unchecked Sendable` for notification delegates
