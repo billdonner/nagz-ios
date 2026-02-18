@@ -3,8 +3,9 @@
 ## Stack
 - SwiftUI, MVVM, iOS 17+ (@Observable)
 - Swift 6 strict concurrency
-- Single dependency: KeychainAccess (SPM)
+- Dependencies: KeychainAccess (SPM), GRDB (SPM)
 - Project generated with xcodegen from `project.yml`
+- Bundle ID: com.nagz.app, Version: 1.0.0
 
 ## Common Commands
 - `cd ~/nagz-ios && xcodegen generate` — regenerate Xcode project from project.yml
@@ -90,6 +91,9 @@ All three Nagz repos (nagzerver, nagz-ios, nagz-web) use a shared API versioning
 ## Known Issues & Fixes
 - Use `127.0.0.1` not `localhost` in simulator (IPv6 timeout)
 - Swift 6: use `nonisolated(unsafe)` for static formatters, `@unchecked Sendable` for notification delegates
+- Swift 6: actors (KeychainService, APIClient) are already Sendable — do NOT add `nonisolated(unsafe)` to static lets of actor types
+- Swift 6: `AppEntity.defaultQuery` must be a computed property, not stored `var` (concurrency safety)
+- Swift Testing: use `@Suite(.serialized)` when tests share mutable global state (e.g., UserDefaults)
 - `@MainActor` required on test methods that call `@MainActor` static functions (e.g. `VersionChecker.evaluate`)
 - PolicyResponse has custom CodingKeys — use plain `JSONDecoder()` in tests, not the shared `.convertFromSnakeCase` decoder
 - Must add explicit `return` in `errorDescription` getter when any case uses if/return (breaks implicit return)
