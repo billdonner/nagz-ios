@@ -33,7 +33,7 @@ Build and run on an iOS 17+ simulator or device.
 
 The dev server is expected at `http://127.0.0.1:8001/api/v1` (use IP, not `localhost`, to avoid IPv6 timeout in the simulator).
 
-## Tests
+## Tests (166)
 
 ```bash
 xcodebuild test -project Nagz.xcodeproj -scheme Nagz \

@@ -9,7 +9,7 @@
 ## Common Commands
 - `cd ~/nagz-ios && xcodegen generate` — regenerate Xcode project from project.yml
 - `xcodebuild -project Nagz.xcodeproj -scheme Nagz -destination 'platform=iOS Simulator,name=iPhone 16 Pro Max,OS=18.5' build` — build
-- `xcodebuild test -scheme Nagz -destination 'platform=iOS Simulator,name=iPhone 16 Pro Max,OS=18.5'` — run tests (20 as of 2026-02-17)
+- `xcodebuild test -scheme Nagz -destination 'platform=iOS Simulator,name=iPhone 16 Pro Max,OS=18.5'` — run tests (166 as of 2026-02-18)
 
 ## Permissions — MOVE AGGRESSIVELY
 
