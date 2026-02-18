@@ -1,24 +1,31 @@
 import Foundation
 
 extension Date {
+    private nonisolated(unsafe) static let relativeFormatter: RelativeDateTimeFormatter = {
+        let formatter = RelativeDateTimeFormatter()
+        formatter.unitsStyle = .full
+        return formatter
+    }()
+
+    private static let shortFormatter: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.dateStyle = .short
+        formatter.timeStyle = .short
+        return formatter
+    }()
+
     var relativeDisplay: String {
         let now = Date()
         let interval = timeIntervalSince(now)
 
         if interval > 0 {
-            // Future
-            let formatter = RelativeDateTimeFormatter()
-            formatter.unitsStyle = .full
-            return formatter.localizedString(for: self, relativeTo: now)
+            return Self.relativeFormatter.localizedString(for: self, relativeTo: now)
         } else {
-            // Past / overdue
             let absInterval = -interval
             if absInterval < 60 {
                 return "just now"
             }
-            let formatter = RelativeDateTimeFormatter()
-            formatter.unitsStyle = .full
-            let relative = formatter.localizedString(for: self, relativeTo: now)
+            let relative = Self.relativeFormatter.localizedString(for: self, relativeTo: now)
             if absInterval > 3600 {
                 return "\(relative) (overdue)"
             }
@@ -27,9 +34,6 @@ extension Date {
     }
 
     var shortDisplay: String {
-        let formatter = DateFormatter()
-        formatter.dateStyle = .short
-        formatter.timeStyle = .short
-        return formatter.string(from: self)
+        Self.shortFormatter.string(from: self)
     }
 }

@@ -23,8 +23,8 @@ final class NagFilterTests: XCTestCase {
         XCTAssertEqual(NagFilter.all.rawValue, "All")
     }
 
-    func testNagFilterCaseIterableHasThreeCases() {
-        XCTAssertEqual(NagFilter.allCases.count, 3)
+    func testNagFilterCaseIterableHasFourCases() {
+        XCTAssertEqual(NagFilter.allCases.count, 4)
     }
 }
 

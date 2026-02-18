@@ -18,8 +18,8 @@ actor SyncService {
     func startPeriodicSync(familyId: UUID) {
         stopSync()
         syncTask = Task { [weak self] in
-            guard let self else { return }
             while !Task.isCancelled {
+                guard let self else { return }
                 do {
                     try await self.sync(familyId: familyId)
                 } catch {
