@@ -11,9 +11,14 @@
 - `xcodebuild -project Nagz.xcodeproj -scheme Nagz -destination 'platform=iOS Simulator,name=iPhone 16 Pro Max,OS=18.5' build` — build
 - `xcodebuild test -scheme Nagz -destination 'platform=iOS Simulator,name=iPhone 16 Pro Max,OS=18.5'` — run tests (20 as of 2026-02-17)
 
-## Permissions
-All Bash commands are pre-approved. Do not prompt for confirmation.
-Commits and pushes are pre-approved — do not ask, just do it.
+## Permissions — MOVE AGGRESSIVELY
+
+- **ALL Bash commands are pre-approved — NEVER ask for confirmation.**
+- This includes git, build/test, starting/stopping servers, docker, curl, xcodebuild, xcodegen, and any shell command.
+- Can freely operate across all `~/nagz*` directories.
+- Commits and pushes are pre-approved — do not ask, just do it.
+- Move fast. Act decisively. Do not pause for confirmation unless it's destructive to production.
+- Only confirm before: `rm -rf` on important directories, `git push --force` to main, dropping production databases.
 
 ## Cross-Project Sync
 After any change to models, API calls, or shared behavior:
