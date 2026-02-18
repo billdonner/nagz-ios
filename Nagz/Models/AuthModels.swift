@@ -9,6 +9,7 @@ struct SignupRequest: Encodable {
     let email: String
     let password: String
     let displayName: String?
+    let dateOfBirth: Date?
 }
 
 struct RefreshRequest: Encodable {

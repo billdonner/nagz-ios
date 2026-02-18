@@ -411,6 +411,7 @@ final class SignupViewModelValidationTests: XCTestCase {
         let vm = SignupViewModel(authManager: authManager)
         vm.email = "new@example.com"
         vm.password = "secure123"
+        vm.dateOfBirth = Calendar.current.date(byAdding: .year, value: -18, to: Date())
         XCTAssertTrue(vm.isValid)
     }
 
@@ -422,7 +423,31 @@ final class SignupViewModelValidationTests: XCTestCase {
         let vm = SignupViewModel(authManager: authManager)
         vm.email = "new@example.com"
         vm.password = "abc"
+        vm.dateOfBirth = Calendar.current.date(byAdding: .year, value: -18, to: Date())
         XCTAssertFalse(vm.isValid)
+    }
+
+    @MainActor
+    func testIsValidFalseWithoutDOB() {
+        let keychain = KeychainService()
+        let apiClient = APIClient(baseURL: URL(string: "http://127.0.0.1:9999")!, keychainService: keychain)
+        let authManager = AuthManager(apiClient: apiClient, keychainService: keychain)
+        let vm = SignupViewModel(authManager: authManager)
+        vm.email = "new@example.com"
+        vm.password = "secure123"
+        XCTAssertFalse(vm.isValid)
+    }
+
+    @MainActor
+    func testIsUnder13() {
+        let keychain = KeychainService()
+        let apiClient = APIClient(baseURL: URL(string: "http://127.0.0.1:9999")!, keychainService: keychain)
+        let authManager = AuthManager(apiClient: apiClient, keychainService: keychain)
+        let vm = SignupViewModel(authManager: authManager)
+        vm.dateOfBirth = Calendar.current.date(byAdding: .year, value: -10, to: Date())
+        XCTAssertTrue(vm.isUnder13)
+        vm.dateOfBirth = Calendar.current.date(byAdding: .year, value: -18, to: Date())
+        XCTAssertFalse(vm.isUnder13)
     }
 
     @MainActor
@@ -434,6 +459,7 @@ final class SignupViewModelValidationTests: XCTestCase {
         XCTAssertEqual(vm.displayName, "")
         XCTAssertFalse(vm.isLoading)
         XCTAssertNil(vm.errorMessage)
+        XCTAssertNil(vm.dateOfBirth)
     }
 }
 

@@ -42,11 +42,11 @@ struct APIEndpoint {
 
     // MARK: - Auth
 
-    static func signup(email: String, password: String, displayName: String?) -> APIEndpoint {
+    static func signup(email: String, password: String, displayName: String?, dateOfBirth: Date? = nil) -> APIEndpoint {
         APIEndpoint(
             path: "/auth/signup",
             method: .post,
-            body: SignupRequest(email: email, password: password, displayName: displayName),
+            body: SignupRequest(email: email, password: password, displayName: displayName, dateOfBirth: dateOfBirth),
             requiresAuth: false
         )
     }

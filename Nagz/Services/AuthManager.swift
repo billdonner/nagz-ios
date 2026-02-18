@@ -71,8 +71,8 @@ final class AuthManager {
         UserDefaults.standard.set(response.user.id.uuidString, forKey: "nagz_user_id")
     }
 
-    func signup(email: String, password: String, displayName: String?) async throws {
-        let response: AuthResponse = try await apiClient.request(.signup(email: email, password: password, displayName: displayName))
+    func signup(email: String, password: String, displayName: String?, dateOfBirth: Date? = nil) async throws {
+        let response: AuthResponse = try await apiClient.request(.signup(email: email, password: password, displayName: displayName, dateOfBirth: dateOfBirth))
         try await keychainService.saveTokens(access: response.accessToken, refresh: response.refreshToken)
         state = .authenticated(user: response.user)
         UserDefaults.standard.set(response.user.id.uuidString, forKey: "nagz_user_id")
