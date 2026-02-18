@@ -7,6 +7,7 @@ final class SafetyViewModel {
     var isSubmitting = false
     var reportCreated = false
     var blockCreated = false
+    var relationshipSuspended = false
     var errorMessage: String?
 
     // Report form
@@ -14,11 +15,21 @@ final class SafetyViewModel {
 
     // Block
     var blockTarget: UUID?
+    var blocks: [BlockResponse] = []
 
     private let apiClient: APIClient
 
     init(apiClient: APIClient) {
         self.apiClient = apiClient
+    }
+
+    func loadBlocks() async {
+        do {
+            let response: PaginatedResponse<BlockResponse> = try await apiClient.request(.listBlocks())
+            blocks = response.items
+        } catch {
+            // Non-critical, ignore
+        }
     }
 
     func submitAbuseReport(targetId: UUID) async {
@@ -60,6 +71,21 @@ final class SafetyViewModel {
             let _: BlockResponse = try await apiClient.request(
                 .updateBlock(blockId: blockId, state: .lifted)
             )
+            await loadBlocks()
+        } catch let error as APIError {
+            errorMessage = error.errorDescription
+        } catch {
+            errorMessage = error.localizedDescription
+        }
+        isSubmitting = false
+    }
+
+    func suspendRelationship(memberId: UUID) async {
+        isSubmitting = true
+        errorMessage = nil
+        do {
+            try await apiClient.requestVoid(.suspendRelationship(relationshipId: memberId))
+            relationshipSuspended = true
         } catch let error as APIError {
             errorMessage = error.errorDescription
         } catch {

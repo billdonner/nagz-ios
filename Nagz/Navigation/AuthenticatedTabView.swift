@@ -156,7 +156,8 @@ private struct FamilyTabContent: View {
                             SafetyView(
                                 apiClient: apiClient,
                                 members: viewModel.members,
-                                currentUserId: currentUserId
+                                currentUserId: currentUserId,
+                                isGuardian: isAdmin
                             )
                         }
                         NavigationLink("Account") {

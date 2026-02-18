@@ -108,6 +108,21 @@ struct NagDetailView: View {
                                     .frame(maxWidth: .infinity)
                             }
                         }
+
+                        Section {
+                            Button {
+                                Task { await viewModel.snooze(minutes: 15) }
+                            } label: {
+                                if viewModel.isUpdating {
+                                    ProgressView()
+                                        .frame(maxWidth: .infinity)
+                                } else {
+                                    Label("Snooze 15 min", systemImage: "clock.badge.xmark")
+                                        .frame(maxWidth: .infinity)
+                                }
+                            }
+                            .disabled(viewModel.isUpdating)
+                        }
                     }
 
                     // Excuses list

@@ -88,6 +88,25 @@ final class NagDetailViewModel {
         isUpdating = false
     }
 
+    func snooze(minutes: Int) async {
+        guard let nag else { return }
+        isUpdating = true
+        errorMessage = nil
+        let newDue = nag.dueAt.addingTimeInterval(Double(minutes) * 60)
+        let update = NagUpdate(dueAt: newDue)
+        do {
+            let updated: NagResponse = try await apiClient.request(
+                .updateNag(nagId: nagId, update: update)
+            )
+            self.nag = updated
+        } catch let error as APIError {
+            errorMessage = error.errorDescription
+        } catch {
+            errorMessage = error.localizedDescription
+        }
+        isUpdating = false
+    }
+
     func recomputeEscalation() async {
         isRecomputing = true
         errorMessage = nil

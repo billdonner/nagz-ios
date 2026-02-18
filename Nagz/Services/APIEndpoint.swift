@@ -415,6 +415,23 @@ struct APIEndpoint {
         )
     }
 
+    static func listBlocks(limit: Int = Constants.Pagination.defaultLimit, offset: Int = 0) -> APIEndpoint {
+        APIEndpoint(
+            path: "/blocks",
+            queryItems: [
+                URLQueryItem(name: "limit", value: "\(limit)"),
+                URLQueryItem(name: "offset", value: "\(offset)")
+            ]
+        )
+    }
+
+    static func suspendRelationship(relationshipId: UUID) -> APIEndpoint {
+        APIEndpoint(
+            path: "/relationships/\(relationshipId)/suspend",
+            method: .post
+        )
+    }
+
     // MARK: - Accounts
 
     static func deleteAccount(userId: UUID) -> APIEndpoint {
@@ -445,6 +462,23 @@ struct APIEndpoint {
             path: "/devices",
             method: .post,
             body: DeviceTokenRegister(platform: platform, token: token)
+        )
+    }
+
+    static func listDevices(limit: Int = Constants.Pagination.defaultLimit, offset: Int = 0) -> APIEndpoint {
+        APIEndpoint(
+            path: "/devices",
+            queryItems: [
+                URLQueryItem(name: "limit", value: "\(limit)"),
+                URLQueryItem(name: "offset", value: "\(offset)")
+            ]
+        )
+    }
+
+    static func deleteDevice(deviceId: UUID) -> APIEndpoint {
+        APIEndpoint(
+            path: "/devices/\(deviceId)",
+            method: .delete
         )
     }
 
