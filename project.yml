@@ -9,6 +9,9 @@ packages:
   KeychainAccess:
     url: https://github.com/kishikawakatsumi/KeychainAccess.git
     from: "4.2.2"
+  GRDB:
+    url: https://github.com/groue/GRDB.swift.git
+    from: "7.0.0"
 
 targets:
   Nagz:
@@ -33,6 +36,7 @@ targets:
         ENABLE_USER_SCRIPT_SANDBOXING: NO
     dependencies:
       - package: KeychainAccess
+      - package: GRDB
     entitlements:
       path: Nagz/Nagz.entitlements
       properties:

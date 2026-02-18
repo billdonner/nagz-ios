@@ -20,11 +20,14 @@
 		2C5C0179A7849D66DDBE2A57 /* MemberListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAD16D6E59A98D9D44F48D03 /* MemberListViewModel.swift */; };
 		30FE0CA1C7AE1A7C39EBC6A1 /* ExcuseModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 159D7C43D155D86EE40E00A7 /* ExcuseModels.swift */; };
 		31786F9BFF5056BF5DD0FB91 /* SafetyModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = A14A7ACF3D604B6E110A26B4 /* SafetyModels.swift */; };
+		33ECF4A54330D14672B855EB /* DatabaseManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0859112BEE5F101B319AFE76 /* DatabaseManager.swift */; };
+		3442D55AEDBE7F239642D7FF /* CachedRecords.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09228CDDB89EBA4479C10F8B /* CachedRecords.swift */; };
 		350FB4B166D078DD5BC0EEC9 /* CreateNagViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D5DE9C0FB044817490BD132 /* CreateNagViewModel.swift */; };
 		396E4226730469AEA60B71D9 /* NagListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3EC5EC449162BDDDA1AEA55E /* NagListViewModel.swift */; };
 		41624A0FA5DBA542A0351B6C /* EscalationModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04D5AC512A990EFC2E729F29 /* EscalationModels.swift */; };
 		424953649E34B0D46C75BD5F /* ModelDecodingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1FBFCDE4C04F3EC809309128 /* ModelDecodingTests.swift */; };
 		4440085F3A155A314DC293BE /* PushNotificationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17D33EACD9E91105C8BA2127 /* PushNotificationService.swift */; };
+		46EEE8DB4387C89E94E33E66 /* GRDB in Frameworks */ = {isa = PBXBuildFile; productRef = 6AA6D2A0605204CDBCCED3B3 /* GRDB */; };
 		48F29924A9EAEE816CE948E5 /* NagDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83E67D051966AD3EDD9F8D7C /* NagDetailView.swift */; };
 		505CA8990F29CD58610ABF47 /* AuthenticatedTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E89A05814372C9BCE15E6EC /* AuthenticatedTabView.swift */; };
 		5623F365A067F7E33C395F7D /* PolicyDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6ED1D6F2ECDC7A749F865DCD /* PolicyDetailView.swift */; };
@@ -61,6 +64,7 @@
 		AB9FA232D246AB19B4EA262F /* ConsentModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA264D3B7744A48AB3904C2F /* ConsentModels.swift */; };
 		ABE7491D55FBA095F89BFD3A /* ManageMembersView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 615BFEFFC265637815DB1707 /* ManageMembersView.swift */; };
 		AEFCF8156E0CF766CC91D2B2 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2524FDBBE8F215CAB498AD90 /* Constants.swift */; };
+		B0F605FE26C3101FE56C4803 /* OnDeviceAIService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6CC10FBF6817DAB04DCE30B /* OnDeviceAIService.swift */; };
 		B4181171676EAD0BACA7E4AA /* DeliveryModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C2745952F84266C12B43D6F /* DeliveryModels.swift */; };
 		B45D7C13CBAF43DDD2DC7EF7 /* CreateFamilyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 478FD6A5253FF850A9EC7832 /* CreateFamilyView.swift */; };
 		B6611247C648154741F70815 /* DeliveryHistoryViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10DD058430F66D0C0640ABB8 /* DeliveryHistoryViewModel.swift */; };
@@ -68,10 +72,12 @@
 		B9EC5FC025893AEFB863FA97 /* SafetyViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90C1EED5F97864A105AE2117 /* SafetyViewModel.swift */; };
 		BC3F961DC9D45F8A5813CA82 /* SignupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE0B9F4BCBAB9DA56A1A82E9 /* SignupView.swift */; };
 		BED7041B5A270167EA6FD99B /* NagListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A03B64D4D5A805C21596C5F0 /* NagListView.swift */; };
+		C072BCF52EA70376D2D99D72 /* AIService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2070199AFE540C086F22328 /* AIService.swift */; };
 		C4511CD48BEEB9803576A532 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 799222C076E18C851FFF7C9E /* AppDelegate.swift */; };
 		C6AD093090BB94EE3660E7B1 /* ErrorModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8AEE80ECDC2335FED6F07DD /* ErrorModels.swift */; };
 		C8ED407409D4BBED50982A85 /* KeychainService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 62B0E5FF945FF5C1DF5EA1D3 /* KeychainService.swift */; };
 		C8FE07CDAE40C2B50B1E6B9C /* DeliveryHistoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B16BEEBE6F3B1BEACF53FFAC /* DeliveryHistoryView.swift */; };
+		CC898491EAE1236F629698BA /* SyncService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7321DCBD5A00F79FB61647A6 /* SyncService.swift */; };
 		CCFE2834956D7B50CA7BBFD6 /* FamilyViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C48EF0BFA6111245B86B2971 /* FamilyViewModel.swift */; };
 		D64A4632685509BEB0018D5E /* PolicyViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A32FE9E4FB799832D5C3B0B5 /* PolicyViewModel.swift */; };
 		DA6060AE8EAE463303B6F915 /* NagzApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAF6A3CE8CF93F2302F54967 /* NagzApp.swift */; };
@@ -82,6 +88,7 @@
 		E6C2D67EBC5D812CF590C0AD /* IncentiveRulesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1618B20BD4EBDD00C94901B5 /* IncentiveRulesView.swift */; };
 		EBFA84D9138F0B611957E4B0 /* ReportsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4A715516D53FF9CD1661B2E /* ReportsView.swift */; };
 		F527047B44CB0A89B8A82E21 /* NagDetailViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D8B860496CD6D4BE858F1F2 /* NagDetailViewModel.swift */; };
+		FDA477888348BFF5346924C4 /* AIModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8D5A1D2FBCFD9344C12FD96 /* AIModels.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -97,6 +104,8 @@
 /* Begin PBXFileReference section */
 		04D5AC512A990EFC2E729F29 /* EscalationModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EscalationModels.swift; sourceTree = "<group>"; };
 		07D0EAC9F8FFBA5872FD80CF /* MemberListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemberListView.swift; sourceTree = "<group>"; };
+		0859112BEE5F101B319AFE76 /* DatabaseManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatabaseManager.swift; sourceTree = "<group>"; };
+		09228CDDB89EBA4479C10F8B /* CachedRecords.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CachedRecords.swift; sourceTree = "<group>"; };
 		0AA44AE0BEBA58C043C996A1 /* LoginViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewModel.swift; sourceTree = "<group>"; };
 		0C807C8B04BC360E1936FACD /* AuthModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthModels.swift; sourceTree = "<group>"; };
 		0D8B860496CD6D4BE858F1F2 /* NagDetailViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NagDetailViewModel.swift; sourceTree = "<group>"; };
@@ -133,6 +142,7 @@
 		6E621A4F0EDD94F399E2C9DA /* AppEnvironment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppEnvironment.swift; sourceTree = "<group>"; };
 		6ED1D6F2ECDC7A749F865DCD /* PolicyDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PolicyDetailView.swift; sourceTree = "<group>"; };
 		72F118F344FB4C3411FAAEC4 /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
+		7321DCBD5A00F79FB61647A6 /* SyncService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SyncService.swift; sourceTree = "<group>"; };
 		799222C076E18C851FFF7C9E /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		7B70AA17D1E21D3916FD048C /* EnvironmentValues+API.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "EnvironmentValues+API.swift"; sourceTree = "<group>"; };
 		83E67D051966AD3EDD9F8D7C /* NagDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NagDetailView.swift; sourceTree = "<group>"; };
@@ -156,9 +166,12 @@
 		AD3190FAD0A5DD8A6323C69C /* GamificationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GamificationView.swift; sourceTree = "<group>"; };
 		AE0B9F4BCBAB9DA56A1A82E9 /* SignupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignupView.swift; sourceTree = "<group>"; };
 		B16BEEBE6F3B1BEACF53FFAC /* DeliveryHistoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeliveryHistoryView.swift; sourceTree = "<group>"; };
+		B2070199AFE540C086F22328 /* AIService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AIService.swift; sourceTree = "<group>"; };
 		BAA9ECF7D3600FB6AF4C758C /* ReportModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReportModels.swift; sourceTree = "<group>"; };
 		C3304DDCA502144AB4F456FB /* DeviceModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceModels.swift; sourceTree = "<group>"; };
 		C48EF0BFA6111245B86B2971 /* FamilyViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FamilyViewModel.swift; sourceTree = "<group>"; };
+		C6CC10FBF6817DAB04DCE30B /* OnDeviceAIService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnDeviceAIService.swift; sourceTree = "<group>"; };
+		C8D5A1D2FBCFD9344C12FD96 /* AIModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AIModels.swift; sourceTree = "<group>"; };
 		C9555685DE01F4548E6AC6A0 /* PreferenceModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreferenceModels.swift; sourceTree = "<group>"; };
 		CCA86773FC15EB5B201B38D0 /* VersionModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VersionModels.swift; sourceTree = "<group>"; };
 		D2C31A6C1CA6645B991FD667 /* AccountView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountView.swift; sourceTree = "<group>"; };
@@ -181,6 +194,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				577DDC65B9F769BBF403122F /* KeychainAccess in Frameworks */,
+				46EEE8DB4387C89E94E33E66 /* GRDB in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -206,6 +220,7 @@
 				17C15105D93BCA259662041F /* Nagz.entitlements */,
 				AAF6A3CE8CF93F2302F54967 /* NagzApp.swift */,
 				998CCC12A2469D03613D59A1 /* Config */,
+				9AFDB1019CA177F867593271 /* Database */,
 				7D8CF6F23E599D0784C2095F /* Extensions */,
 				B337BE27330FC5BDD6DF7393 /* Models */,
 				EBA462D4633FB7AFB7C79EED /* Navigation */,
@@ -286,6 +301,15 @@
 			path = Config;
 			sourceTree = "<group>";
 		};
+		9AFDB1019CA177F867593271 /* Database */ = {
+			isa = PBXGroup;
+			children = (
+				09228CDDB89EBA4479C10F8B /* CachedRecords.swift */,
+				0859112BEE5F101B319AFE76 /* DatabaseManager.swift */,
+			);
+			path = Database;
+			sourceTree = "<group>";
+		};
 		A90A96E0F7275AB252AB99C4 /* Family */ = {
 			isa = PBXGroup;
 			children = (
@@ -302,6 +326,7 @@
 		B337BE27330FC5BDD6DF7393 /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				C8D5A1D2FBCFD9344C12FD96 /* AIModels.swift */,
 				0C807C8B04BC360E1936FACD /* AuthModels.swift */,
 				AA264D3B7744A48AB3904C2F /* ConsentModels.swift */,
 				3C2745952F84266C12B43D6F /* DeliveryModels.swift */,
@@ -327,11 +352,14 @@
 		CFB239385BA15A1C2BBE9C22 /* Services */ = {
 			isa = PBXGroup;
 			children = (
+				B2070199AFE540C086F22328 /* AIService.swift */,
 				9690A2B5BD1CBA627F52AF4E /* APIClient.swift */,
 				F73099FD428BA8EC44A85ECB /* APIEndpoint.swift */,
 				1AC6950A07FD4A8909F73946 /* AuthManager.swift */,
 				62B0E5FF945FF5C1DF5EA1D3 /* KeychainService.swift */,
+				C6CC10FBF6817DAB04DCE30B /* OnDeviceAIService.swift */,
 				17D33EACD9E91105C8BA2127 /* PushNotificationService.swift */,
+				7321DCBD5A00F79FB61647A6 /* SyncService.swift */,
 				D917295C9B5550C0BE6F63EF /* VersionChecker.swift */,
 			);
 			path = Services;
@@ -442,6 +470,7 @@
 			name = Nagz;
 			packageProductDependencies = (
 				545A46357975BAA1644730CE /* KeychainAccess */,
+				6AA6D2A0605204CDBCCED3B3 /* GRDB */,
 			);
 			productName = Nagz;
 			productReference = A88D52E67BB456B1C310B4A3 /* Nagz.app */;
@@ -472,6 +501,7 @@
 			mainGroup = 709F1D592B96CDD8AB13BE93;
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
+				B3EE353BC8F5F0D49247FA9E /* XCRemoteSwiftPackageReference "GRDB.swift" */,
 				DB471355E3D294EFBC7ABD99 /* XCRemoteSwiftPackageReference "KeychainAccess" */,
 			);
 			preferredProjectObjectVersion = 77;
@@ -489,6 +519,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				FDA477888348BFF5346924C4 /* AIModels.swift in Sources */,
+				C072BCF52EA70376D2D99D72 /* AIService.swift in Sources */,
 				A922A5B3B8F9CDCF4BD36533 /* APIClient.swift in Sources */,
 				6A9785BA9A4D40BF26A27C1A /* APIEndpoint.swift in Sources */,
 				69072BBDECA8680C5104363E /* AccountView.swift in Sources */,
@@ -497,6 +529,7 @@
 				8D8F30C0E7EAE400C16C0C77 /* AuthManager.swift in Sources */,
 				19D475F6D49A24E958EB4E00 /* AuthModels.swift in Sources */,
 				505CA8990F29CD58610ABF47 /* AuthenticatedTabView.swift in Sources */,
+				3442D55AEDBE7F239642D7FF /* CachedRecords.swift in Sources */,
 				791570AA436243B5E505AD63 /* ConsentListView.swift in Sources */,
 				AB9FA232D246AB19B4EA262F /* ConsentModels.swift in Sources */,
 				20AE20BCBFB7382743294AC6 /* ConsentViewModel.swift in Sources */,
@@ -505,6 +538,7 @@
 				B45D7C13CBAF43DDD2DC7EF7 /* CreateFamilyView.swift in Sources */,
 				8C6174B2DB97D37F62276D73 /* CreateNagView.swift in Sources */,
 				350FB4B166D078DD5BC0EEC9 /* CreateNagViewModel.swift in Sources */,
+				33ECF4A54330D14672B855EB /* DatabaseManager.swift in Sources */,
 				AAAD4B3DA334581D8040E835 /* Date+Formatting.swift in Sources */,
 				C8FE07CDAE40C2B50B1E6B9C /* DeliveryHistoryView.swift in Sources */,
 				B6611247C648154741F70815 /* DeliveryHistoryViewModel.swift in Sources */,
@@ -543,6 +577,7 @@
 				9E3B5FA1D29A914B45079842 /* NagModels.swift in Sources */,
 				A9C26BD7772B632CECDF917E /* NagRowView.swift in Sources */,
 				DA6060AE8EAE463303B6F915 /* NagzApp.swift in Sources */,
+				B0F605FE26C3101FE56C4803 /* OnDeviceAIService.swift in Sources */,
 				7A6DD790F8FADCFDDB11E379 /* PaginatedResponse.swift in Sources */,
 				5623F365A067F7E33C395F7D /* PolicyDetailView.swift in Sources */,
 				92B2DE215E9885838392AED3 /* PolicyListView.swift in Sources */,
@@ -560,6 +595,7 @@
 				B9EC5FC025893AEFB863FA97 /* SafetyViewModel.swift in Sources */,
 				BC3F961DC9D45F8A5813CA82 /* SignupView.swift in Sources */,
 				10648AB653519F63339D0BA7 /* SignupViewModel.swift in Sources */,
+				CC898491EAE1236F629698BA /* SyncService.swift in Sources */,
 				8FE044ED4C9F9F4B97EBED73 /* VersionChecker.swift in Sources */,
 				648A714E50978D32602CF46C /* VersionModels.swift in Sources */,
 			);
@@ -826,6 +862,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		B3EE353BC8F5F0D49247FA9E /* XCRemoteSwiftPackageReference "GRDB.swift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/groue/GRDB.swift.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 7.0.0;
+			};
+		};
 		DB471355E3D294EFBC7ABD99 /* XCRemoteSwiftPackageReference "KeychainAccess" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/kishikawakatsumi/KeychainAccess.git";
@@ -841,6 +885,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = DB471355E3D294EFBC7ABD99 /* XCRemoteSwiftPackageReference "KeychainAccess" */;
 			productName = KeychainAccess;
+		};
+		6AA6D2A0605204CDBCCED3B3 /* GRDB */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = B3EE353BC8F5F0D49247FA9E /* XCRemoteSwiftPackageReference "GRDB.swift" */;
+			productName = GRDB;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

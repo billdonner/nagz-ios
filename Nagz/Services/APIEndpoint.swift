@@ -433,4 +433,72 @@ struct APIEndpoint {
             body: DeviceTokenRegister(platform: platform, token: token)
         )
     }
+
+    // MARK: - AI
+
+    static func aiSummarizeExcuse(text: String, nagId: UUID) -> APIEndpoint {
+        APIEndpoint(
+            path: "/ai/summarize-excuse",
+            method: .post,
+            body: ExcuseSummaryRequest(text: text, nagId: nagId)
+        )
+    }
+
+    static func aiSelectTone(nagId: UUID) -> APIEndpoint {
+        APIEndpoint(
+            path: "/ai/select-tone",
+            method: .post,
+            body: ToneSelectRequest(nagId: nagId)
+        )
+    }
+
+    static func aiCoaching(nagId: UUID) -> APIEndpoint {
+        APIEndpoint(
+            path: "/ai/coaching",
+            method: .post,
+            body: CoachingRequest(nagId: nagId)
+        )
+    }
+
+    static func aiPatterns(userId: UUID, familyId: UUID) -> APIEndpoint {
+        APIEndpoint(
+            path: "/ai/patterns",
+            queryItems: [
+                URLQueryItem(name: "user_id", value: userId.uuidString),
+                URLQueryItem(name: "family_id", value: familyId.uuidString),
+            ]
+        )
+    }
+
+    static func aiDigest(familyId: UUID) -> APIEndpoint {
+        APIEndpoint(
+            path: "/ai/digest",
+            queryItems: [URLQueryItem(name: "family_id", value: familyId.uuidString)]
+        )
+    }
+
+    static func aiPredictCompletion(nagId: UUID) -> APIEndpoint {
+        APIEndpoint(
+            path: "/ai/predict-completion",
+            queryItems: [URLQueryItem(name: "nag_id", value: nagId.uuidString)]
+        )
+    }
+
+    static func aiPushBack(nagId: UUID) -> APIEndpoint {
+        APIEndpoint(
+            path: "/ai/push-back",
+            method: .post,
+            body: PushBackRequest(nagId: nagId)
+        )
+    }
+
+    // MARK: - Sync
+
+    static func syncEvents(familyId: UUID, since: Date?) -> APIEndpoint {
+        var items = [URLQueryItem(name: "family_id", value: familyId.uuidString)]
+        if let since {
+            items.append(URLQueryItem(name: "since", value: ISO8601DateFormatter().string(from: since)))
+        }
+        return APIEndpoint(path: "/sync/events", queryItems: items)
+    }
 }
