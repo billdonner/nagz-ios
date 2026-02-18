@@ -51,15 +51,15 @@ actor APIClient {
         try await performRequest(endpoint, isRetry: false)
     }
 
-    /// Request with in-memory caching. Returns cached data if within TTL.
+    /// Request with in-memory caching. Stores raw JSON bytes and re-decodes on hit.
     @discardableResult
     func cachedRequest<T: Decodable & Sendable>(_ endpoint: APIEndpoint, ttl: TimeInterval = 300) async throws -> T {
         let key = endpoint.cacheKey
-        if let entry = cache[key], !entry.isExpired, let data = entry.data as? T {
-            return data
+        if let entry = cache[key], !entry.isExpired {
+            return try decoder.decode(T.self, from: entry.data)
         }
-        let result: T = try await performRequest(endpoint, isRetry: false)
-        cache[key] = CacheEntry(data: result, ttl: ttl)
+        let (result, rawData): (T, Data) = try await performRequestWithData(endpoint, isRetry: false)
+        cache[key] = CacheEntry(data: rawData, ttl: ttl)
         return result
     }
 
@@ -78,6 +78,69 @@ actor APIClient {
     }
 
     // MARK: - Private
+
+    private func performRequestWithData<T: Decodable>(_ endpoint: APIEndpoint, isRetry: Bool) async throws -> (T, Data) {
+        var urlComponents = URLComponents(url: baseURL.appendingPathComponent(endpoint.path), resolvingAgainstBaseURL: true)!
+        if !endpoint.queryItems.isEmpty {
+            urlComponents.queryItems = endpoint.queryItems
+        }
+
+        guard let url = urlComponents.url else {
+            throw APIError.invalidURL
+        }
+
+        var urlRequest = URLRequest(url: url)
+        urlRequest.httpMethod = endpoint.method.rawValue
+        urlRequest.setValue("application/json", forHTTPHeaderField: "Content-Type")
+
+        if endpoint.requiresAuth {
+            if let token = await keychainService.accessToken {
+                urlRequest.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
+            }
+        }
+
+        if let body = endpoint.body {
+            urlRequest.httpBody = try encoder.encode(AnyEncodable(body))
+        }
+
+        let (data, response): (Data, URLResponse)
+        do {
+            (data, response) = try await session.data(for: urlRequest)
+        } catch {
+            throw APIError.networkError(error)
+        }
+
+        guard let httpResponse = response as? HTTPURLResponse else {
+            throw APIError.unknown(0, "Invalid response")
+        }
+
+        if httpResponse.statusCode == 204 {
+            if let empty = EmptyResponse() as? T {
+                return (empty, data)
+            }
+        }
+
+        if httpResponse.statusCode == 401 && !isRetry && endpoint.requiresAuth {
+            if let refreshed = try? await refreshTokens() {
+                if refreshed {
+                    return try await performRequestWithData(endpoint, isRetry: true)
+                }
+            }
+            onUnauthorized?()
+            throw APIError.unauthorized
+        }
+
+        if httpResponse.statusCode >= 400 {
+            throw parseError(data: data, statusCode: httpResponse.statusCode)
+        }
+
+        do {
+            let result = try decoder.decode(T.self, from: data)
+            return (result, data)
+        } catch {
+            throw APIError.decodingError(error)
+        }
+    }
 
     private func performRequest<T: Decodable>(_ endpoint: APIEndpoint, isRetry: Bool) async throws -> T {
         var urlComponents = URLComponents(url: baseURL.appendingPathComponent(endpoint.path), resolvingAgainstBaseURL: true)!
@@ -201,11 +264,11 @@ actor APIClient {
 // MARK: - Cache
 
 private struct CacheEntry {
-    let data: Any
+    let data: Data
     let timestamp: Date
     let ttl: TimeInterval
 
-    init(data: Any, ttl: TimeInterval) {
+    init(data: Data, ttl: TimeInterval) {
         self.data = data
         self.timestamp = Date()
         self.ttl = ttl

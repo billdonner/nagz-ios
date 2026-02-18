@@ -20,6 +20,6 @@ enum NagCategoryAppEnum: String, AppEnum {
     }
 
     var nagCategory: NagCategory {
-        NagCategory(rawValue: rawValue)!
+        NagCategory(rawValue: rawValue) ?? .other
     }
 }

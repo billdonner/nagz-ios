@@ -4,6 +4,7 @@ struct ContentView: View {
     let authManager: AuthManager
     let apiClient: APIClient
     let pushService: PushNotificationService
+    let syncService: SyncService
     let versionChecker: VersionChecker
 
     @State private var showUpdateAlert = false
@@ -38,7 +39,8 @@ struct ContentView: View {
                     AuthenticatedTabView(
                         authManager: authManager,
                         apiClient: apiClient,
-                        pushService: pushService
+                        pushService: pushService,
+                        syncService: syncService
                     )
                 }
             }

@@ -50,6 +50,7 @@ struct NagzApp: App {
                 authManager: authManager,
                 apiClient: apiClient,
                 pushService: pushService,
+                syncService: syncService,
                 versionChecker: versionChecker
             )
             .environment(\.apiClient, apiClient)

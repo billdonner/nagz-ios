@@ -33,9 +33,13 @@ final class PushNotificationService: NSObject {
 
         Task {
             guard let apiClient else { return }
-            let _: DeviceTokenResponse = try await apiClient.request(
-                .registerDevice(platform: platform, token: token)
-            )
+            do {
+                let _: DeviceTokenResponse = try await apiClient.request(
+                    .registerDevice(platform: platform, token: token)
+                )
+            } catch {
+                print("[PushNotificationService] Failed to register device token: \(error)")
+            }
         }
     }
 

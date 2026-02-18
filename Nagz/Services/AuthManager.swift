@@ -46,14 +46,12 @@ final class AuthManager {
         }
 
         // Try to refresh to validate the session
-        let hasRefresh = await keychainService.refreshToken != nil
-        guard hasRefresh else {
+        guard let refreshToken = await keychainService.refreshToken else {
             state = .unauthenticated
             return
         }
 
         do {
-            let refreshToken = await keychainService.refreshToken!
             let response: AuthResponse = try await apiClient.request(.refresh(refreshToken: refreshToken))
             try await keychainService.saveTokens(access: response.accessToken, refresh: response.refreshToken)
             state = .authenticated(user: response.user)

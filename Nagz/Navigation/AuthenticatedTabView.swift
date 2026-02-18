@@ -5,19 +5,25 @@ struct AuthenticatedTabView: View {
     let authManager: AuthManager
     let apiClient: APIClient
     let pushService: PushNotificationService
+    let syncService: SyncService
 
     @State private var familyViewModel: FamilyViewModel
     @State private var selectedNagId: UUID?
 
-    init(authManager: AuthManager, apiClient: APIClient, pushService: PushNotificationService) {
+    init(authManager: AuthManager, apiClient: APIClient, pushService: PushNotificationService, syncService: SyncService) {
         self.authManager = authManager
         self.apiClient = apiClient
         self.pushService = pushService
+        self.syncService = syncService
         _familyViewModel = State(initialValue: FamilyViewModel(apiClient: apiClient))
     }
 
     private var currentUserId: UUID {
-        authManager.currentUser?.id ?? UUID()
+        guard let user = authManager.currentUser else {
+            assertionFailure("AuthenticatedTabView shown without authenticated user")
+            return UUID(uuidString: "00000000-0000-0000-0000-000000000000")!
+        }
+        return user.id
     }
 
     private var myRole: FamilyRole? {
@@ -43,6 +49,7 @@ struct AuthenticatedTabView: View {
                let savedId = UserDefaults.standard.string(forKey: "nagz_family_id"),
                let familyId = UUID(uuidString: savedId) {
                 await familyViewModel.loadFamily(id: familyId)
+                await syncService.startPeriodicSync(familyId: familyId)
             }
             NagzShortcutsProvider.updateAppShortcutParameters()
         }
