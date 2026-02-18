@@ -2,10 +2,12 @@ import SwiftUI
 
 struct SignupView: View {
     @State private var viewModel: SignupViewModel
+    let apiClient: APIClient
     @Environment(\.dismiss) private var dismiss
 
-    init(authManager: AuthManager) {
+    init(authManager: AuthManager, apiClient: APIClient) {
         _viewModel = State(initialValue: SignupViewModel(authManager: authManager))
+        self.apiClient = apiClient
     }
 
     var body: some View {
@@ -43,6 +45,17 @@ struct SignupView: View {
                         }
                     }
                     .disabled(!viewModel.isValid || viewModel.isLoading)
+                } footer: {
+                    Text("By signing up, you agree to our Terms of Service and Privacy Policy.")
+                }
+
+                Section("Legal") {
+                    NavigationLink("Privacy Policy") {
+                        LegalDocumentView(apiClient: apiClient, documentType: .privacyPolicy)
+                    }
+                    NavigationLink("Terms of Service") {
+                        LegalDocumentView(apiClient: apiClient, documentType: .termsOfService)
+                    }
                 }
             }
             .navigationTitle("Create Account")

@@ -424,6 +424,20 @@ struct APIEndpoint {
         )
     }
 
+    static func exportAccountData() -> APIEndpoint {
+        APIEndpoint(path: "/accounts/export", method: .post)
+    }
+
+    // MARK: - Legal
+
+    static func privacyPolicy() -> APIEndpoint {
+        APIEndpoint(path: "/legal/privacy-policy", requiresAuth: false)
+    }
+
+    static func termsOfService() -> APIEndpoint {
+        APIEndpoint(path: "/legal/terms-of-service", requiresAuth: false)
+    }
+
     // MARK: - Devices
 
     static func registerDevice(platform: DevicePlatform, token: String) -> APIEndpoint {

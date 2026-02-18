@@ -19,7 +19,7 @@ struct ContentView: View {
                     .task { await authManager.restoreSession() }
 
             case .unauthenticated:
-                AuthFlowView(authManager: authManager)
+                AuthFlowView(authManager: authManager, apiClient: apiClient)
 
             case .authenticated:
                 if isBlocked {
@@ -72,6 +72,7 @@ struct ContentView: View {
 
 private struct AuthFlowView: View {
     let authManager: AuthManager
+    let apiClient: APIClient
     @State private var showSignup = false
 
     var body: some View {
@@ -79,7 +80,7 @@ private struct AuthFlowView: View {
             LoginView(authManager: authManager, showSignup: $showSignup)
         }
         .sheet(isPresented: $showSignup) {
-            SignupView(authManager: authManager)
+            SignupView(authManager: authManager, apiClient: apiClient)
         }
     }
 }
