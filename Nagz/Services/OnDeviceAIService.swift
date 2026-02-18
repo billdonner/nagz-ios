@@ -10,6 +10,13 @@ actor OnDeviceAIService: AIService {
     private let fallback: ServerAIService
     private let staleCacheThreshold: TimeInterval = 24 * 60 * 60
 
+    // AI heuristic constants
+    private static let defaultCompletionRate = 0.5
+    private static let categoryWeight = 0.6
+    private static let overallWeight = 0.4
+    private static let confidenceKeyword = 0.7
+    private static let confidenceDefault = 0.3
+
     init(db: DatabaseManager, fallback: ServerAIService) {
         self.db = db
         self.fallback = fallback
@@ -31,11 +38,11 @@ actor OnDeviceAIService: AIService {
             return try await fallback.selectTone(nagId: nagId)
         }
 
-        let nagIdStr = nagId.uuidString
+        let nagIdString = nagId.uuidString
         let reader = await db.reader
 
         guard let nag = try await reader.read({ db in
-            try CachedNag.filter(Column("id") == nagIdStr).fetchOne(db)
+            try CachedNag.filter(Column("id") == nagIdString).fetchOne(db)
         }) else {
             return try await fallback.selectTone(nagId: nagId)
         }
@@ -135,11 +142,11 @@ actor OnDeviceAIService: AIService {
             return try await fallback.predictCompletion(nagId: nagId)
         }
 
-        let nagIdStr = nagId.uuidString
+        let nagIdString = nagId.uuidString
         let reader = await db.reader
 
         guard let nag = try await reader.read({ db in
-            try CachedNag.filter(Column("id") == nagIdStr).fetchOne(db)
+            try CachedNag.filter(Column("id") == nagIdString).fetchOne(db)
         }) else {
             return try await fallback.predictCompletion(nagId: nagId)
         }
@@ -149,13 +156,13 @@ actor OnDeviceAIService: AIService {
                 .filter(Column("recipientId") == nag.recipientId)
                 .filter(Column("familyId") == nag.familyId)
                 .filter(Column("category") == nag.category)
-                .filter(Column("id") != nagIdStr)
+                .filter(Column("id") != nagIdString)
                 .fetchCount(db)
             let completed = try CachedNag
                 .filter(Column("recipientId") == nag.recipientId)
                 .filter(Column("familyId") == nag.familyId)
                 .filter(Column("category") == nag.category)
-                .filter(Column("id") != nagIdStr)
+                .filter(Column("id") != nagIdString)
                 .filter(Column("status") == "completed")
                 .fetchCount(db)
             return (total, completed)
@@ -165,20 +172,20 @@ actor OnDeviceAIService: AIService {
             let total = try CachedNag
                 .filter(Column("recipientId") == nag.recipientId)
                 .filter(Column("familyId") == nag.familyId)
-                .filter(Column("id") != nagIdStr)
+                .filter(Column("id") != nagIdString)
                 .fetchCount(db)
             let completed = try CachedNag
                 .filter(Column("recipientId") == nag.recipientId)
                 .filter(Column("familyId") == nag.familyId)
-                .filter(Column("id") != nagIdStr)
+                .filter(Column("id") != nagIdString)
                 .filter(Column("status") == "completed")
                 .fetchCount(db)
             return (total, completed)
         }
 
-        let catRate = catStats.total > 0 ? Double(catStats.completed) / Double(catStats.total) : 0.5
-        let overallRate = allStats.total > 0 ? Double(allStats.completed) / Double(allStats.total) : 0.5
-        let likelihood = (catRate * 0.6 + overallRate * 0.4).rounded(to: 2)
+        let catRate = catStats.total > 0 ? Double(catStats.completed) / Double(catStats.total) : Self.defaultCompletionRate
+        let overallRate = allStats.total > 0 ? Double(allStats.completed) / Double(allStats.total) : Self.defaultCompletionRate
+        let likelihood = (catRate * Self.categoryWeight + overallRate * Self.overallWeight).rounded(to: 2)
 
         var suggestedTime: Date? = nil
         if nag.status == "open" {
@@ -223,10 +230,10 @@ actor OnDeviceAIService: AIService {
         ]
         for (keyword, category) in keywords {
             if lower.contains(keyword) {
-                return (category, 0.7)
+                return (category, Self.confidenceKeyword)
             }
         }
-        return (.other, 0.3)
+        return (.other, Self.confidenceDefault)
     }
 }
 
