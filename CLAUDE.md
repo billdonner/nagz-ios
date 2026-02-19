@@ -47,7 +47,7 @@ All three Nagz repos (nagzerver, nagz-ios, nagz-web) use a shared API versioning
 | Repo | File | Constant |
 |------|------|----------|
 | nagzerver | `src/nagz/core/version.py` | `SERVER_VERSION`, `API_VERSION`, `MIN_CLIENT_VERSION` |
-| nagz-ios | `Nagz/Services/VersionChecker.swift` | `VersionChecker.clientAPIVersion` |
+| nagz-ios | `Nagz/Services/VersionChecker.swift` | `VersionChecker.clientAPIVersion` (delegates to Constants) |
 | nagz-ios | `Nagz/Config/Constants.swift` | `Constants.Version.clientAPIVersion` |
 | nagz-web | `src/version.tsx` | `CLIENT_API_VERSION` |
 

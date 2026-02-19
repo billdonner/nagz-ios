@@ -12,8 +12,8 @@ enum VersionStatus: Sendable {
 @Observable
 @MainActor
 final class VersionChecker {
-    /// The API version this client was built against.
-    static let clientAPIVersion = "1.0.0"
+    /// The API version this client was built against (canonical source: Constants.Version).
+    static var clientAPIVersion: String { Constants.Version.clientAPIVersion }
 
     private(set) var status: VersionStatus = .unknown
     private(set) var serverInfo: VersionResponse?
