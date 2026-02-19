@@ -28,6 +28,10 @@ struct GamificationView: View {
                     leaderboardSection(board)
                 }
 
+                if !viewModel.badges.isEmpty {
+                    badgesSection
+                }
+
                 if !viewModel.events.isEmpty {
                     recentEventsSection
                 }
@@ -93,6 +97,49 @@ struct GamificationView: View {
                     }
                 }
             }
+        }
+    }
+
+    private var badgesSection: some View {
+        Section("Badges") {
+            ForEach(viewModel.badges) { badge in
+                HStack {
+                    Text(badgeEmoji(for: badge.badgeType))
+                        .font(.title2)
+                    VStack(alignment: .leading) {
+                        Text(badgeLabel(for: badge.badgeType))
+                            .font(.body.weight(.semibold))
+                        Text(badge.earnedAt.relativeDisplay)
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                    }
+                    Spacer()
+                }
+            }
+        }
+    }
+
+    private func badgeEmoji(for type: String) -> String {
+        switch type {
+        case "first_completion": return "🎯"
+        case "streak_3": return "🔥"
+        case "streak_7": return "⚡"
+        case "streak_30": return "💎"
+        case "perfect_week": return "🌟"
+        case "century_club": return "💯"
+        default: return "🏅"
+        }
+    }
+
+    private func badgeLabel(for type: String) -> String {
+        switch type {
+        case "first_completion": return "First Completion"
+        case "streak_3": return "3-Day Streak"
+        case "streak_7": return "7-Day Streak"
+        case "streak_30": return "30-Day Streak"
+        case "perfect_week": return "Perfect Week"
+        case "century_club": return "Century Club"
+        default: return type.replacingOccurrences(of: "_", with: " ").capitalized
         }
     }
 

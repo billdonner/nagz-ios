@@ -17,7 +17,6 @@ struct NagzApp: App {
     init() {
         let keychain = KeychainService()
         let api = APIClient(keychainService: keychain)
-        let auth = AuthManager(apiClient: api, keychainService: keychain)
         let push = PushNotificationService()
         push.configure(apiClient: api)
         let checker = VersionChecker(apiClient: api)
@@ -39,6 +38,8 @@ struct NagzApp: App {
         } catch {
             dbError = error.localizedDescription
         }
+
+        let auth = AuthManager(apiClient: api, keychainService: keychain, syncService: sync)
 
         self.keychainService = keychain
         self.apiClient = api

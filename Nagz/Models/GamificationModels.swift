@@ -30,3 +30,11 @@ struct GamificationEventResponse: Decodable, Identifiable, Sendable {
     let streakDelta: Int
     let at: Date
 }
+
+struct BadgeResponse: Decodable, Identifiable, Sendable {
+    let id: UUID
+    let userId: UUID
+    let familyId: UUID
+    let badgeType: String
+    let earnedAt: Date
+}

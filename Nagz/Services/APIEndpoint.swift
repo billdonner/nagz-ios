@@ -261,6 +261,16 @@ struct APIEndpoint {
         )
     }
 
+    static func gamificationBadges(userId: UUID, familyId: UUID) -> APIEndpoint {
+        APIEndpoint(
+            path: "/gamification/badges",
+            queryItems: [
+                URLQueryItem(name: "user_id", value: userId.uuidString),
+                URLQueryItem(name: "family_id", value: familyId.uuidString),
+            ]
+        )
+    }
+
     static func gamificationEvents(userId: UUID, familyId: UUID? = nil, limit: Int = Constants.Pagination.defaultLimit, offset: Int = 0) -> APIEndpoint {
         var items = [
             URLQueryItem(name: "user_id", value: userId.uuidString),

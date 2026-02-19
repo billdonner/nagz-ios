@@ -7,6 +7,7 @@ final class GamificationViewModel {
     var summary: GamificationSummary?
     var leaderboard: LeaderboardResponse?
     var events: [GamificationEventResponse] = []
+    var badges: [BadgeResponse] = []
     var isLoading = false
     var errorMessage: String?
 
@@ -55,6 +56,15 @@ final class GamificationViewModel {
             events = response.items
         } catch {
             // Events might be empty
+        }
+
+        do {
+            let loadedBadges: [BadgeResponse] = try await apiClient.request(
+                .gamificationBadges(userId: userId, familyId: familyId)
+            )
+            badges = loadedBadges
+        } catch {
+            // Badges might not be available
         }
 
         isLoading = false

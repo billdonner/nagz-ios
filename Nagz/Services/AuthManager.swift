@@ -14,6 +14,7 @@ final class AuthManager {
 
     private let apiClient: APIClient
     private let keychainService: KeychainService
+    private let syncService: SyncService?
 
     var currentUser: AccountResponse? {
         if case .authenticated(let user) = state { return user }
@@ -25,9 +26,10 @@ final class AuthManager {
         return false
     }
 
-    init(apiClient: APIClient, keychainService: KeychainService) {
+    init(apiClient: APIClient, keychainService: KeychainService, syncService: SyncService? = nil) {
         self.apiClient = apiClient
         self.keychainService = keychainService
+        self.syncService = syncService
 
         Task {
             await apiClient.setOnUnauthorized { [weak self] in
@@ -80,6 +82,7 @@ final class AuthManager {
         try? await apiClient.requestVoid(.logout())
         try? await keychainService.clearTokens()
         await apiClient.clearCache()
+        try? await syncService?.clearCache()
         UserDefaults.standard.removeObject(forKey: "nagz_user_id")
         UserDefaults.standard.removeObject(forKey: "nagz_family_id")
         state = .unauthenticated
