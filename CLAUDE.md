@@ -71,7 +71,7 @@ All three Nagz repos (nagzerver, nagz-ios, nagz-web) use a shared API versioning
   - `cachedRequest()` for reads, `invalidateCache(prefix:)` after mutations
   - Auto token refresh on 401 (single retry)
 - `AuthManager` is `@Observable @MainActor` — drives auth state for UI
-- Dev server URL: `http://127.0.0.1:8001/api/v1` (use IP, not localhost, to avoid IPv6 timeout in simulator)
+- Dev server URL: `http://127.0.0.1:9800/api/v1` (use IP, not localhost, to avoid IPv6 timeout in simulator)
 - JSON coding: `convertFromSnakeCase` / `convertToSnakeCase` handles all field name mapping
   - Exception: models with custom CodingKeys must use plain JSONDecoder in tests
 - `ErrorBanner` — reusable error display component with optional retry action
@@ -90,7 +90,7 @@ All three Nagz repos (nagzerver, nagz-ios, nagz-web) use a shared API versioning
 
 ## Known Issues & Fixes
 - Use `127.0.0.1` not `localhost` in simulator (IPv6 timeout)
-- Swift 6: use `nonisolated(unsafe)` for static formatters, `@unchecked Sendable` for notification delegates
+- Swift 6: use `nonisolated(unsafe)` for non-Sendable static properties (e.g. ISO8601DateFormatter), `@MainActor` for AppDelegate and notification delegates
 - Swift 6: actors (KeychainService, APIClient) are already Sendable — do NOT add `nonisolated(unsafe)` to static lets of actor types
 - Swift 6: `AppEntity.defaultQuery` must be a computed property, not stored `var` (concurrency safety)
 - Swift Testing: use `@Suite(.serialized)` when tests share mutable global state (e.g., UserDefaults)
