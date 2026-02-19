@@ -218,6 +218,22 @@ struct APIEndpoint {
         )
     }
 
+    static func getUserPreferences(userId: UUID, familyId: UUID) -> APIEndpoint {
+        APIEndpoint(
+            path: "/preferences/\(userId)",
+            queryItems: [URLQueryItem(name: "family_id", value: familyId.uuidString)]
+        )
+    }
+
+    static func updateUserPreferences(userId: UUID, familyId: UUID, prefs: [String: AnyCodableValue]) -> APIEndpoint {
+        APIEndpoint(
+            path: "/preferences/\(userId)",
+            method: .patch,
+            body: PreferenceUpdate(prefsJson: prefs),
+            queryItems: [URLQueryItem(name: "family_id", value: familyId.uuidString)]
+        )
+    }
+
     // MARK: - Consents
 
     static func listConsents(familyId: UUID, limit: Int = Constants.Pagination.defaultLimit, offset: Int = 0) -> APIEndpoint {
@@ -445,6 +461,10 @@ struct APIEndpoint {
     }
 
     // MARK: - Accounts
+
+    static func createAccount() -> APIEndpoint {
+        APIEndpoint(path: "/accounts", method: .post)
+    }
 
     static func deleteAccount(userId: UUID) -> APIEndpoint {
         APIEndpoint(
