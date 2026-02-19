@@ -30,6 +30,7 @@
 		41624A0FA5DBA542A0351B6C /* EscalationModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04D5AC512A990EFC2E729F29 /* EscalationModels.swift */; };
 		424953649E34B0D46C75BD5F /* ModelDecodingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1FBFCDE4C04F3EC809309128 /* ModelDecodingTests.swift */; };
 		4440085F3A155A314DC293BE /* PushNotificationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17D33EACD9E91105C8BA2127 /* PushNotificationService.swift */; };
+		453A01D996643520BF1F5867 /* ServiceAndViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E704F9C74A46E2A119130C3 /* ServiceAndViewModelTests.swift */; };
 		46EEE8DB4387C89E94E33E66 /* GRDB in Frameworks */ = {isa = PBXBuildFile; productRef = 6AA6D2A0605204CDBCCED3B3 /* GRDB */; };
 		48E1985830A142888450B547 /* IntentServiceContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD1EC9622D9A307210DFE613 /* IntentServiceContainer.swift */; };
 		48F29924A9EAEE816CE948E5 /* NagDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83E67D051966AD3EDD9F8D7C /* NagDetailView.swift */; };
@@ -183,6 +184,7 @@
 		9AB45B90E8BEC815179C22DF /* SafetyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SafetyView.swift; sourceTree = "<group>"; };
 		9DBB9A681F612EC3473C6868 /* GamificationViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GamificationViewModel.swift; sourceTree = "<group>"; };
 		9E6DEEBE1B334FC5685FC4E5 /* EscalationBadge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EscalationBadge.swift; sourceTree = "<group>"; };
+		9E704F9C74A46E2A119130C3 /* ServiceAndViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceAndViewModelTests.swift; sourceTree = "<group>"; };
 		A03B64D4D5A805C21596C5F0 /* NagListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NagListView.swift; sourceTree = "<group>"; };
 		A14A7ACF3D604B6E110A26B4 /* SafetyModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SafetyModels.swift; sourceTree = "<group>"; };
 		A2167A24BA46966A1CC5F470 /* ConsentViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConsentViewModel.swift; sourceTree = "<group>"; };
@@ -473,6 +475,7 @@
 				1FBFCDE4C04F3EC809309128 /* ModelDecodingTests.swift */,
 				ECE9137ED0D0FA304A0A8EAA /* Phase2CoverageTests.swift */,
 				64A2FA953CD86193ED97EFAD /* Phase4ViewModelTests.swift */,
+				9E704F9C74A46E2A119130C3 /* ServiceAndViewModelTests.swift */,
 			);
 			path = NagzTests;
 			sourceTree = "<group>";
@@ -714,6 +717,7 @@
 				424953649E34B0D46C75BD5F /* ModelDecodingTests.swift in Sources */,
 				9E9777788381B3FE5299DEF1 /* Phase2CoverageTests.swift in Sources */,
 				A1D1DFE47E74F80A86E4EDF0 /* Phase4ViewModelTests.swift in Sources */,
+				453A01D996643520BF1F5867 /* ServiceAndViewModelTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
