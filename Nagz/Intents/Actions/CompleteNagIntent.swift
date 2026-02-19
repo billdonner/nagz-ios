@@ -14,7 +14,7 @@ struct CompleteNagIntent: AppIntent {
     func perform() async throws -> some IntentResult & ProvidesDialog {
         let api = try await IntentServiceContainer.requireAuth()
         guard let nagId = UUID(uuidString: nag.id) else {
-            throw NagzIntentError.notLoggedIn
+            throw NagzIntentError.invalidNagId
         }
 
         try await api.requestVoid(.updateNagStatus(nagId: nagId, status: .completed, note: note))

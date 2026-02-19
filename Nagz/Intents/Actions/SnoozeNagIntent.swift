@@ -14,10 +14,11 @@ struct SnoozeNagIntent: AppIntent {
     func perform() async throws -> some IntentResult & ProvidesDialog {
         let api = try await IntentServiceContainer.requireAuth()
         guard let nagId = UUID(uuidString: nag.id) else {
-            throw NagzIntentError.notLoggedIn
+            throw NagzIntentError.invalidNagId
         }
 
-        let newDue = nag.dueAt.addingTimeInterval(TimeInterval(minutes * 60))
+        let base = max(nag.dueAt, Date())
+        let newDue = base.addingTimeInterval(TimeInterval(minutes * 60))
         let update = NagUpdate(dueAt: newDue)
         let _: NagResponse = try await api.request(.updateNag(nagId: nagId, update: update))
 

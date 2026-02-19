@@ -41,6 +41,9 @@ struct IntentTests {
 
         let notPermitted = NagzIntentError.notPermitted.localizedStringResource
         #expect(notPermitted.key == "Your role doesn't have permission for this action.")
+
+        let invalidNagId = NagzIntentError.invalidNagId.localizedStringResource
+        #expect(invalidNagId.key == "Invalid nag ID. The nag may have been deleted.")
     }
 
     // MARK: - NagEntity

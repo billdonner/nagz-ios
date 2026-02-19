@@ -1,5 +1,7 @@
 import Foundation
 
+private nonisolated(unsafe) let sharedISO8601Formatter = ISO8601DateFormatter()
+
 struct APIEndpoint {
     let path: String
     let method: HTTPMethod
@@ -331,10 +333,10 @@ struct APIEndpoint {
     static func familyMetrics(familyId: UUID, from: Date? = nil, to: Date? = nil) -> APIEndpoint {
         var items = [URLQueryItem(name: "family_id", value: familyId.uuidString)]
         if let from {
-            items.append(URLQueryItem(name: "from_date", value: ISO8601DateFormatter().string(from: from)))
+            items.append(URLQueryItem(name: "from_date", value: sharedISO8601Formatter.string(from: from)))
         }
         if let to {
-            items.append(URLQueryItem(name: "to_date", value: ISO8601DateFormatter().string(from: to)))
+            items.append(URLQueryItem(name: "to_date", value: sharedISO8601Formatter.string(from: to)))
         }
         return APIEndpoint(path: "/reports/family/metrics", queryItems: items)
     }
@@ -555,7 +557,7 @@ struct APIEndpoint {
     static func syncEvents(familyId: UUID, since: Date?) -> APIEndpoint {
         var items = [URLQueryItem(name: "family_id", value: familyId.uuidString)]
         if let since {
-            items.append(URLQueryItem(name: "since", value: ISO8601DateFormatter().string(from: since)))
+            items.append(URLQueryItem(name: "since", value: sharedISO8601Formatter.string(from: since)))
         }
         return APIEndpoint(path: "/sync/events", queryItems: items)
     }

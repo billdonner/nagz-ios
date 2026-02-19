@@ -1,7 +1,8 @@
 import UIKit
 import UserNotifications
 
-class AppDelegate: NSObject, UIApplicationDelegate, @unchecked Sendable {
+@MainActor
+class AppDelegate: NSObject, UIApplicationDelegate {
     var pushService: PushNotificationService?
 
     func application(
@@ -16,9 +17,7 @@ class AppDelegate: NSObject, UIApplicationDelegate, @unchecked Sendable {
         _ application: UIApplication,
         didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data
     ) {
-        Task { @MainActor in
-            pushService?.handleDeviceToken(deviceToken)
-        }
+        pushService?.handleDeviceToken(deviceToken)
     }
 
     func application(
@@ -29,28 +28,29 @@ class AppDelegate: NSObject, UIApplicationDelegate, @unchecked Sendable {
     }
 }
 
-private final class NotificationDelegate: NSObject, UNUserNotificationCenterDelegate, @unchecked Sendable {
+@MainActor
+private final class NotificationDelegate: NSObject, UNUserNotificationCenterDelegate {
     weak var appDelegate: AppDelegate?
 
     init(appDelegate: AppDelegate) {
         self.appDelegate = appDelegate
     }
 
-    func userNotificationCenter(
+    nonisolated func userNotificationCenter(
         _ center: UNUserNotificationCenter,
         willPresent notification: UNNotification
     ) async -> UNNotificationPresentationOptions {
         [.banner, .badge, .sound]
     }
 
-    func userNotificationCenter(
+    nonisolated func userNotificationCenter(
         _ center: UNUserNotificationCenter,
         didReceive response: UNNotificationResponse
     ) async {
         let nagIdString = response.notification.request.content.userInfo["nag_id"] as? String
         await MainActor.run {
             if let nagIdString, let nagId = UUID(uuidString: nagIdString) {
-                appDelegate?.pushService?.handleNotificationTap(userInfo: ["nag_id": nagId.uuidString])
+                self.appDelegate?.pushService?.handleNotificationTap(userInfo: ["nag_id": nagId.uuidString])
             }
         }
     }

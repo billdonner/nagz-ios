@@ -21,7 +21,7 @@ struct CreateNagIntent: AppIntent {
         let api = try await IntentServiceContainer.requireAuth()
         let familyId = try IntentServiceContainer.currentFamilyId()
         guard let recipientId = UUID(uuidString: recipient.id) else {
-            throw NagzIntentError.notLoggedIn
+            throw NagzIntentError.invalidNagId
         }
 
         let nag = NagCreate(

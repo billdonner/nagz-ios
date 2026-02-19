@@ -56,18 +56,20 @@ struct NagzApp: App {
         WindowGroup {
             if let databaseError {
                 DatabaseErrorView(errorMessage: databaseError)
-            } else {
+            } else if let syncService {
                 ContentView(
                     authManager: authManager,
                     apiClient: apiClient,
                     pushService: pushService,
-                    syncService: syncService!,
+                    syncService: syncService,
                     versionChecker: versionChecker
                 )
                 .environment(\.apiClient, apiClient)
                 .onAppear {
                     appDelegate.pushService = pushService
                 }
+            } else {
+                DatabaseErrorView(errorMessage: "Sync service unavailable")
             }
         }
     }

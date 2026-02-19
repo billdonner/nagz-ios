@@ -92,7 +92,8 @@ final class NagDetailViewModel {
         guard let nag else { return }
         isUpdating = true
         errorMessage = nil
-        let newDue = nag.dueAt.addingTimeInterval(Double(minutes) * 60)
+        let base = max(nag.dueAt, Date())
+        let newDue = base.addingTimeInterval(Double(minutes) * 60)
         let update = NagUpdate(dueAt: newDue)
         do {
             let updated: NagResponse = try await apiClient.request(
