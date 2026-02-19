@@ -47,10 +47,21 @@ final class PushNotificationService: NSObject {
         if let nagIdString = userInfo["nag_id"] as? String,
            let nagId = UUID(uuidString: nagIdString) {
             pendingNagId = nagId
+            // Persist for cold start recovery
+            UserDefaults.standard.set(nagId.uuidString, forKey: "nagz_pending_nag_id")
         }
     }
 
     func clearPendingNag() {
         pendingNagId = nil
+        UserDefaults.standard.removeObject(forKey: "nagz_pending_nag_id")
+    }
+
+    func restorePendingNag() {
+        if pendingNagId == nil,
+           let savedId = UserDefaults.standard.string(forKey: "nagz_pending_nag_id"),
+           let nagId = UUID(uuidString: savedId) {
+            pendingNagId = nagId
+        }
     }
 }

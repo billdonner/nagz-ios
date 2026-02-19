@@ -8,7 +8,7 @@ struct AuthenticatedTabView: View {
     let syncService: SyncService
 
     @State private var familyViewModel: FamilyViewModel
-    @State private var selectedNagId: UUID?
+    @State private var nagNavigationPath = NavigationPath()
 
     init(authManager: AuthManager, apiClient: APIClient, pushService: PushNotificationService, syncService: SyncService) {
         self.authManager = authManager
@@ -38,10 +38,14 @@ struct AuthenticatedTabView: View {
         myRole?.canCreateNags ?? false
     }
 
+    @State private var selectedTab = 0
+
     var body: some View {
-        TabView {
+        TabView(selection: $selectedTab) {
             nagsTab
+                .tag(0)
             familyTab
+                .tag(1)
         }
         .task {
             pushService.requestPermissionAndRegister()
@@ -52,17 +56,25 @@ struct AuthenticatedTabView: View {
                 await syncService.startPeriodicSync(familyId: familyId)
             }
             NagzShortcutsProvider.updateAppShortcutParameters()
+            // Restore any pending nag from cold start (persisted to UserDefaults)
+            pushService.restorePendingNag()
+            if let nagId = pushService.pendingNagId {
+                selectedTab = 0
+                nagNavigationPath.append(nagId)
+                pushService.clearPendingNag()
+            }
         }
         .onChange(of: pushService.pendingNagId) { _, newValue in
-            if newValue != nil {
-                selectedNagId = newValue
+            if let nagId = newValue {
+                selectedTab = 0
+                nagNavigationPath.append(nagId)
                 pushService.clearPendingNag()
             }
         }
     }
 
     private var nagsTab: some View {
-        NavigationStack {
+        NavigationStack(path: $nagNavigationPath) {
             if let family = familyViewModel.family {
                 NagListView(apiClient: apiClient, familyId: family.familyId, canCreateNags: canCreateNags)
                     .navigationDestination(for: UUID.self) { nagId in
