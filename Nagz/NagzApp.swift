@@ -6,9 +6,10 @@ struct NagzApp: App {
 
     private let keychainService: KeychainService
     private let apiClient: APIClient
-    private let databaseManager: DatabaseManager
-    private let syncService: SyncService
-    private let aiService: any AIService
+    private let databaseManager: DatabaseManager?
+    private let syncService: SyncService?
+    private let aiService: (any AIService)?
+    private let databaseError: String?
     @State private var authManager: AuthManager
     @State private var pushService: PushNotificationService
     @State private var versionChecker: VersionChecker
@@ -22,23 +23,29 @@ struct NagzApp: App {
         let checker = VersionChecker(apiClient: api)
 
         // Local GRDB cache + sync
-        let db: DatabaseManager
+        var db: DatabaseManager?
+        var sync: SyncService?
+        var ai: (any AIService)?
+        var dbError: String?
         do {
-            db = try DatabaseManager()
-        } catch {
-            fatalError("Failed to initialize database: \(error.localizedDescription)")
-        }
-        let sync = SyncService(apiClient: api, db: db)
+            let database = try DatabaseManager()
+            db = database
+            sync = SyncService(apiClient: api, db: database)
 
-        // AI services: on-device with server fallback
-        let serverAI = ServerAIService(apiClient: api)
-        let onDeviceAI = OnDeviceAIService(db: db, fallback: serverAI)
+            // AI services: on-device with server fallback
+            let serverAI = ServerAIService(apiClient: api)
+            let onDeviceAI = OnDeviceAIService(db: database, fallback: serverAI)
+            ai = onDeviceAI
+        } catch {
+            dbError = error.localizedDescription
+        }
 
         self.keychainService = keychain
         self.apiClient = api
         self.databaseManager = db
         self.syncService = sync
-        self.aiService = onDeviceAI
+        self.aiService = ai
+        self.databaseError = dbError
         _authManager = State(initialValue: auth)
         _pushService = State(initialValue: push)
         _versionChecker = State(initialValue: checker)
@@ -46,17 +53,43 @@ struct NagzApp: App {
 
     var body: some Scene {
         WindowGroup {
-            ContentView(
-                authManager: authManager,
-                apiClient: apiClient,
-                pushService: pushService,
-                syncService: syncService,
-                versionChecker: versionChecker
-            )
-            .environment(\.apiClient, apiClient)
-            .onAppear {
-                appDelegate.pushService = pushService
+            if let databaseError {
+                DatabaseErrorView(errorMessage: databaseError)
+            } else {
+                ContentView(
+                    authManager: authManager,
+                    apiClient: apiClient,
+                    pushService: pushService,
+                    syncService: syncService!,
+                    versionChecker: versionChecker
+                )
+                .environment(\.apiClient, apiClient)
+                .onAppear {
+                    appDelegate.pushService = pushService
+                }
             }
         }
+    }
+}
+
+struct DatabaseErrorView: View {
+    let errorMessage: String
+
+    var body: some View {
+        VStack(spacing: 20) {
+            Image(systemName: "exclamationmark.triangle.fill")
+                .font(.system(size: 60))
+                .foregroundStyle(.orange)
+            Text("Storage Unavailable")
+                .font(.title2.bold())
+            Text("Nagz could not initialize its local storage. This may be caused by insufficient disk space or file corruption.")
+                .multilineTextAlignment(.center)
+                .foregroundStyle(.secondary)
+            Text(errorMessage)
+                .font(.caption)
+                .foregroundStyle(.secondary)
+                .padding(.horizontal)
+        }
+        .padding()
     }
 }
