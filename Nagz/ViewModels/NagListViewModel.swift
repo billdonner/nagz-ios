@@ -74,7 +74,7 @@ final class NagListViewModel {
             total = response.total
             offset += response.items.count
         } catch {
-            // Silently fail for pagination
+            print("Pagination load failed: \(error.localizedDescription)")
         }
         isLoadingMore = false
     }

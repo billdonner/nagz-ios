@@ -8,6 +8,7 @@ actor APIClient {
     private let encoder: JSONEncoder
     private var onUnauthorized: (@Sendable () -> Void)?
     private var cache: [String: CacheEntry] = [:]
+    private var isRefreshing = false
 
     init(baseURL: URL = AppEnvironment.current.baseURL, keychainService: KeychainService) {
         self.baseURL = baseURL
@@ -118,6 +119,7 @@ actor APIClient {
             if let empty = EmptyResponse() as? T {
                 return (empty, data)
             }
+            throw APIError.unknown(204, "Unexpected 204 response for non-empty response type")
         }
 
         if httpResponse.statusCode == 401 && !isRetry && endpoint.requiresAuth {
@@ -182,6 +184,7 @@ actor APIClient {
             if let empty = EmptyResponse() as? T {
                 return empty
             }
+            throw APIError.unknown(204, "Unexpected 204 response for non-empty response type")
         }
 
         // Handle 401 with token refresh
@@ -208,6 +211,10 @@ actor APIClient {
     }
 
     private func refreshTokens() async throws -> Bool {
+        guard !isRefreshing else { return false }
+        isRefreshing = true
+        defer { isRefreshing = false }
+
         guard let refreshToken = await keychainService.refreshToken else {
             return false
         }

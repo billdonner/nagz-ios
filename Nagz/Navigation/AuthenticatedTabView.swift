@@ -20,7 +20,8 @@ struct AuthenticatedTabView: View {
 
     private var currentUserId: UUID {
         guard let user = authManager.currentUser else {
-            assertionFailure("AuthenticatedTabView shown without authenticated user")
+            // Log the error — assertionFailure is stripped in Release
+            print("WARNING: AuthenticatedTabView shown without authenticated user")
             return UUID(uuidString: "00000000-0000-0000-0000-000000000000")!
         }
         return user.id
