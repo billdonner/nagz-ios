@@ -25,7 +25,7 @@ Nagz uses a **split AI architecture** — on-device intelligence for privacy-sen
 
 On-device AI processes excuse text and behavioral patterns locally — only structured data (categories, status) is shared with the server. See [AI_ARCHITECTURE.md](https://github.com/billdonner/nagz/blob/main/nagz/Docs/AI_ARCHITECTURE.md) for the full design.
 
-### Siri & Shortcuts (V2.0 — Planned)
+### Siri & Shortcuts (Implemented)
 
 App Intents integration for voice and automation:
 - "Show my nags in Nagz" / "What's overdue in Nagz"
@@ -59,7 +59,7 @@ open Nagz.xcodeproj
 
 Build and run on an iOS 17+ simulator or device.
 
-The dev server is expected at `http://127.0.0.1:8001/api/v1` (use IP, not `localhost`, to avoid IPv6 timeout in the simulator).
+The dev server is expected at `http://127.0.0.1:9800/api/v1` (use IP, not `localhost`, to avoid IPv6 timeout in the simulator).
 
 ## Tests (166)
 
