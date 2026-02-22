@@ -16,7 +16,7 @@ final class LoginViewModel {
     }
 
     var isValid: Bool {
-        !email.trimmingCharacters(in: .whitespaces).isEmpty && password.count >= 6
+        !email.trimmingCharacters(in: .whitespaces).isEmpty && password.count >= 8
     }
 
     func login() async {

@@ -15,7 +15,7 @@ enum AppEnvironment {
     var baseURL: URL {
         switch self {
         case .development:
-            URL(string: "http://127.0.0.1:9800/api/v1")!
+            URL(string: "https://bd-nagzerver.fly.dev/api/v1")!
         case .production:
             URL(string: "https://api.nagz.app/api/v1")!
         }

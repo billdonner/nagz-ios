@@ -19,7 +19,7 @@ final class SignupViewModel {
 
     var isValid: Bool {
         !email.trimmingCharacters(in: .whitespaces).isEmpty
-            && password.count >= 6
+            && password.count >= 8
             && dateOfBirth != nil
     }
 
