@@ -81,6 +81,7 @@
 		B0F605FE26C3101FE56C4803 /* OnDeviceAIService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6CC10FBF6817DAB04DCE30B /* OnDeviceAIService.swift */; };
 		B4181171676EAD0BACA7E4AA /* DeliveryModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C2745952F84266C12B43D6F /* DeliveryModels.swift */; };
 		B45D7C13CBAF43DDD2DC7EF7 /* CreateFamilyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 478FD6A5253FF850A9EC7832 /* CreateFamilyView.swift */; };
+		B5C3E058B2FF4E6F43F5AD53 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 987A5CE42CC1B28C6E9697DA /* Assets.xcassets */; };
 		B6611247C648154741F70815 /* DeliveryHistoryViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10DD058430F66D0C0640ABB8 /* DeliveryHistoryViewModel.swift */; };
 		B8924A914C8E48A117B9E506 /* Enums.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5243F4CFE024BC04B61879D1 /* Enums.swift */; };
 		B9EC5FC025893AEFB863FA97 /* SafetyViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90C1EED5F97864A105AE2117 /* SafetyViewModel.swift */; };
@@ -99,6 +100,7 @@
 		D64A4632685509BEB0018D5E /* PolicyViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A32FE9E4FB799832D5C3B0B5 /* PolicyViewModel.swift */; };
 		DA6060AE8EAE463303B6F915 /* NagzApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAF6A3CE8CF93F2302F54967 /* NagzApp.swift */; };
 		DC17FA6987A2F88885F7B15F /* ListNagsIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 159F6509A2190F49906305DE /* ListNagsIntent.swift */; };
+		DC627120DB1236F87092E238 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = AE9F39D8D6DE81E447905298 /* PrivacyInfo.xcprivacy */; };
 		DD88847671E998BB509F2919 /* PolicyModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB2AF689B606E365EF7055E5 /* PolicyModels.swift */; };
 		E14CC869FBBD0CCCF71E2B65 /* IncentiveModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49E63852FE42057F07D13A9E /* IncentiveModels.swift */; };
 		E1500DDC1F96E93ED0A0D906 /* DeviceModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3304DDCA502144AB4F456FB /* DeviceModels.swift */; };
@@ -180,6 +182,7 @@
 		90C1EED5F97864A105AE2117 /* SafetyViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SafetyViewModel.swift; sourceTree = "<group>"; };
 		95C278AF89622477580059EE /* ManageMembersViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManageMembersViewModel.swift; sourceTree = "<group>"; };
 		9690A2B5BD1CBA627F52AF4E /* APIClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIClient.swift; sourceTree = "<group>"; };
+		987A5CE42CC1B28C6E9697DA /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		9A04D8ECCD329BE62D5CABEC /* SignupViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignupViewModel.swift; sourceTree = "<group>"; };
 		9AB45B90E8BEC815179C22DF /* SafetyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SafetyView.swift; sourceTree = "<group>"; };
 		9DBB9A681F612EC3473C6868 /* GamificationViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GamificationViewModel.swift; sourceTree = "<group>"; };
@@ -196,6 +199,7 @@
 		AAF6A3CE8CF93F2302F54967 /* NagzApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NagzApp.swift; sourceTree = "<group>"; };
 		AD3190FAD0A5DD8A6323C69C /* GamificationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GamificationView.swift; sourceTree = "<group>"; };
 		AE0B9F4BCBAB9DA56A1A82E9 /* SignupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignupView.swift; sourceTree = "<group>"; };
+		AE9F39D8D6DE81E447905298 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		B16BEEBE6F3B1BEACF53FFAC /* DeliveryHistoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeliveryHistoryView.swift; sourceTree = "<group>"; };
 		B1C39F97A1E2D4580F9FA2ED /* NagEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NagEntity.swift; sourceTree = "<group>"; };
 		B2070199AFE540C086F22328 /* AIService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AIService.swift; sourceTree = "<group>"; };
@@ -307,6 +311,8 @@
 		709F1D592B96CDD8AB13BE93 = {
 			isa = PBXGroup;
 			children = (
+				987A5CE42CC1B28C6E9697DA /* Assets.xcassets */,
+				AE9F39D8D6DE81E447905298 /* PrivacyInfo.xcprivacy */,
 				0FA30C570EC8C33D010A9F2E /* Nagz */,
 				EFC42ED55F75194D27D42A94 /* NagzTests */,
 				4D3CC44B0C07A86AD308A8BE /* Products */,
@@ -553,6 +559,7 @@
 			buildConfigurationList = 4A4F2BA48023B0A68B707FEA /* Build configuration list for PBXNativeTarget "Nagz" */;
 			buildPhases = (
 				43B3521E741ABE83F8C31AD0 /* Sources */,
+				BE6F581BCFB0964801C09B45 /* Resources */,
 				984626961107C13FE83039FF /* Frameworks */,
 			);
 			buildRules = (
@@ -578,6 +585,7 @@
 				LastUpgradeCheck = 1600;
 				TargetAttributes = {
 					E2CABC3A37EAE0C3A3E1F72D = {
+						DevelopmentTeam = NEAY582ME4;
 						ProvisioningStyle = Automatic;
 					};
 				};
@@ -605,6 +613,18 @@
 			);
 		};
 /* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		BE6F581BCFB0964801C09B45 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B5C3E058B2FF4E6F43F5AD53 /* Assets.xcassets in Resources */,
+				DC627120DB1236F87092E238 /* PrivacyInfo.xcprivacy in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		43B3521E741ABE83F8C31AD0 /* Sources */ = {
@@ -810,17 +830,15 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
 				CODE_SIGN_ENTITLEMENTS = Nagz/Nagz.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = NEAY582ME4;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
-				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Nagz/Info.plist;
-				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
-				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -900,17 +918,15 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
 				CODE_SIGN_ENTITLEMENTS = Nagz/Nagz.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = NEAY582ME4;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
-				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Nagz/Info.plist;
-				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
-				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
