@@ -39,12 +39,11 @@ final class NagListViewModel {
         offset < total
     }
 
-    func setFamily(_ familyId: UUID) {
+    func setFamily(_ familyId: UUID?) {
         self.familyId = familyId
     }
 
     func loadNags() async {
-        guard let familyId else { return }
         isLoading = true
         errorMessage = nil
         offset = 0
@@ -64,7 +63,7 @@ final class NagListViewModel {
     }
 
     func loadMore() async {
-        guard let familyId, hasMore, !isLoadingMore else { return }
+        guard hasMore, !isLoadingMore else { return }
         isLoadingMore = true
         do {
             let response: PaginatedResponse<NagResponse> = try await apiClient.request(

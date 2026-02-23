@@ -14,16 +14,21 @@ final class CreateNagViewModel {
     var isLoading = false
     var didCreate = false
 
-    private let apiClient: APIClient
-    private let familyId: UUID
+    /// Set by CreateNagView when a recipient is selected
+    var contextFamilyId: UUID?
+    var contextConnectionId: UUID?
 
-    init(apiClient: APIClient, familyId: UUID) {
+    private let apiClient: APIClient
+    private let familyId: UUID?
+
+    init(apiClient: APIClient, familyId: UUID?) {
         self.apiClient = apiClient
         self.familyId = familyId
+        self.contextFamilyId = familyId
     }
 
     var isValid: Bool {
-        recipientId != nil && dueAt > Date()
+        recipientId != nil && dueAt > Date() && (contextFamilyId != nil || contextConnectionId != nil)
     }
 
     func createNag() async {
@@ -32,7 +37,8 @@ final class CreateNagViewModel {
         errorMessage = nil
         do {
             let nag = NagCreate(
-                familyId: familyId,
+                familyId: contextFamilyId,
+                connectionId: contextConnectionId,
                 recipientId: recipientId,
                 dueAt: dueAt,
                 category: category,

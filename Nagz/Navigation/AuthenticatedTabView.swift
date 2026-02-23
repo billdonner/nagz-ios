@@ -20,7 +20,6 @@ struct AuthenticatedTabView: View {
 
     private var currentUserId: UUID {
         guard let user = authManager.currentUser else {
-            // Log the error — assertionFailure is stripped in Release
             print("WARNING: AuthenticatedTabView shown without authenticated user")
             return UUID(uuidString: "00000000-0000-0000-0000-000000000000")!
         }
@@ -36,7 +35,9 @@ struct AuthenticatedTabView: View {
     }
 
     private var canCreateNags: Bool {
-        myRole?.canCreateNags ?? false
+        // Can always create nags (connection nags don't require family role)
+        // Family nags still require guardian/participant role
+        true
     }
 
     @State private var selectedTab = 0
@@ -45,8 +46,10 @@ struct AuthenticatedTabView: View {
         TabView(selection: $selectedTab) {
             nagsTab
                 .tag(0)
-            familyTab
+            peopleTab
                 .tag(1)
+            familyTab
+                .tag(2)
         }
         .task {
             pushService.requestPermissionAndRegister()
@@ -57,7 +60,6 @@ struct AuthenticatedTabView: View {
                 await syncService.startPeriodicSync(familyId: familyId)
             }
             NagzShortcutsProvider.updateAppShortcutParameters()
-            // Restore any pending nag from cold start (persisted to UserDefaults)
             pushService.restorePendingNag()
             if let nagId = pushService.pendingNagId {
                 selectedTab = 0
@@ -76,21 +78,26 @@ struct AuthenticatedTabView: View {
 
     private var nagsTab: some View {
         NavigationStack(path: $nagNavigationPath) {
-            if let family = familyViewModel.family {
-                NagListView(apiClient: apiClient, familyId: family.familyId, canCreateNags: canCreateNags)
-                    .navigationDestination(for: UUID.self) { nagId in
-                        NagDetailView(apiClient: apiClient, nagId: nagId, currentUserId: currentUserId, isGuardian: isGuardian)
-                    }
-            } else {
-                ContentUnavailableView {
-                    Label("No Family", systemImage: "house")
-                } description: {
-                    Text("Create or join a family first.")
-                }
+            NagListView(
+                apiClient: apiClient,
+                familyId: familyViewModel.family?.familyId,
+                canCreateNags: canCreateNags
+            )
+            .navigationDestination(for: UUID.self) { nagId in
+                NagDetailView(apiClient: apiClient, nagId: nagId, currentUserId: currentUserId, isGuardian: isGuardian)
             }
         }
         .tabItem {
             Label("Nags", systemImage: "bell.fill")
+        }
+    }
+
+    private var peopleTab: some View {
+        NavigationStack {
+            ConnectionListView(apiClient: apiClient)
+        }
+        .tabItem {
+            Label("People", systemImage: "person.2.fill")
         }
     }
 

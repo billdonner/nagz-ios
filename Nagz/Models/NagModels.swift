@@ -2,7 +2,8 @@ import Foundation
 
 struct NagResponse: Decodable, Identifiable, Sendable {
     let id: UUID
-    let familyId: UUID
+    let familyId: UUID?
+    let connectionId: UUID?
     let creatorId: UUID
     let recipientId: UUID
     let dueAt: Date
@@ -16,7 +17,8 @@ struct NagResponse: Decodable, Identifiable, Sendable {
 }
 
 struct NagCreate: Encodable {
-    let familyId: UUID
+    let familyId: UUID?
+    let connectionId: UUID?
     let recipientId: UUID
     let dueAt: Date
     let category: NagCategory
@@ -26,7 +28,8 @@ struct NagCreate: Encodable {
     let recurrence: Recurrence?
 
     init(
-        familyId: UUID,
+        familyId: UUID? = nil,
+        connectionId: UUID? = nil,
         recipientId: UUID,
         dueAt: Date,
         category: NagCategory,
@@ -36,6 +39,7 @@ struct NagCreate: Encodable {
         recurrence: Recurrence? = nil
     ) {
         self.familyId = familyId
+        self.connectionId = connectionId
         self.recipientId = recipientId
         self.dueAt = dueAt
         self.category = category

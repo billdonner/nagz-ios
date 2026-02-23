@@ -3,13 +3,14 @@ import SwiftUI
 struct CreateNagView: View {
     @State private var viewModel: CreateNagViewModel
     @State private var members: [MemberDetail] = []
-    @State private var isLoadingMembers = true
-    @State private var memberLoadError: String?
+    @State private var connections: [ConnectionResponse] = []
+    @State private var isLoadingRecipients = true
+    @State private var recipientLoadError: String?
     @Environment(\.dismiss) private var dismiss
     private let apiClient: APIClient
-    private let familyId: UUID
+    private let familyId: UUID?
 
-    init(apiClient: APIClient, familyId: UUID) {
+    init(apiClient: APIClient, familyId: UUID?) {
         self.apiClient = apiClient
         self.familyId = familyId
         _viewModel = State(initialValue: CreateNagViewModel(apiClient: apiClient, familyId: familyId))
@@ -19,18 +20,46 @@ struct CreateNagView: View {
         NavigationStack {
             Form {
                 Section("Recipient") {
-                    if isLoadingMembers {
-                        ProgressView("Loading members...")
-                    } else if let memberError = memberLoadError {
-                        ErrorBanner(message: memberError) {
-                            await loadMembers()
+                    if isLoadingRecipients {
+                        ProgressView("Loading recipients...")
+                    } else if let error = recipientLoadError {
+                        ErrorBanner(message: error) {
+                            await loadRecipients()
                         }
                     } else {
                         Picker("Send to", selection: $viewModel.recipientId) {
                             Text("Select...").tag(nil as UUID?)
-                            ForEach(members) { member in
-                                Text(member.displayName ?? "Unknown")
-                                    .tag(member.userId as UUID?)
+
+                            if !members.isEmpty {
+                                Section("Family Members") {
+                                    ForEach(members) { member in
+                                        Text(member.displayName ?? "Unknown")
+                                            .tag(member.userId as UUID?)
+                                    }
+                                }
+                            }
+
+                            if !connections.isEmpty {
+                                Section("Connections") {
+                                    ForEach(connections) { conn in
+                                        Text(conn.inviteeEmail)
+                                            .tag((conn.inviteeId ?? conn.inviterId) as UUID?)
+                                    }
+                                }
+                            }
+                        }
+                        .onChange(of: viewModel.recipientId) {
+                            // Determine if this is a family or connection recipient
+                            if let rid = viewModel.recipientId {
+                                if members.contains(where: { $0.userId == rid }) {
+                                    viewModel.contextFamilyId = familyId
+                                    viewModel.contextConnectionId = nil
+                                } else if let conn = connections.first(where: {
+                                    ($0.inviteeId == rid || $0.inviterId == rid)
+                                }) {
+                                    viewModel.contextFamilyId = nil
+                                    viewModel.contextConnectionId = conn.id
+                                }
                             }
                         }
                     }
@@ -94,26 +123,35 @@ struct CreateNagView: View {
                     Button("Cancel") { dismiss() }
                 }
             }
-            .task { await loadMembers() }
+            .task { await loadRecipients() }
             .onChange(of: viewModel.didCreate) {
                 if viewModel.didCreate { dismiss() }
             }
         }
     }
 
-    private func loadMembers() async {
-        isLoadingMembers = true
-        memberLoadError = nil
+    private func loadRecipients() async {
+        isLoadingRecipients = true
+        recipientLoadError = nil
         do {
-            let response: PaginatedResponse<MemberDetail> = try await apiClient.request(
-                .listMembers(familyId: familyId)
+            // Load family members if we have a family
+            if let familyId {
+                let memberResponse: PaginatedResponse<MemberDetail> = try await apiClient.request(
+                    .listMembers(familyId: familyId)
+                )
+                members = memberResponse.items
+            }
+
+            // Always load active connections
+            let connResponse: PaginatedResponse<ConnectionResponse> = try await apiClient.request(
+                .listConnections(status: .active)
             )
-            members = response.items
+            connections = connResponse.items
         } catch let error as APIError {
-            memberLoadError = error.errorDescription
+            recipientLoadError = error.errorDescription
         } catch {
-            memberLoadError = "Failed to load family members."
+            recipientLoadError = "Failed to load recipients."
         }
-        isLoadingMembers = false
+        isLoadingRecipients = false
     }
 }

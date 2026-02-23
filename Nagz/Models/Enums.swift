@@ -115,6 +115,13 @@ enum Recurrence: String, Codable, CaseIterable {
     }
 }
 
+enum ConnectionStatus: String, Codable {
+    case pending
+    case active
+    case declined
+    case revoked
+}
+
 enum DevicePlatform: String, Codable {
     case ios
     case ipados

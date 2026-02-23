@@ -73,6 +73,7 @@ struct IntentTests {
         let nag = NagResponse(
             id: nagId,
             familyId: familyId,
+            connectionId: nil,
             creatorId: creatorId,
             recipientId: recipientId,
             dueAt: dueDate,

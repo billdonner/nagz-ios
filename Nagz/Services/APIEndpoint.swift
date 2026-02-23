@@ -107,18 +107,66 @@ struct APIEndpoint {
         )
     }
 
+    // MARK: - Connections
+
+    static func inviteConnection(email: String) -> APIEndpoint {
+        APIEndpoint(
+            path: "/connections/invite",
+            method: .post,
+            body: ConnectionInvite(inviteeEmail: email)
+        )
+    }
+
+    static func listConnections(status: ConnectionStatus? = nil, limit: Int = Constants.Pagination.defaultLimit, offset: Int = 0) -> APIEndpoint {
+        var items = [
+            URLQueryItem(name: "limit", value: "\(limit)"),
+            URLQueryItem(name: "offset", value: "\(offset)")
+        ]
+        if let status {
+            items.append(URLQueryItem(name: "status", value: status.rawValue))
+        }
+        return APIEndpoint(path: "/connections", queryItems: items)
+    }
+
+    static func listPendingInvites(limit: Int = Constants.Pagination.defaultLimit, offset: Int = 0) -> APIEndpoint {
+        APIEndpoint(
+            path: "/connections/pending",
+            queryItems: [
+                URLQueryItem(name: "limit", value: "\(limit)"),
+                URLQueryItem(name: "offset", value: "\(offset)")
+            ]
+        )
+    }
+
+    static func acceptConnection(id: UUID) -> APIEndpoint {
+        APIEndpoint(path: "/connections/\(id)/accept", method: .post)
+    }
+
+    static func declineConnection(id: UUID) -> APIEndpoint {
+        APIEndpoint(path: "/connections/\(id)/decline", method: .post)
+    }
+
+    static func revokeConnection(id: UUID) -> APIEndpoint {
+        APIEndpoint(path: "/connections/\(id)/revoke", method: .post)
+    }
+
     // MARK: - Nags
 
     static func createNag(_ nag: NagCreate) -> APIEndpoint {
         APIEndpoint(path: "/nags", method: .post, body: nag)
     }
 
-    static func listNags(familyId: UUID, status: NagStatus? = nil, limit: Int = Constants.Pagination.defaultLimit, offset: Int = 0) -> APIEndpoint {
+    static func listNags(familyId: UUID? = nil, connectionId: UUID? = nil, status: NagStatus? = nil, limit: Int = Constants.Pagination.defaultLimit, offset: Int = 0) -> APIEndpoint {
         var items = [
-            URLQueryItem(name: "family_id", value: familyId.uuidString),
             URLQueryItem(name: "limit", value: "\(limit)"),
             URLQueryItem(name: "offset", value: "\(offset)")
         ]
+        if let familyId {
+            items.append(URLQueryItem(name: "family_id", value: familyId.uuidString))
+        }
+        if let connectionId {
+            items.append(URLQueryItem(name: "connection_id", value: connectionId.uuidString))
+        }
         if let status {
             items.append(URLQueryItem(name: "state", value: status.rawValue))
         }

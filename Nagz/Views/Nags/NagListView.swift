@@ -3,10 +3,10 @@ import SwiftUI
 struct NagListView: View {
     @State var viewModel: NagListViewModel
     let canCreateNags: Bool
-    let familyId: UUID
+    let familyId: UUID?
     @State private var showCreateNag = false
 
-    init(apiClient: APIClient, familyId: UUID, canCreateNags: Bool) {
+    init(apiClient: APIClient, familyId: UUID?, canCreateNags: Bool) {
         let vm = NagListViewModel(apiClient: apiClient)
         _viewModel = State(initialValue: vm)
         self.familyId = familyId

@@ -40,6 +40,7 @@
 		5623F365A067F7E33C395F7D /* PolicyDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6ED1D6F2ECDC7A749F865DCD /* PolicyDetailView.swift */; };
 		577DDC65B9F769BBF403122F /* KeychainAccess in Frameworks */ = {isa = PBXBuildFile; productRef = 545A46357975BAA1644730CE /* KeychainAccess */; };
 		58997B57F6EEF60B40681A54 /* GamificationViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9DBB9A681F612EC3473C6868 /* GamificationViewModel.swift */; };
+		60753DD6A5B3A56B59878C5F /* ConnectionListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 467128F4726233C3AAE17CB0 /* ConnectionListView.swift */; };
 		648A714E50978D32602CF46C /* VersionModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCA86773FC15EB5B201B38D0 /* VersionModels.swift */; };
 		69072BBDECA8680C5104363E /* AccountView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D2C31A6C1CA6645B991FD667 /* AccountView.swift */; };
 		69B2329CBD7DCE0EF5D4EF2E /* MemberListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07D0EAC9F8FFBA5872FD80CF /* MemberListView.swift */; };
@@ -53,6 +54,7 @@
 		7D61B95C5D243F455A2867D9 /* NagEntityQuery.swift in Sources */ = {isa = PBXBuildFile; fileRef = 641505646ADAEFC4E3E1EF8F /* NagEntityQuery.swift */; };
 		81C74DBDC5B5C4147B3B99D7 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3EDC2854A3127F68733D4958 /* ContentView.swift */; };
 		8465FF82F8BB7D1B40E1D8DC /* PreferenceModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9555685DE01F4548E6AC6A0 /* PreferenceModels.swift */; };
+		8579B29A3F43AEF61D5C8E26 /* ConnectionModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = F59395DC1BAF57200303E3F1 /* ConnectionModels.swift */; };
 		8776E95DB82675F3688BEB91 /* SafetyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9AB45B90E8BEC815179C22DF /* SafetyView.swift */; };
 		886438D017AF431894B099E7 /* ReportModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = BAA9ECF7D3600FB6AF4C758C /* ReportModels.swift */; };
 		8C6174B2DB97D37F62276D73 /* CreateNagView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E84EB1DEEB1724609FA6FFC9 /* CreateNagView.swift */; };
@@ -68,6 +70,7 @@
 		9DA8639D59F1348334A51445 /* IncentiveRulesViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC1268A6068C60F603BC606E /* IncentiveRulesViewModel.swift */; };
 		9E3B5FA1D29A914B45079842 /* NagModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B64AA3271570CA97B005E91 /* NagModels.swift */; };
 		9E9777788381B3FE5299DEF1 /* Phase2CoverageTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECE9137ED0D0FA304A0A8EAA /* Phase2CoverageTests.swift */; };
+		A02F31959B76DCC68EDD01EA /* ConnectionListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65B5A59245D815BE4F037687 /* ConnectionListViewModel.swift */; };
 		A162D3663B6E637EFC3AC318 /* LoginViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AA44AE0BEBA58C043C996A1 /* LoginViewModel.swift */; };
 		A1D1DFE47E74F80A86E4EDF0 /* Phase4ViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64A2FA953CD86193ED97EFAD /* Phase4ViewModelTests.swift */; };
 		A922A5B3B8F9CDCF4BD36533 /* APIClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9690A2B5BD1CBA627F52AF4E /* APIClient.swift */; };
@@ -105,6 +108,7 @@
 		E14CC869FBBD0CCCF71E2B65 /* IncentiveModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49E63852FE42057F07D13A9E /* IncentiveModels.swift */; };
 		E1500DDC1F96E93ED0A0D906 /* DeviceModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3304DDCA502144AB4F456FB /* DeviceModels.swift */; };
 		E55E674847582815348C56A8 /* ReportsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6919F4ECE9F941CEA3558B8C /* ReportsViewModel.swift */; };
+		E5FBFF061C137C8F92E30030 /* InviteConnectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BB814065DDF1AE7736CE000 /* InviteConnectionView.swift */; };
 		E6C2D67EBC5D812CF590C0AD /* IncentiveRulesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1618B20BD4EBDD00C94901B5 /* IncentiveRulesView.swift */; };
 		EBFA84D9138F0B611957E4B0 /* ReportsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4A715516D53FF9CD1661B2E /* ReportsView.swift */; };
 		F527047B44CB0A89B8A82E21 /* NagDetailViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D8B860496CD6D4BE858F1F2 /* NagDetailViewModel.swift */; };
@@ -129,6 +133,7 @@
 		0859112BEE5F101B319AFE76 /* DatabaseManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatabaseManager.swift; sourceTree = "<group>"; };
 		09228CDDB89EBA4479C10F8B /* CachedRecords.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CachedRecords.swift; sourceTree = "<group>"; };
 		0AA44AE0BEBA58C043C996A1 /* LoginViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewModel.swift; sourceTree = "<group>"; };
+		0BB814065DDF1AE7736CE000 /* InviteConnectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InviteConnectionView.swift; sourceTree = "<group>"; };
 		0C807C8B04BC360E1936FACD /* AuthModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthModels.swift; sourceTree = "<group>"; };
 		0D8B860496CD6D4BE858F1F2 /* NagDetailViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NagDetailViewModel.swift; sourceTree = "<group>"; };
 		10DD058430F66D0C0640ABB8 /* DeliveryHistoryViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeliveryHistoryViewModel.swift; sourceTree = "<group>"; };
@@ -155,6 +160,7 @@
 		3EC5EC449162BDDDA1AEA55E /* NagListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NagListViewModel.swift; sourceTree = "<group>"; };
 		3EDC2854A3127F68733D4958 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		4390EE8B448189A83504758C /* ErrorBanner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorBanner.swift; sourceTree = "<group>"; };
+		467128F4726233C3AAE17CB0 /* ConnectionListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectionListView.swift; sourceTree = "<group>"; };
 		478FD6A5253FF850A9EC7832 /* CreateFamilyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateFamilyView.swift; sourceTree = "<group>"; };
 		49E63852FE42057F07D13A9E /* IncentiveModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IncentiveModels.swift; sourceTree = "<group>"; };
 		4CCC28A3FD2C73A684280A8B /* JoinFamilyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JoinFamilyView.swift; sourceTree = "<group>"; };
@@ -166,6 +172,7 @@
 		62B0E5FF945FF5C1DF5EA1D3 /* KeychainService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeychainService.swift; sourceTree = "<group>"; };
 		641505646ADAEFC4E3E1EF8F /* NagEntityQuery.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NagEntityQuery.swift; sourceTree = "<group>"; };
 		64A2FA953CD86193ED97EFAD /* Phase4ViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Phase4ViewModelTests.swift; sourceTree = "<group>"; };
+		65B5A59245D815BE4F037687 /* ConnectionListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectionListViewModel.swift; sourceTree = "<group>"; };
 		6919F4ECE9F941CEA3558B8C /* ReportsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReportsViewModel.swift; sourceTree = "<group>"; };
 		6E621A4F0EDD94F399E2C9DA /* AppEnvironment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppEnvironment.swift; sourceTree = "<group>"; };
 		6ED1D6F2ECDC7A749F865DCD /* PolicyDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PolicyDetailView.swift; sourceTree = "<group>"; };
@@ -226,6 +233,7 @@
 		EBD44C1B308F9911F7BCBC0C /* PolicyListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PolicyListView.swift; sourceTree = "<group>"; };
 		ECE9137ED0D0FA304A0A8EAA /* Phase2CoverageTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Phase2CoverageTests.swift; sourceTree = "<group>"; };
 		F46A3E90EEC26B840C950557 /* LegalModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LegalModels.swift; sourceTree = "<group>"; };
+		F59395DC1BAF57200303E3F1 /* ConnectionModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectionModels.swift; sourceTree = "<group>"; };
 		F596ADE9A04C40C7E3174959 /* GamificationModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GamificationModels.swift; sourceTree = "<group>"; };
 		F73099FD428BA8EC44A85ECB /* APIEndpoint.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIEndpoint.swift; sourceTree = "<group>"; };
 		FB2AF689B606E365EF7055E5 /* PolicyModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PolicyModels.swift; sourceTree = "<group>"; };
@@ -299,6 +307,7 @@
 			children = (
 				D59D9B456A0D9F660CDF8790 /* Auth */,
 				D088B41B923A66EE9F11DF1B /* Components */,
+				8CDFB22CB32E1F569D50E80B /* Connections */,
 				A90A96E0F7275AB252AB99C4 /* Family */,
 				1EBD9D3165D1A844B322E43D /* Gamification */,
 				77D45262F1049B35555CB25A /* Guardian */,
@@ -349,6 +358,15 @@
 			path = Extensions;
 			sourceTree = "<group>";
 		};
+		8CDFB22CB32E1F569D50E80B /* Connections */ = {
+			isa = PBXGroup;
+			children = (
+				467128F4726233C3AAE17CB0 /* ConnectionListView.swift */,
+				0BB814065DDF1AE7736CE000 /* InviteConnectionView.swift */,
+			);
+			path = Connections;
+			sourceTree = "<group>";
+		};
 		998CCC12A2469D03613D59A1 /* Config */ = {
 			isa = PBXGroup;
 			children = (
@@ -394,6 +412,7 @@
 			children = (
 				C8D5A1D2FBCFD9344C12FD96 /* AIModels.swift */,
 				0C807C8B04BC360E1936FACD /* AuthModels.swift */,
+				F59395DC1BAF57200303E3F1 /* ConnectionModels.swift */,
 				AA264D3B7744A48AB3904C2F /* ConsentModels.swift */,
 				3C2745952F84266C12B43D6F /* DeliveryModels.swift */,
 				C3304DDCA502144AB4F456FB /* DeviceModels.swift */,
@@ -489,6 +508,7 @@
 		F25C983ADF72DD78A90EB077 /* ViewModels */ = {
 			isa = PBXGroup;
 			children = (
+				65B5A59245D815BE4F037687 /* ConnectionListViewModel.swift */,
 				A2167A24BA46966A1CC5F470 /* ConsentViewModel.swift */,
 				2D5DE9C0FB044817490BD132 /* CreateNagViewModel.swift */,
 				10DD058430F66D0C0640ABB8 /* DeliveryHistoryViewModel.swift */,
@@ -644,6 +664,9 @@
 				3442D55AEDBE7F239642D7FF /* CachedRecords.swift in Sources */,
 				9A67032E0886B847102D1DA1 /* CheckOverdueIntent.swift in Sources */,
 				0B0A4DA780062CDF107BB721 /* CompleteNagIntent.swift in Sources */,
+				60753DD6A5B3A56B59878C5F /* ConnectionListView.swift in Sources */,
+				A02F31959B76DCC68EDD01EA /* ConnectionListViewModel.swift in Sources */,
+				8579B29A3F43AEF61D5C8E26 /* ConnectionModels.swift in Sources */,
 				791570AA436243B5E505AD63 /* ConsentListView.swift in Sources */,
 				AB9FA232D246AB19B4EA262F /* ConsentModels.swift in Sources */,
 				20AE20BCBFB7382743294AC6 /* ConsentViewModel.swift in Sources */,
@@ -680,6 +703,7 @@
 				E6C2D67EBC5D812CF590C0AD /* IncentiveRulesView.swift in Sources */,
 				9DA8639D59F1348334A51445 /* IncentiveRulesViewModel.swift in Sources */,
 				48E1985830A142888450B547 /* IntentServiceContainer.swift in Sources */,
+				E5FBFF061C137C8F92E30030 /* InviteConnectionView.swift in Sources */,
 				09ABEFE60F83398710D571FB /* JoinFamilyView.swift in Sources */,
 				C8ED407409D4BBED50982A85 /* KeychainService.swift in Sources */,
 				FA33F894752016C4B3020AB3 /* LegalDocumentView.swift in Sources */,
@@ -835,7 +859,7 @@
 				CODE_SIGN_ENTITLEMENTS = Nagz/Nagz.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_TEAM = NEAY582ME4;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				INFOPLIST_FILE = Nagz/Info.plist;
@@ -923,7 +947,7 @@
 				CODE_SIGN_ENTITLEMENTS = Nagz/Nagz.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_TEAM = NEAY582ME4;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				INFOPLIST_FILE = Nagz/Info.plist;
