@@ -12,6 +12,23 @@ struct LoginView: View {
     var body: some View {
         Form {
             Section {
+                VStack(spacing: 8) {
+                    Image(systemName: "bell.badge.fill")
+                        .font(.system(size: 56))
+                        .foregroundStyle(.blue)
+                        .symbolRenderingMode(.hierarchical)
+                    Text("Welcome to Nagz")
+                        .font(.title2.bold())
+                    Text("Sign in to keep your family on track")
+                        .font(.subheadline)
+                        .foregroundStyle(.secondary)
+                }
+                .frame(maxWidth: .infinity)
+                .padding(.vertical, 12)
+                .listRowBackground(Color.clear)
+            }
+
+            Section {
                 TextField("Email", text: $viewModel.email)
                     .textContentType(.emailAddress)
                     .textInputAutocapitalization(.never)
