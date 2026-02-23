@@ -7,6 +7,7 @@ struct ContentView: View {
     let syncService: SyncService
     let versionChecker: VersionChecker
 
+    @AppStorage("hasSeenOnboarding") private var hasSeenOnboarding = false
     @State private var showUpdateAlert = false
     @State private var updateAlertTitle = ""
     @State private var updateAlertMessage = ""
@@ -14,35 +15,10 @@ struct ContentView: View {
 
     var body: some View {
         Group {
-            switch authManager.state {
-            case .unknown:
-                ProgressView("Loading...")
-                    .task { await authManager.restoreSession() }
-
-            case .unauthenticated:
-                AuthFlowView(authManager: authManager, apiClient: apiClient)
-
-            case .authenticated:
-                if isBlocked {
-                    VStack(spacing: 16) {
-                        Image(systemName: "exclamationmark.triangle.fill")
-                            .font(.system(size: 48))
-                            .foregroundStyle(.red)
-                        Text("Update Required")
-                            .font(.title2.bold())
-                        Text(updateAlertMessage)
-                            .multilineTextAlignment(.center)
-                            .foregroundStyle(.secondary)
-                    }
-                    .padding()
-                } else {
-                    AuthenticatedTabView(
-                        authManager: authManager,
-                        apiClient: apiClient,
-                        pushService: pushService,
-                        syncService: syncService
-                    )
-                }
+            if !hasSeenOnboarding {
+                OnboardingView()
+            } else {
+                authenticatedContent
             }
         }
         .task {
@@ -53,6 +29,40 @@ struct ContentView: View {
             Button("OK") {}
         } message: {
             Text(updateAlertMessage)
+        }
+    }
+
+    @ViewBuilder
+    private var authenticatedContent: some View {
+        switch authManager.state {
+        case .unknown:
+            ProgressView("Loading...")
+                .task { await authManager.restoreSession() }
+
+        case .unauthenticated:
+            AuthFlowView(authManager: authManager, apiClient: apiClient)
+
+        case .authenticated:
+            if isBlocked {
+                VStack(spacing: 16) {
+                    Image(systemName: "exclamationmark.triangle.fill")
+                        .font(.system(size: 48))
+                        .foregroundStyle(.red)
+                    Text("Update Required")
+                        .font(.title2.bold())
+                    Text(updateAlertMessage)
+                        .multilineTextAlignment(.center)
+                        .foregroundStyle(.secondary)
+                }
+                .padding()
+            } else {
+                AuthenticatedTabView(
+                    authManager: authManager,
+                    apiClient: apiClient,
+                    pushService: pushService,
+                    syncService: syncService
+                )
+            }
         }
     }
 
