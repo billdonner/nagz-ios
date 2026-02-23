@@ -13,6 +13,23 @@ struct SignupView: View {
     var body: some View {
         NavigationStack {
             Form {
+                Section {
+                    VStack(spacing: 8) {
+                        Image(systemName: "person.crop.circle.badge.plus")
+                            .font(.system(size: 56))
+                            .foregroundStyle(.purple)
+                            .symbolRenderingMode(.hierarchical)
+                        Text("Join the Family")
+                            .font(.title2.bold())
+                        Text("Create your account to get started")
+                            .font(.subheadline)
+                            .foregroundStyle(.secondary)
+                    }
+                    .frame(maxWidth: .infinity)
+                    .padding(.vertical, 12)
+                    .listRowBackground(Color.clear)
+                }
+
                 accountFields
                 dobSection
                 errorSection
