@@ -1,4 +1,5 @@
 import SwiftUI
+import MessageUI
 
 struct AccountView: View {
     let apiClient: APIClient
@@ -9,13 +10,17 @@ struct AccountView: View {
     @State private var isExporting = false
     @State private var showExportSuccess = false
     @State private var errorMessage: String?
+    @State private var showFeedbackMail = false
+    @State private var showMailUnavailableAlert = false
 
     var body: some View {
         List {
             accountSection
             legalSection
+            feedbackSection
             exportSection
             deleteSection
+            appInfoSection
             errorSection
         }
         .navigationTitle("Account")
@@ -23,6 +28,23 @@ struct AccountView: View {
             Button("OK") {}
         } message: {
             Text("Your data export has been prepared. You will receive it shortly.")
+        }
+        .sheet(isPresented: $showFeedbackMail) {
+            MailComposeView(
+                recipient: Constants.Feedback.email,
+                subject: "Nagz Feedback — \(appVersion)",
+                body: "Please describe the issue:\n\n\n---\n\(DeviceDiagnostics.summary)",
+                attachmentData: DebugLogger.shared.logFileData(),
+                attachmentFilename: "nagz_debug.log"
+            )
+        }
+        .alert("Mail Unavailable", isPresented: $showMailUnavailableAlert) {
+            Button("Copy Info") {
+                UIPasteboard.general.string = DeviceDiagnostics.summary
+            }
+            Button("OK", role: .cancel) {}
+        } message: {
+            Text("Mail is not configured on this device. Tap 'Copy Info' to copy device diagnostics to the clipboard, then paste into your preferred email app and send to \(Constants.Feedback.email).")
         }
         .confirmationDialog(
             "Delete Account",
@@ -98,6 +120,38 @@ struct AccountView: View {
             Section {
                 Text(error).foregroundStyle(.red).font(.callout)
             }
+        }
+    }
+
+    private static var appVersion: String {
+        Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "?"
+    }
+
+    private static var appBuild: String {
+        Bundle.main.infoDictionary?["CFBundleVersion"] as? String ?? "?"
+    }
+
+    private var appVersion: String { Self.appVersion }
+
+    private var feedbackSection: some View {
+        Section("Feedback") {
+            Button {
+                if MFMailComposeViewController.canSendMail() {
+                    showFeedbackMail = true
+                } else {
+                    showMailUnavailableAlert = true
+                }
+            } label: {
+                Label("Report an Issue", systemImage: "envelope.fill")
+            }
+        }
+    }
+
+    private var appInfoSection: some View {
+        Section("App Info") {
+            LabeledContent("Version", value: Self.appVersion)
+            LabeledContent("Build", value: Self.appBuild)
+            LabeledContent("API Version", value: Constants.Version.clientAPIVersion)
         }
     }
 

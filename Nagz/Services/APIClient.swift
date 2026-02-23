@@ -108,12 +108,15 @@ actor APIClient {
         do {
             (data, response) = try await session.data(for: urlRequest)
         } catch {
+            DebugLogger.shared.log("Network error: \(endpoint.method.rawValue) \(endpoint.path) — \(error)", level: .error)
             throw APIError.networkError(error)
         }
 
         guard let httpResponse = response as? HTTPURLResponse else {
             throw APIError.unknown(0, "Invalid response")
         }
+
+        DebugLogger.shared.log("API \(endpoint.method.rawValue) \(endpoint.path) → \(httpResponse.statusCode)")
 
         if httpResponse.statusCode == 204 {
             if let empty = EmptyResponse() as? T {
@@ -140,6 +143,7 @@ actor APIClient {
             let result = try decoder.decode(T.self, from: data)
             return (result, data)
         } catch {
+            DebugLogger.shared.log("Decode error: \(endpoint.method.rawValue) \(endpoint.path) — \(error)", level: .error)
             throw APIError.decodingError(error)
         }
     }
@@ -172,12 +176,15 @@ actor APIClient {
         do {
             (data, response) = try await session.data(for: urlRequest)
         } catch {
+            DebugLogger.shared.log("Network error: \(endpoint.method.rawValue) \(endpoint.path) — \(error)", level: .error)
             throw APIError.networkError(error)
         }
 
         guard let httpResponse = response as? HTTPURLResponse else {
             throw APIError.unknown(0, "Invalid response")
         }
+
+        DebugLogger.shared.log("API \(endpoint.method.rawValue) \(endpoint.path) → \(httpResponse.statusCode)")
 
         // Handle 204 No Content
         if httpResponse.statusCode == 204 {
@@ -206,6 +213,7 @@ actor APIClient {
         do {
             return try decoder.decode(T.self, from: data)
         } catch {
+            DebugLogger.shared.log("Decode error: \(endpoint.method.rawValue) \(endpoint.path) — \(error)", level: .error)
             throw APIError.decodingError(error)
         }
     }

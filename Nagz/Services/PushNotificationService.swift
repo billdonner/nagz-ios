@@ -38,7 +38,7 @@ final class PushNotificationService: NSObject {
                     .registerDevice(platform: platform, token: token)
                 )
             } catch {
-                print("[PushNotificationService] Failed to register device token: \(error)")
+                DebugLogger.shared.log("Failed to register device token: \(error)", level: .error)
             }
         }
     }

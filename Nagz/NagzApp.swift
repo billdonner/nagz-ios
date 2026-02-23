@@ -15,6 +15,7 @@ struct NagzApp: App {
     @State private var versionChecker: VersionChecker
 
     init() {
+        DebugLogger.shared.log("Nagz app launching")
         let keychain = KeychainService()
         let api = APIClient(keychainService: keychain)
         let push = PushNotificationService()
@@ -36,6 +37,7 @@ struct NagzApp: App {
             let onDeviceAI = OnDeviceAIService(db: database, fallback: serverAI)
             ai = onDeviceAI
         } catch {
+            DebugLogger.shared.log("Database init failed: \(error.localizedDescription)", level: .error)
             dbError = error.localizedDescription
         }
 

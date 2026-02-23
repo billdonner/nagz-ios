@@ -73,7 +73,7 @@ final class NagListViewModel {
             total = response.total
             offset += response.items.count
         } catch {
-            print("Pagination load failed: \(error.localizedDescription)")
+            DebugLogger.shared.log("Pagination load failed: \(error.localizedDescription)", level: .warning)
         }
         isLoadingMore = false
     }
