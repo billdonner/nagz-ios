@@ -373,7 +373,7 @@ final class LoginViewModelValidationTests: XCTestCase {
         let authManager = AuthManager(apiClient: apiClient, keychainService: keychain)
         let vm = LoginViewModel(authManager: authManager)
         vm.email = "test@example.com"
-        vm.password = "123456"
+        vm.password = "12345678"
         XCTAssertTrue(vm.isValid)
     }
 
