@@ -45,6 +45,11 @@ struct LoginView: View {
                     showSignup = true
                 }
             }
+            Section {
+                Text("Nagz uses accounts so your family members can share reminders, track tasks, and receive notifications across devices. Your data stays private and you can delete your account at any time.")
+                    .font(.footnote)
+                    .foregroundStyle(.secondary)
+            }
         }
         .navigationTitle("Nagz")
     }
