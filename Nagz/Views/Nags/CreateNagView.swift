@@ -4,6 +4,7 @@ struct CreateNagView: View {
     @State private var viewModel: CreateNagViewModel
     @State private var members: [MemberDetail] = []
     @State private var connections: [ConnectionResponse] = []
+    @State private var trustedChildren: [TrustedConnectionChild] = []
     @State private var isLoadingRecipients = true
     @State private var recipientLoadError: String?
     @Environment(\.dismiss) private var dismiss
@@ -47,13 +48,25 @@ struct CreateNagView: View {
                                     }
                                 }
                             }
+
+                            if !trustedChildren.isEmpty {
+                                Section("Trusted Connections' Kids") {
+                                    ForEach(trustedChildren) { child in
+                                        Text("\(child.displayName ?? "Unknown") (\(child.familyName))")
+                                            .tag(child.userId as UUID?)
+                                    }
+                                }
+                            }
                         }
                         .onChange(of: viewModel.recipientId) {
-                            // Determine if this is a family or connection recipient
+                            // Determine if this is a family, connection, or trusted child recipient
                             if let rid = viewModel.recipientId {
                                 if members.contains(where: { $0.userId == rid }) {
                                     viewModel.contextFamilyId = familyId
                                     viewModel.contextConnectionId = nil
+                                } else if let trustedChild = trustedChildren.first(where: { $0.userId == rid }) {
+                                    viewModel.contextFamilyId = nil
+                                    viewModel.contextConnectionId = trustedChild.connectionId
                                 } else if let conn = connections.first(where: {
                                     ($0.inviteeId == rid || $0.inviterId == rid)
                                 }) {
@@ -147,6 +160,20 @@ struct CreateNagView: View {
                 .listConnections(status: .active)
             )
             connections = connResponse.items
+
+            // Load trusted children from trusted connections
+            var allTrustedChildren: [TrustedConnectionChild] = []
+            for conn in connResponse.items where conn.trusted {
+                do {
+                    let children: [TrustedConnectionChild] = try await apiClient.request(
+                        .listTrustedChildren(connectionId: conn.id)
+                    )
+                    allTrustedChildren.append(contentsOf: children)
+                } catch {
+                    // Non-critical — skip this connection's children
+                }
+            }
+            trustedChildren = allTrustedChildren
         } catch let error as APIError {
             recipientLoadError = error.errorDescription
         } catch {

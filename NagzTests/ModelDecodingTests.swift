@@ -728,4 +728,92 @@ final class ModelDecodingTests: XCTestCase {
         )
         XCTAssertNotEqual(endpoint1.cacheKey, endpoint2.cacheKey)
     }
+
+    // MARK: - Connection trusted field tests
+
+    func testConnectionResponseDecodingWithTrusted() throws {
+        let json = """
+        {
+            "id": "550e8400-e29b-41d4-a716-446655440000",
+            "inviter_id": "550e8400-e29b-41d4-a716-446655440001",
+            "invitee_id": "550e8400-e29b-41d4-a716-446655440002",
+            "invitee_email": "bob@example.com",
+            "status": "active",
+            "trusted": true,
+            "created_at": "2026-02-25T12:00:00+00:00",
+            "responded_at": "2026-02-25T12:30:00+00:00"
+        }
+        """.data(using: .utf8)!
+
+        let response = try decoder.decode(ConnectionResponse.self, from: json)
+        XCTAssertEqual(response.inviteeEmail, "bob@example.com")
+        XCTAssertEqual(response.status, .active)
+        XCTAssertTrue(response.trusted)
+        XCTAssertNotNil(response.inviteeId)
+    }
+
+    func testConnectionResponseDecodingUntrusted() throws {
+        let json = """
+        {
+            "id": "550e8400-e29b-41d4-a716-446655440000",
+            "inviter_id": "550e8400-e29b-41d4-a716-446655440001",
+            "invitee_id": null,
+            "invitee_email": "bob@example.com",
+            "status": "pending",
+            "trusted": false,
+            "created_at": "2026-02-25T12:00:00+00:00",
+            "responded_at": null
+        }
+        """.data(using: .utf8)!
+
+        let response = try decoder.decode(ConnectionResponse.self, from: json)
+        XCTAssertFalse(response.trusted)
+        XCTAssertNil(response.inviteeId)
+        XCTAssertEqual(response.status, .pending)
+    }
+
+    func testTrustedConnectionChildDecoding() throws {
+        let json = """
+        {
+            "user_id": "550e8400-e29b-41d4-a716-446655440010",
+            "display_name": "Kid One",
+            "family_id": "550e8400-e29b-41d4-a716-446655440020",
+            "family_name": "Bob's Family",
+            "connection_id": "550e8400-e29b-41d4-a716-446655440030"
+        }
+        """.data(using: .utf8)!
+
+        let child = try decoder.decode(TrustedConnectionChild.self, from: json)
+        XCTAssertEqual(child.displayName, "Kid One")
+        XCTAssertEqual(child.familyName, "Bob's Family")
+        XCTAssertEqual(child.userId, UUID(uuidString: "550e8400-e29b-41d4-a716-446655440010"))
+        XCTAssertEqual(child.id, child.userId)
+    }
+
+    func testConnectionTrustUpdateEncoding() throws {
+        let update = ConnectionTrustUpdate(trusted: true)
+        let encoder = JSONEncoder()
+        encoder.keyEncodingStrategy = .convertToSnakeCase
+        let data = try encoder.encode(update)
+        let dict = try JSONSerialization.jsonObject(with: data) as! [String: Any]
+        XCTAssertEqual(dict["trusted"] as? Bool, true)
+    }
+
+    // MARK: - Connection trust endpoint path tests
+
+    func testUpdateConnectionTrustEndpointPath() {
+        let id = UUID(uuidString: "550e8400-e29b-41d4-a716-446655440000")!
+        let endpoint = APIEndpoint.updateConnectionTrust(id: id, trusted: true)
+        XCTAssertTrue(endpoint.path.contains("/connections/"))
+        XCTAssertTrue(endpoint.path.hasSuffix("/trust"))
+        XCTAssertEqual(endpoint.method, .patch)
+    }
+
+    func testListTrustedChildrenEndpointPath() {
+        let id = UUID(uuidString: "550e8400-e29b-41d4-a716-446655440000")!
+        let endpoint = APIEndpoint.listTrustedChildren(connectionId: id)
+        XCTAssertTrue(endpoint.path.contains("/connections/"))
+        XCTAssertTrue(endpoint.path.hasSuffix("/children"))
+        XCTAssertEqual(endpoint.method, .get)
+    }
 }

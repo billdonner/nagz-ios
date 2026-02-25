@@ -101,4 +101,17 @@ final class ConnectionListViewModel {
             errorMessage = error.localizedDescription
         }
     }
+
+    func toggleTrust(id: UUID, currentTrusted: Bool) async {
+        do {
+            let _: ConnectionResponse = try await apiClient.request(
+                .updateConnectionTrust(id: id, trusted: !currentTrusted)
+            )
+            await loadConnections()
+        } catch let error as APIError {
+            errorMessage = error.errorDescription
+        } catch {
+            errorMessage = error.localizedDescription
+        }
+    }
 }

@@ -77,6 +77,14 @@ struct ConnectionListView: View {
                                     .foregroundStyle(.secondary)
                             }
                             Spacer()
+                            Toggle("Trusted", isOn: Binding(
+                                get: { connection.trusted },
+                                set: { _ in
+                                    Task { await viewModel.toggleTrust(id: connection.id, currentTrusted: connection.trusted) }
+                                }
+                            ))
+                            .labelsHidden()
+                            .help(connection.trusted ? "Trusted — can nag each other's kids" : "Not trusted")
                             Button(role: .destructive) {
                                 Task { await viewModel.revoke(id: connection.id) }
                             } label: {

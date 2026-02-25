@@ -47,6 +47,7 @@
 		6A9785BA9A4D40BF26A27C1A /* APIEndpoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = F73099FD428BA8EC44A85ECB /* APIEndpoint.swift */; };
 		6B2B1510A1A976D4A10E0ECC /* NagzShortcutsProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5B561981AFC048F7946AFD5 /* NagzShortcutsProvider.swift */; };
 		71BEF3575BABE9D8B29022D3 /* ManageMembersViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95C278AF89622477580059EE /* ManageMembersViewModel.swift */; };
+		71FAD77F4EB7237EBA677EBB /* OnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32BC41F85C6F59CACA8DF25B /* OnboardingView.swift */; };
 		7647521DEFBD599A206F7591 /* MemberRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3BF64C56EBAEE04E21E7452 /* MemberRowView.swift */; };
 		791570AA436243B5E505AD63 /* ConsentListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59967DFB14517E9CBB7944FC /* ConsentListView.swift */; };
 		7A6DD790F8FADCFDDB11E379 /* PaginatedResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A69383318CB720FC401D0D7 /* PaginatedResponse.swift */; };
@@ -156,6 +157,7 @@
 		2D5DE9C0FB044817490BD132 /* CreateNagViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateNagViewModel.swift; sourceTree = "<group>"; };
 		3103D76E83889066B4CDC006 /* FamilyModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FamilyModels.swift; sourceTree = "<group>"; };
 		31B4B0F6151CF0A237EA9D54 /* FeedbackMailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedbackMailView.swift; sourceTree = "<group>"; };
+		32BC41F85C6F59CACA8DF25B /* OnboardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingView.swift; sourceTree = "<group>"; };
 		380014CE84898708152E95D9 /* FamilyMemberEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FamilyMemberEntity.swift; sourceTree = "<group>"; };
 		3B64AA3271570CA97B005E91 /* NagModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NagModels.swift; sourceTree = "<group>"; };
 		3C2745952F84266C12B43D6F /* DeliveryModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeliveryModels.swift; sourceTree = "<group>"; };
@@ -316,6 +318,7 @@
 				1EBD9D3165D1A844B322E43D /* Gamification */,
 				77D45262F1049B35555CB25A /* Guardian */,
 				0A740E1700A8B69EB3A5DB91 /* Nags */,
+				C07B388CE5277403F3787900 /* Onboarding */,
 				FFC68F56169C9E4A2472EB43 /* Safety */,
 			);
 			path = Views;
@@ -437,6 +440,14 @@
 				CCA86773FC15EB5B201B38D0 /* VersionModels.swift */,
 			);
 			path = Models;
+			sourceTree = "<group>";
+		};
+		C07B388CE5277403F3787900 /* Onboarding */ = {
+			isa = PBXGroup;
+			children = (
+				32BC41F85C6F59CACA8DF25B /* OnboardingView.swift */,
+			);
+			path = Onboarding;
 			sourceTree = "<group>";
 		};
 		CFB239385BA15A1C2BBE9C22 /* Services */ = {
@@ -737,6 +748,7 @@
 				49E8DCA9F8BEADFF7072B9E0 /* NagzIntentError.swift in Sources */,
 				6B2B1510A1A976D4A10E0ECC /* NagzShortcutsProvider.swift in Sources */,
 				B0F605FE26C3101FE56C4803 /* OnDeviceAIService.swift in Sources */,
+				71FAD77F4EB7237EBA677EBB /* OnboardingView.swift in Sources */,
 				7A6DD790F8FADCFDDB11E379 /* PaginatedResponse.swift in Sources */,
 				5623F365A067F7E33C395F7D /* PolicyDetailView.swift in Sources */,
 				92B2DE215E9885838392AED3 /* PolicyListView.swift in Sources */,
@@ -867,7 +879,7 @@
 				CODE_SIGN_ENTITLEMENTS = Nagz/Nagz.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 5;
 				DEVELOPMENT_TEAM = NEAY582ME4;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				INFOPLIST_FILE = Nagz/Info.plist;
@@ -955,7 +967,7 @@
 				CODE_SIGN_ENTITLEMENTS = Nagz/Nagz.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 5;
 				DEVELOPMENT_TEAM = NEAY582ME4;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				INFOPLIST_FILE = Nagz/Info.plist;

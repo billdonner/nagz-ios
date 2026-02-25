@@ -150,6 +150,18 @@ struct APIEndpoint {
         APIEndpoint(path: "/connections/\(id)/revoke", method: .post)
     }
 
+    static func updateConnectionTrust(id: UUID, trusted: Bool) -> APIEndpoint {
+        APIEndpoint(
+            path: "/connections/\(id)/trust",
+            method: .patch,
+            body: ConnectionTrustUpdate(trusted: trusted)
+        )
+    }
+
+    static func listTrustedChildren(connectionId: UUID) -> APIEndpoint {
+        APIEndpoint(path: "/connections/\(connectionId)/children")
+    }
+
     // MARK: - Nags
 
     static func createNag(_ nag: NagCreate) -> APIEndpoint {
