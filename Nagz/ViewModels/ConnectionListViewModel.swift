@@ -6,6 +6,7 @@ import Observation
 final class ConnectionListViewModel {
     var connections: [ConnectionResponse] = []
     var pendingInvites: [ConnectionResponse] = []
+    var sentInvites: [ConnectionResponse] = []
     var isLoading = false
     var errorMessage: String?
     var inviteEmail = ""
@@ -30,9 +31,15 @@ final class ConnectionListViewModel {
             async let pendingResult: PaginatedResponse<ConnectionResponse> = apiClient.request(
                 .listPendingInvites()
             )
-            let (active, pending) = try await (activeResult, pendingResult)
+            async let allPendingResult: PaginatedResponse<ConnectionResponse> = apiClient.request(
+                .listConnections(status: .pending)
+            )
+            let (active, pending, allPending) = try await (activeResult, pendingResult, allPendingResult)
             connections = active.items
             pendingInvites = pending.items
+            // Sent invites = all pending minus inbound (those addressed to me)
+            let inboundIds = Set(pending.items.map(\.id))
+            sentInvites = allPending.items.filter { !inboundIds.contains($0.id) }
         } catch let error as APIError {
             errorMessage = error.errorDescription
         } catch {

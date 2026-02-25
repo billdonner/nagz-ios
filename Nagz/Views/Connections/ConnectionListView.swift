@@ -37,6 +37,28 @@ struct ConnectionListView: View {
                 }
             }
 
+            if !viewModel.sentInvites.isEmpty {
+                Section("Invites You Sent") {
+                    ForEach(viewModel.sentInvites) { invite in
+                        HStack {
+                            VStack(alignment: .leading) {
+                                Text(invite.inviteeEmail)
+                                    .font(.body)
+                                Text("Waiting for response \u{2022} \(invite.createdAt, style: .relative) ago")
+                                    .font(.caption)
+                                    .foregroundStyle(.secondary)
+                            }
+                            Spacer()
+                            Button(role: .destructive) {
+                                Task { await viewModel.revoke(id: invite.id) }
+                            } label: {
+                                Image(systemName: "xmark.circle")
+                            }
+                        }
+                    }
+                }
+            }
+
             Section("Active Connections") {
                 if viewModel.connections.isEmpty && !viewModel.isLoading {
                     ContentUnavailableView {
