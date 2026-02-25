@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="AppIcon-1024.png" alt="Nagz" width="200">
+</p>
+
 # Nagz iOS
 
 SwiftUI iOS client for **Nagz**, a family-oriented AI-mediated nagging/reminder app with Apple Intelligence integration.
