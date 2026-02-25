@@ -12,6 +12,7 @@ final class ConnectionListViewModel {
     var isInviting = false
     var inviteError: String?
     var inviteSuccess = false
+    var invitedEmail = ""
 
     let apiClient: APIClient
 
@@ -49,6 +50,7 @@ final class ConnectionListViewModel {
             let _: ConnectionResponse = try await apiClient.request(
                 .inviteConnection(email: inviteEmail)
             )
+            invitedEmail = inviteEmail
             inviteEmail = ""
             inviteSuccess = true
             await loadConnections()
