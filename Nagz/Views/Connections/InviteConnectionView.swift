@@ -26,8 +26,13 @@ struct InviteConnectionView: View {
 
             if let error = viewModel.inviteError {
                 Section {
-                    Text(error)
-                        .foregroundStyle(.red)
+                    Label {
+                        Text(error)
+                    } icon: {
+                        Image(systemName: "person.fill.questionmark")
+                            .foregroundStyle(.orange)
+                    }
+                    .foregroundStyle(.secondary)
                 }
             }
 
