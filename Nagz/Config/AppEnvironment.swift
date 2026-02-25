@@ -17,7 +17,7 @@ enum AppEnvironment {
         case .development:
             URL(string: "https://bd-nagzerver.fly.dev/api/v1")!
         case .production:
-            URL(string: "https://api.nagz.app/api/v1")!
+            URL(string: "https://bd-nagzerver.fly.dev/api/v1")!
         }
     }
 }
