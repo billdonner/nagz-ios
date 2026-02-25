@@ -18,6 +18,7 @@ struct ErrorDetails: Decodable {
 enum APIError: Error, LocalizedError {
     case invalidURL
     case unauthorized
+    case authenticationFailed(String)
     case forbidden
     case notFound
     case rateLimited
@@ -33,6 +34,8 @@ enum APIError: Error, LocalizedError {
             return "Invalid URL"
         case .unauthorized:
             return "Session expired. Please log in again."
+        case .authenticationFailed(let message):
+            return message
         case .forbidden:
             return "You don't have permission for this action."
         case .notFound:

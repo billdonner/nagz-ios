@@ -263,7 +263,7 @@ actor APIClient {
         if let envelope = try? decoder.decode(ErrorEnvelope.self, from: data) {
             let msg = envelope.error.message
             switch statusCode {
-            case 401: return .unauthorized
+            case 401: return .authenticationFailed(msg)
             case 403: return .forbidden
             case 404: return .notFound
             case 422: return .validationError(msg)
