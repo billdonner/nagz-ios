@@ -42,23 +42,25 @@ struct NagListView: View {
                         Text(viewModel.filter == .open ? "All caught up!" : "No nags to show.")
                     }
                 } else {
-                    List {
-                        ForEach(viewModel.nags) { nag in
-                            NavigationLink(value: nag.id) {
-                                NagRowView(nag: nag)
-                            }
-                            .task {
-                                if nag.id == viewModel.nags.last?.id {
-                                    await viewModel.loadMore()
+                    TimelineView(.periodic(from: .now, by: 60)) { _ in
+                        List {
+                            ForEach(viewModel.nags) { nag in
+                                NavigationLink(value: nag.id) {
+                                    NagRowView(nag: nag)
+                                }
+                                .task {
+                                    if nag.id == viewModel.nags.last?.id {
+                                        await viewModel.loadMore()
+                                    }
                                 }
                             }
+                            if viewModel.isLoadingMore {
+                                ProgressView()
+                                    .frame(maxWidth: .infinity)
+                            }
                         }
-                        if viewModel.isLoadingMore {
-                            ProgressView()
-                                .frame(maxWidth: .infinity)
-                        }
+                        .listStyle(.plain)
                     }
-                    .listStyle(.plain)
                 }
             }
         }

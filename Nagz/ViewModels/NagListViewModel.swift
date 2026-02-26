@@ -48,12 +48,29 @@ final class NagListViewModel {
         errorMessage = nil
         offset = 0
         do {
-            let response: PaginatedResponse<NagResponse> = try await apiClient.request(
+            // Fetch family-scoped nags
+            let familyResponse: PaginatedResponse<NagResponse> = try await apiClient.request(
                 .listNags(familyId: familyId, status: filter.nagStatus, offset: 0)
             )
-            nags = response.items
-            total = response.total
-            offset = response.items.count
+            var allNags = familyResponse.items
+            total = familyResponse.total
+
+            // Also fetch connection nags (where user is creator/recipient via connections)
+            if familyId != nil {
+                let connectionResponse: PaginatedResponse<NagResponse> = try await apiClient.request(
+                    .listNags(status: filter.nagStatus, offset: 0)
+                )
+                // Merge: add connection nags not already in the family list
+                let familyIds = Set(allNags.map(\.id))
+                let connectionOnly = connectionResponse.items.filter { !familyIds.contains($0.id) }
+                allNags.append(contentsOf: connectionOnly)
+                total += connectionOnly.count
+            }
+
+            // Sort by due date (soonest first)
+            allNags.sort { $0.dueAt < $1.dueAt }
+            nags = allNags
+            offset = nags.count
         } catch let error as APIError {
             errorMessage = error.errorDescription
         } catch {
