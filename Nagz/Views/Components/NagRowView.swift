@@ -22,6 +22,11 @@ struct NagRowView: View {
                             .font(.caption)
                             .foregroundStyle(.orange)
                     }
+                    if nag.recurrence != nil {
+                        Image(systemName: "repeat")
+                            .font(.caption2)
+                            .foregroundStyle(.purple)
+                    }
                     if nag.status == .completed, let completedAt = nag.completedAt {
                         Text("Done \(completedAt.agoDisplay)")
                             .font(.caption)

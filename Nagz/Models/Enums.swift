@@ -106,12 +106,28 @@ enum StrategyTemplate: String, Codable {
 }
 
 enum Recurrence: String, Codable, CaseIterable {
+    case every5Minutes = "every_5_minutes"
+    case every15Minutes = "every_15_minutes"
+    case every30Minutes = "every_30_minutes"
+    case hourly
     case daily
     case weekly
     case monthly
 
     var displayName: String {
-        rawValue.capitalized
+        switch self {
+        case .every5Minutes: "Every 5 min"
+        case .every15Minutes: "Every 15 min"
+        case .every30Minutes: "Every 30 min"
+        case .hourly: "Hourly"
+        case .daily: "Daily"
+        case .weekly: "Weekly"
+        case .monthly: "Monthly"
+        }
+    }
+
+    var iconName: String {
+        "repeat"
     }
 }
 
