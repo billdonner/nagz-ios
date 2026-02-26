@@ -8,6 +8,8 @@ struct NagDetailView: View {
     @State private var showExcuseSheet = false
     @State private var excuseText = ""
     @State private var showCompletionCelebration = false
+    @State private var showExcuseResponse = false
+    @State private var lastExcuseResponse: String?
     @Environment(\.dismiss) private var dismiss
     let apiClient: APIClient
     let currentUserId: UUID
@@ -209,8 +211,35 @@ struct NagDetailView: View {
                     Task {
                         await viewModel.submitExcuse(text: excuseText)
                         if viewModel.errorMessage == nil {
+                            lastExcuseResponse = viewModel.excuses.last?.summary ?? excuseText
                             excuseText = ""
                             showExcuseSheet = false
+                            showExcuseResponse = true
+                        }
+                    }
+                }
+            )
+        }
+        .sheet(isPresented: $showExcuseResponse) {
+            ExcuseResponseSheet(
+                excuseSummary: lastExcuseResponse ?? "",
+                onSnooze: {
+                    showExcuseResponse = false
+                    Task { await viewModel.snooze(minutes: 15) }
+                },
+                onTryAgain: {
+                    showExcuseResponse = false
+                },
+                onDone: {
+                    showExcuseResponse = false
+                    Task {
+                        await viewModel.markComplete(note: "Completed after excuse")
+                        if viewModel.errorMessage == nil {
+                            withAnimation(.spring(duration: 0.4)) {
+                                showCompletionCelebration = true
+                            }
+                            try? await Task.sleep(for: .seconds(1.5))
+                            dismiss()
                         }
                     }
                 }
@@ -298,6 +327,81 @@ private struct ExcuseSubmitSheet: View {
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Submit") { onSubmit() }
                         .disabled(excuseText.trimmingCharacters(in: .whitespaces).isEmpty || isSubmitting)
+                }
+            }
+        }
+    }
+}
+
+private struct ExcuseResponseSheet: View {
+    let excuseSummary: String
+    let onSnooze: () -> Void
+    let onTryAgain: () -> Void
+    let onDone: () -> Void
+    @Environment(\.dismiss) private var dismiss
+
+    var body: some View {
+        NavigationStack {
+            VStack(spacing: 24) {
+                Image(systemName: "text.bubble.fill")
+                    .font(.system(size: 48))
+                    .foregroundStyle(.blue)
+                    .padding(.top, 24)
+
+                Text("Excuse Received")
+                    .font(.title2.weight(.semibold))
+
+                Text(excuseSummary)
+                    .font(.body)
+                    .foregroundStyle(.secondary)
+                    .multilineTextAlignment(.center)
+                    .padding(.horizontal)
+
+                Divider()
+                    .padding(.horizontal)
+
+                Text("What would you like to do?")
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
+
+                VStack(spacing: 12) {
+                    Button {
+                        onSnooze()
+                    } label: {
+                        Label("Snooze 15 minutes", systemImage: "clock.badge.xmark")
+                            .frame(maxWidth: .infinity)
+                    }
+                    .buttonStyle(.bordered)
+                    .controlSize(.large)
+
+                    Button {
+                        onTryAgain()
+                    } label: {
+                        Label("I'll try to do it", systemImage: "arrow.clockwise")
+                            .frame(maxWidth: .infinity)
+                    }
+                    .buttonStyle(.bordered)
+                    .controlSize(.large)
+
+                    Button {
+                        onDone()
+                    } label: {
+                        Label("Actually, it's done!", systemImage: "checkmark.circle.fill")
+                            .frame(maxWidth: .infinity)
+                    }
+                    .buttonStyle(.borderedProminent)
+                    .tint(.green)
+                    .controlSize(.large)
+                }
+                .padding(.horizontal)
+
+                Spacer()
+            }
+            .navigationTitle("Excuse")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button("Close") { dismiss() }
                 }
             }
         }

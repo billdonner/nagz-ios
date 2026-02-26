@@ -16,6 +16,7 @@ struct NagResponse: Decodable, Identifiable, Sendable {
     let recurrence: Recurrence?
     let status: NagStatus
     let createdAt: Date
+    let completedAt: Date?
 }
 
 struct NagCreate: Encodable {

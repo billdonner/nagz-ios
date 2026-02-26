@@ -22,15 +22,26 @@ struct NagRowView: View {
                             .font(.caption)
                             .foregroundStyle(.orange)
                     }
-                    Text(nag.dueAt.relativeDisplay)
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
+                    if nag.status == .completed, let completedAt = nag.completedAt {
+                        Text("Done \(completedAt.relativeDisplay)")
+                            .font(.caption)
+                            .foregroundStyle(.green)
+                    } else {
+                        Text(nag.dueAt.relativeDisplay)
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                    }
                 }
             }
 
             Spacer()
 
-            StatusDot(status: nag.status)
+            if nag.status == .completed {
+                Image(systemName: "checkmark.circle.fill")
+                    .foregroundStyle(.green)
+            } else {
+                StatusDot(status: nag.status)
+            }
         }
         .padding(.vertical, 4)
     }

@@ -85,7 +85,8 @@ struct IntentTests {
             strategyTemplate: .friendlyReminder,
             recurrence: nil,
             status: .open,
-            createdAt: Date()
+            createdAt: Date(),
+            completedAt: nil
         )
 
         let entity = NagEntity(from: nag, recipientName: "Alice")
