@@ -7,6 +7,8 @@ struct NagDetailView: View {
     @State private var showEditSheet = false
     @State private var showExcuseSheet = false
     @State private var excuseText = ""
+    @State private var showCompletionCelebration = false
+    @Environment(\.dismiss) private var dismiss
     let apiClient: APIClient
     let currentUserId: UUID
     let isGuardian: Bool
@@ -84,6 +86,13 @@ struct NagDetailView: View {
                                     await viewModel.markComplete(
                                         note: completionNote.isEmpty ? nil : completionNote
                                     )
+                                    if viewModel.errorMessage == nil {
+                                        withAnimation(.spring(duration: 0.4)) {
+                                            showCompletionCelebration = true
+                                        }
+                                        try? await Task.sleep(for: .seconds(1.5))
+                                        dismiss()
+                                    }
                                 }
                             } label: {
                                 if viewModel.isUpdating {
@@ -94,7 +103,7 @@ struct NagDetailView: View {
                                         .frame(maxWidth: .infinity)
                                 }
                             }
-                            .disabled(viewModel.isUpdating)
+                            .disabled(viewModel.isUpdating || showCompletionCelebration)
                         }
                     }
 
@@ -213,6 +222,56 @@ struct NagDetailView: View {
             }
         }
         .task { await viewModel.load() }
+        .overlay {
+            if showCompletionCelebration {
+                CompletionCelebrationView()
+                    .transition(.scale.combined(with: .opacity))
+            }
+        }
+    }
+}
+
+private struct CompletionCelebrationView: View {
+    @State private var checkScale = 0.3
+    @State private var ringScale = 0.8
+    @State private var textOpacity = 0.0
+
+    var body: some View {
+        ZStack {
+            Color.black.opacity(0.3)
+                .ignoresSafeArea()
+
+            VStack(spacing: 16) {
+                ZStack {
+                    Circle()
+                        .stroke(Color.green.opacity(0.3), lineWidth: 4)
+                        .frame(width: 100, height: 100)
+                        .scaleEffect(ringScale)
+
+                    Image(systemName: "checkmark.circle.fill")
+                        .font(.system(size: 64))
+                        .foregroundStyle(.green)
+                        .scaleEffect(checkScale)
+                }
+
+                Text("Done!")
+                    .font(.title.weight(.semibold))
+                    .foregroundStyle(.white)
+                    .opacity(textOpacity)
+            }
+        }
+        .onAppear {
+            withAnimation(.spring(duration: 0.5, bounce: 0.4)) {
+                checkScale = 1.0
+                ringScale = 1.2
+            }
+            withAnimation(.easeIn(duration: 0.3).delay(0.3)) {
+                textOpacity = 1.0
+            }
+            withAnimation(.easeOut(duration: 0.5).delay(0.5)) {
+                ringScale = 1.5
+            }
+        }
     }
 }
 
