@@ -44,6 +44,7 @@ targets:
           - UIInterfaceOrientationPortraitUpsideDown
           - UIInterfaceOrientationLandscapeLeft
           - UIInterfaceOrientationLandscapeRight
+        ITSAppUsesNonExemptEncryption: false
     settings:
       base:
         DEVELOPMENT_TEAM: NEAY582ME4
