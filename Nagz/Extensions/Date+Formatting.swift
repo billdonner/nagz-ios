@@ -33,6 +33,10 @@ extension Date {
         }
     }
 
+    var agoDisplay: String {
+        Self.relativeFormatter.localizedString(for: self, relativeTo: Date())
+    }
+
     var shortDisplay: String {
         Self.shortFormatter.string(from: self)
     }

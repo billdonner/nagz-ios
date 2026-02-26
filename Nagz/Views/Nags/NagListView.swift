@@ -81,7 +81,7 @@ struct NagListView: View {
         .sheet(isPresented: $showCreateNag) {
             Task { await viewModel.loadNags() }
         } content: {
-            CreateNagView(apiClient: viewModel.apiClient, familyId: familyId)
+            CreateNagView(apiClient: viewModel.apiClient, familyId: familyId, currentUserId: currentUserId)
         }
         .task {
             viewModel.setFamily(familyId)

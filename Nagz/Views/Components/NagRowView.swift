@@ -23,7 +23,7 @@ struct NagRowView: View {
                             .foregroundStyle(.orange)
                     }
                     if nag.status == .completed, let completedAt = nag.completedAt {
-                        Text("Done \(completedAt.relativeDisplay)")
+                        Text("Done \(completedAt.agoDisplay)")
                             .font(.caption)
                             .foregroundStyle(.green)
                     } else {

@@ -10,10 +10,12 @@ struct CreateNagView: View {
     @Environment(\.dismiss) private var dismiss
     private let apiClient: APIClient
     private let familyId: UUID?
+    private let currentUserId: UUID?
 
-    init(apiClient: APIClient, familyId: UUID?) {
+    init(apiClient: APIClient, familyId: UUID?, currentUserId: UUID? = nil) {
         self.apiClient = apiClient
         self.familyId = familyId
+        self.currentUserId = currentUserId
         _viewModel = State(initialValue: CreateNagViewModel(apiClient: apiClient, familyId: familyId))
     }
 
@@ -31,9 +33,9 @@ struct CreateNagView: View {
                         Picker("Send to", selection: $viewModel.recipientId) {
                             Text("Select...").tag(nil as UUID?)
 
-                            if !members.isEmpty {
+                            if !filteredMembers.isEmpty {
                                 Section("Family Members") {
-                                    ForEach(members) { member in
+                                    ForEach(filteredMembers) { member in
                                         Text(member.displayName ?? "Unknown")
                                             .tag(member.userId as UUID?)
                                     }
@@ -43,8 +45,8 @@ struct CreateNagView: View {
                             if !connections.isEmpty {
                                 Section("Connections") {
                                     ForEach(connections) { conn in
-                                        Text(conn.inviteeEmail)
-                                            .tag((conn.inviteeId ?? conn.inviterId) as UUID?)
+                                        Text(conn.otherPartyDisplayName ?? conn.otherPartyEmail ?? conn.inviteeEmail)
+                                            .tag(otherPartyId(for: conn) as UUID?)
                                     }
                                 }
                             }
@@ -61,14 +63,14 @@ struct CreateNagView: View {
                         .onChange(of: viewModel.recipientId) {
                             // Determine if this is a family, connection, or trusted child recipient
                             if let rid = viewModel.recipientId {
-                                if members.contains(where: { $0.userId == rid }) {
+                                if filteredMembers.contains(where: { $0.userId == rid }) {
                                     viewModel.contextFamilyId = familyId
                                     viewModel.contextConnectionId = nil
                                 } else if let trustedChild = trustedChildren.first(where: { $0.userId == rid }) {
                                     viewModel.contextFamilyId = nil
                                     viewModel.contextConnectionId = trustedChild.connectionId
                                 } else if let conn = connections.first(where: {
-                                    ($0.inviteeId == rid || $0.inviterId == rid)
+                                    otherPartyId(for: $0) == rid
                                 }) {
                                     viewModel.contextFamilyId = nil
                                     viewModel.contextConnectionId = conn.id
@@ -140,6 +142,18 @@ struct CreateNagView: View {
             .onChange(of: viewModel.didCreate) {
                 if viewModel.didCreate { dismiss() }
             }
+        }
+    }
+
+    private var filteredMembers: [MemberDetail] {
+        members.filter { $0.userId != currentUserId }
+    }
+
+    private func otherPartyId(for conn: ConnectionResponse) -> UUID? {
+        if conn.inviterId == currentUserId {
+            return conn.inviteeId
+        } else {
+            return conn.inviterId
         }
     }
 
