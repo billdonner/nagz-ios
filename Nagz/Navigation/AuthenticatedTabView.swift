@@ -81,7 +81,8 @@ struct AuthenticatedTabView: View {
             NagListView(
                 apiClient: apiClient,
                 familyId: familyViewModel.family?.familyId,
-                canCreateNags: canCreateNags
+                canCreateNags: canCreateNags,
+                currentUserId: authManager.currentUser?.id
             )
             .navigationDestination(for: UUID.self) { nagId in
                 NagDetailView(apiClient: apiClient, nagId: nagId, currentUserId: currentUserId, isGuardian: isGuardian)
@@ -123,6 +124,13 @@ private struct FamilyTabContent: View {
     let authManager: AuthManager
     let isAdmin: Bool
     let currentUserId: UUID
+
+    static var appVersion: String {
+        Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "?"
+    }
+    static var appBuild: String {
+        Bundle.main.infoDictionary?["CFBundleVersion"] as? String ?? "?"
+    }
 
     var body: some View {
         Group {
@@ -217,6 +225,14 @@ private struct FamilyTabContent: View {
                             Task { await authManager.logout() }
                         }
                     }
+
+                    Section {
+                        Text("\(authManager.currentUser?.email ?? "—") \u{2022} v\(Self.appVersion) (\(Self.appBuild))")
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                            .frame(maxWidth: .infinity, alignment: .center)
+                            .listRowBackground(Color.clear)
+                    }
                 }
                 .navigationTitle(family.name)
             } else {
@@ -243,6 +259,12 @@ private struct FamilyTabContent: View {
                     Button("Log Out", role: .destructive) {
                         Task { await authManager.logout() }
                     }
+
+                    Text("\(authManager.currentUser?.email ?? "—") \u{2022} v\(Self.appVersion) (\(Self.appBuild))")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+
+                    Spacer()
                 }
                 .padding()
                 .navigationTitle("Family")

@@ -2,6 +2,7 @@ import SwiftUI
 
 struct NagRowView: View {
     let nag: NagResponse
+    var currentUserId: UUID?
 
     var body: some View {
         HStack(spacing: 12) {
@@ -15,9 +16,16 @@ struct NagRowView: View {
                     .font(.body)
                     .lineLimit(1)
 
-                Text(nag.dueAt.relativeDisplay)
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
+                HStack(spacing: 4) {
+                    if let directionText = directionLabel {
+                        Text(directionText)
+                            .font(.caption)
+                            .foregroundStyle(.orange)
+                    }
+                    Text(nag.dueAt.relativeDisplay)
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
             }
 
             Spacer()
@@ -25,6 +33,17 @@ struct NagRowView: View {
             StatusDot(status: nag.status)
         }
         .padding(.vertical, 4)
+    }
+
+    private var directionLabel: String? {
+        guard let userId = currentUserId else { return nil }
+        if nag.creatorId == userId {
+            let name = nag.recipientDisplayName ?? "someone"
+            return "To: \(name) \u{2022}"
+        } else {
+            let name = nag.creatorDisplayName ?? "someone"
+            return "From: \(name) \u{2022}"
+        }
     }
 
     private var categoryColor: Color {

@@ -76,6 +76,8 @@ struct IntentTests {
             connectionId: nil,
             creatorId: creatorId,
             recipientId: recipientId,
+            creatorDisplayName: "Mom",
+            recipientDisplayName: "Alice",
             dueAt: dueDate,
             category: .homework,
             doneDefinition: .binaryCheck,

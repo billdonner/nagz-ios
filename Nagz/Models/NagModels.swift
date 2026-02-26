@@ -6,6 +6,8 @@ struct NagResponse: Decodable, Identifiable, Sendable {
     let connectionId: UUID?
     let creatorId: UUID
     let recipientId: UUID
+    let creatorDisplayName: String?
+    let recipientDisplayName: String?
     let dueAt: Date
     let category: NagCategory
     let doneDefinition: DoneDefinition

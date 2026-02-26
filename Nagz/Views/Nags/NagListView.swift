@@ -4,13 +4,15 @@ struct NagListView: View {
     @State var viewModel: NagListViewModel
     let canCreateNags: Bool
     let familyId: UUID?
+    let currentUserId: UUID?
     @State private var showCreateNag = false
 
-    init(apiClient: APIClient, familyId: UUID?, canCreateNags: Bool) {
+    init(apiClient: APIClient, familyId: UUID?, canCreateNags: Bool, currentUserId: UUID? = nil) {
         let vm = NagListViewModel(apiClient: apiClient)
         _viewModel = State(initialValue: vm)
         self.familyId = familyId
         self.canCreateNags = canCreateNags
+        self.currentUserId = currentUserId
     }
 
     var body: some View {
@@ -46,7 +48,7 @@ struct NagListView: View {
                         List {
                             ForEach(viewModel.nags) { nag in
                                 NavigationLink(value: nag.id) {
-                                    NagRowView(nag: nag)
+                                    NagRowView(nag: nag, currentUserId: currentUserId)
                                 }
                                 .task {
                                     if nag.id == viewModel.nags.last?.id {

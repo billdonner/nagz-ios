@@ -15,7 +15,7 @@ struct ConnectionListView: View {
                     ForEach(viewModel.pendingInvites) { invite in
                         HStack {
                             VStack(alignment: .leading) {
-                                Text("From: \(invite.inviteeEmail)")
+                                Text("From: \(invite.otherPartyDisplayName ?? invite.otherPartyEmail ?? invite.inviteeEmail)")
                                     .font(.body)
                                 Text("Sent \(invite.createdAt, style: .relative) ago")
                                     .font(.caption)
@@ -42,7 +42,7 @@ struct ConnectionListView: View {
                     ForEach(viewModel.sentInvites) { invite in
                         HStack {
                             VStack(alignment: .leading) {
-                                Text(invite.inviteeEmail)
+                                Text(invite.otherPartyDisplayName ?? invite.otherPartyEmail ?? invite.inviteeEmail)
                                     .font(.body)
                                 Text("Waiting for response \u{2022} \(invite.createdAt, style: .relative) ago")
                                     .font(.caption)
@@ -70,8 +70,13 @@ struct ConnectionListView: View {
                     ForEach(viewModel.connections) { connection in
                         HStack {
                             VStack(alignment: .leading) {
-                                Text(connection.inviteeEmail)
+                                Text(connection.otherPartyDisplayName ?? connection.otherPartyEmail ?? connection.inviteeEmail)
                                     .font(.body)
+                                if let email = connection.otherPartyEmail, connection.otherPartyDisplayName != nil {
+                                    Text(email)
+                                        .font(.caption2)
+                                        .foregroundStyle(.tertiary)
+                                }
                                 Text("Connected \(connection.respondedAt ?? connection.createdAt, style: .relative) ago")
                                     .font(.caption)
                                     .foregroundStyle(.secondary)

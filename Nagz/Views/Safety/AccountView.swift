@@ -60,6 +60,9 @@ struct AccountView: View {
 
     private var accountSection: some View {
         Section("Account") {
+            if let email = authManager.currentUser?.email {
+                LabeledContent("Email", value: email)
+            }
             LabeledContent("User ID") {
                 Text(currentUserId.uuidString.prefix(8) + "...")
                     .font(.system(.body, design: .monospaced))

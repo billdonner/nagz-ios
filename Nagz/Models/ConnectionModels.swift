@@ -9,6 +9,8 @@ struct ConnectionResponse: Decodable, Identifiable, Sendable {
     let trusted: Bool
     let createdAt: Date
     let respondedAt: Date?
+    let otherPartyEmail: String?
+    let otherPartyDisplayName: String?
 }
 
 struct ConnectionInvite: Encodable {
