@@ -99,7 +99,13 @@
 
 <div class="faq">
 <strong>What does the AI do with my data?</strong>
-<p>The AI collects excuse text and status updates that you submit, summarizes them for the nag creator, and can issue bounded follow-up prompts. All AI actions are logged, auditable, and bounded by guardian-configured policies. AI mediation requires your explicit consent, which you can revoke at any time.</p>
+<p>Nagz runs 7 of 9 AI features entirely on your iPhone using Apple Foundation Models. When you submit an excuse, the AI summarizes it on-device — the original text never leaves your phone. The same applies to coaching tips, tone explanations, weekly digests, push-back messages, task summaries, and gamification nudges: all generated locally.</p>
+<p>Only structured data (like category labels and aggregated counts) syncs to the server for family-wide features. Two features — pattern detection and completion prediction — use simple math, not AI. All AI actions are logged, auditable, and bounded by guardian-configured policies. AI mediation requires your explicit consent, which you can revoke at any time.</p>
+</div>
+
+<div class="faq">
+<strong>Does Nagz send my data to an external AI service?</strong>
+<p>No. All AI text generation runs on-device using Apple Foundation Models built into iOS. No user text is ever sent to OpenAI, Google, or any other third-party AI provider. If on-device AI is temporarily unavailable, the app falls back to local heuristics (keyword matching and templates) — still no external service involved.</p>
 </div>
 
 <div class="faq">
