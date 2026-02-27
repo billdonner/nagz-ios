@@ -57,6 +57,10 @@ All three Nagz repos (nagzerver, nagz-ios, nagz-web) use a shared API versioning
 - **Web**: `src/version.tsx` (VersionProvider wraps the app)
 
 ## Architecture
+- `AIService` injected via `@Environment(\.aiService)` — mirrors `\.apiClient` pattern
+  - `NagzAIAdapter` (local NagzAI package heuristics + Foundation Models) with `ServerAIService` fallback
+  - `AIInsightsSection` (NagDetailView) — tone, coaching, completion prediction
+  - `FamilyInsightsView` (Family tab, guardian-only) — weekly digest + user patterns
 - `APIClient` is an `actor` (thread-safe networking, not @Observable)
   - In-memory cache with configurable TTL per endpoint
   - `cachedRequest()` for reads, `invalidateCache(prefix:)` after mutations
