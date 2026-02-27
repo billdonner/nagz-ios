@@ -68,34 +68,7 @@ struct ConnectionListView: View {
                     }
                 } else {
                     ForEach(viewModel.connections) { connection in
-                        HStack {
-                            VStack(alignment: .leading) {
-                                Text(connection.otherPartyDisplayName ?? connection.otherPartyEmail ?? connection.inviteeEmail)
-                                    .font(.body)
-                                if let email = connection.otherPartyEmail, connection.otherPartyDisplayName != nil {
-                                    Text(email)
-                                        .font(.caption2)
-                                        .foregroundStyle(.tertiary)
-                                }
-                                Text("Connected \(connection.respondedAt ?? connection.createdAt, style: .relative) ago")
-                                    .font(.caption)
-                                    .foregroundStyle(.secondary)
-                            }
-                            Spacer()
-                            Toggle("Trusted", isOn: Binding(
-                                get: { connection.trusted },
-                                set: { _ in
-                                    Task { await viewModel.toggleTrust(id: connection.id, currentTrusted: connection.trusted) }
-                                }
-                            ))
-                            .labelsHidden()
-                            .help(connection.trusted ? "Trusted — can nag each other's kids" : "Not trusted")
-                            Button(role: .destructive) {
-                                Task { await viewModel.revoke(id: connection.id) }
-                            } label: {
-                                Image(systemName: "xmark.circle")
-                            }
-                        }
+                        connectionRow(connection)
                     }
                 }
             }
@@ -124,5 +97,58 @@ struct ConnectionListView: View {
         }
         .task { await viewModel.loadConnections() }
         .refreshable { await viewModel.loadConnections() }
+    }
+
+    private func connectionRow(_ connection: ConnectionResponse) -> some View {
+        VStack(alignment: .leading, spacing: 8) {
+            HStack {
+                Text(connection.otherPartyDisplayName ?? connection.otherPartyEmail ?? connection.inviteeEmail)
+                    .font(.body.weight(.medium))
+                Spacer()
+                if connection.trusted {
+                    Image(systemName: "checkmark.shield.fill")
+                        .foregroundStyle(.green)
+                        .font(.caption)
+                }
+                Toggle("Trusted", isOn: Binding(
+                    get: { connection.trusted },
+                    set: { _ in
+                        Task { await viewModel.toggleTrust(id: connection.id, currentTrusted: connection.trusted) }
+                    }
+                ))
+                .labelsHidden()
+                Button(role: .destructive) {
+                    Task { await viewModel.revoke(id: connection.id) }
+                } label: {
+                    Image(systemName: "xmark.circle")
+                }
+            }
+
+            if let stats = viewModel.connectionStats[connection.id] {
+                HStack(spacing: 16) {
+                    statLabel(count: stats.sent, label: "Sent", icon: "arrow.up.circle.fill", color: .blue)
+                    statLabel(count: stats.received, label: "Received", icon: "arrow.down.circle.fill", color: .orange)
+                    statLabel(count: stats.openCount, label: "Open", icon: "circle.fill", color: .yellow)
+                    statLabel(count: stats.completedCount, label: "Done", icon: "checkmark.circle.fill", color: .green)
+                }
+                .font(.caption)
+            }
+
+            Text("Connected \(connection.respondedAt ?? connection.createdAt, style: .relative) ago")
+                .font(.caption2)
+                .foregroundStyle(.tertiary)
+        }
+        .padding(.vertical, 4)
+    }
+
+    private func statLabel(count: Int, label: String, icon: String, color: Color) -> some View {
+        HStack(spacing: 3) {
+            Image(systemName: icon)
+                .foregroundStyle(color)
+            Text("\(count)")
+                .fontWeight(.semibold)
+            Text(label)
+                .foregroundStyle(.secondary)
+        }
     }
 }
