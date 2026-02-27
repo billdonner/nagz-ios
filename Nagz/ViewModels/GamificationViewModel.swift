@@ -1,4 +1,5 @@
 import Foundation
+import NagzAI
 import Observation
 
 @Observable
@@ -8,6 +9,7 @@ final class GamificationViewModel {
     var leaderboard: LeaderboardResponse?
     var events: [GamificationEventResponse] = []
     var badges: [BadgeResponse] = []
+    var nudges: [GamificationNudgeItem] = []
     var isLoading = false
     var errorMessage: String?
 
@@ -65,6 +67,21 @@ final class GamificationViewModel {
             badges = loadedBadges
         } catch {
             // Badges might not be available
+        }
+
+        // Generate AI nudges from loaded gamification data
+        if let summary {
+            let context = GamificationContext(
+                currentStreak: summary.currentStreak,
+                totalCompletions: summary.eventCount,
+                earnedBadgeTypes: badges.map(\.badgeType)
+            )
+            do {
+                let result = try await Router(preferHeuristic: false).gamificationNudges(context: context)
+                nudges = result.nudges
+            } catch {
+                // Nudges are optional — fail silently
+            }
         }
 
         isLoading = false

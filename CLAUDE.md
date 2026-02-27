@@ -1,7 +1,7 @@
 # Nagz iOS App
 
 ## Stack
-- SwiftUI, MVVM, iOS 17+ (@Observable)
+- SwiftUI, MVVM, iOS 26+ (@Observable)
 - Swift 6 strict concurrency
 - Dependencies: KeychainAccess (SPM), GRDB (SPM)
 - Project generated with xcodegen from `project.yml`
@@ -81,7 +81,7 @@ All three Nagz repos (nagzerver, nagz-ios, nagz-web) use a shared API versioning
 - `NagzShortcutsProvider` — 6 shortcuts with 14 Siri phrases
 - User/family IDs persisted to UserDefaults for intent access (written by AuthManager/FamilyViewModel)
 - All intents run in-process (no extension target needed)
-- Interactive snippets deferred to iOS 26+
+- Interactive snippets available (iOS 26 baseline)
 
 ## Known Issues & Fixes
 - Use `127.0.0.1` not `localhost` in simulator (IPv6 timeout)

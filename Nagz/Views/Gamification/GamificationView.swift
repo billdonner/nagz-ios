@@ -1,3 +1,4 @@
+import NagzAI
 import SwiftUI
 
 struct GamificationView: View {
@@ -20,6 +21,10 @@ struct GamificationView: View {
                     Text(error)
                 }
             } else {
+                if !viewModel.nudges.isEmpty {
+                    nudgesSection
+                }
+
                 if let summary = viewModel.summary {
                     summarySection(summary)
                 }
@@ -95,6 +100,19 @@ struct GamificationView: View {
                             .font(.body.weight(.semibold))
                             .foregroundStyle(event.deltaPoints > 0 ? .green : .red)
                     }
+                }
+            }
+        }
+    }
+
+    private var nudgesSection: some View {
+        Section("Tips") {
+            ForEach(viewModel.nudges, id: \.message) { nudge in
+                HStack(spacing: 10) {
+                    Text(nudge.icon)
+                        .font(.title2)
+                    Text(nudge.message)
+                        .font(.subheadline)
                 }
             }
         }

@@ -8,7 +8,7 @@ SwiftUI iOS client for **Nagz**, a family-oriented AI-mediated nagging/reminder 
 
 ## Stack
 
-- SwiftUI + MVVM, iOS 17+
+- SwiftUI + MVVM, iOS 26+
 - Swift 6 strict concurrency
 - Xcode project generated with [XcodeGen](https://github.com/yonaskolb/XcodeGen) from `project.yml`
 - Dependencies: [KeychainAccess](https://github.com/kishikawakatsumi/KeychainAccess), [GRDB](https://github.com/groue/GRDB.swift) (SPM)
@@ -61,7 +61,7 @@ cd ~/nagz-ios && xcodegen generate
 open Nagz.xcodeproj
 ```
 
-Build and run on an iOS 17+ simulator or device.
+Build and run on an iOS 26+ simulator or device.
 
 The dev server is expected at `http://127.0.0.1:9800/api/v1` (use IP, not `localhost`, to avoid IPv6 timeout in the simulator).
 
