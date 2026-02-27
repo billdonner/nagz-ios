@@ -5,10 +5,12 @@ struct ChildNagListView: View {
     let apiClient: APIClient
     let familyId: UUID?
     let currentUserId: UUID?
+    let webSocketService: WebSocketService
 
     @State private var nags: [NagResponse] = []
     @State private var isLoading = true
     @State private var errorMessage: String?
+    @State private var wsTask: Task<Void, Never>?
 
     var body: some View {
         Group {
@@ -39,6 +41,8 @@ struct ChildNagListView: View {
         }
         .refreshable { await loadNags() }
         .task { await loadNags() }
+        .onAppear { startWebSocket() }
+        .onDisappear { stopWebSocket() }
     }
 
     private func loadNags() async {
@@ -65,5 +69,26 @@ struct ChildNagListView: View {
         } catch {
             errorMessage = error.localizedDescription
         }
+    }
+
+    private func startWebSocket() {
+        guard let familyId, wsTask == nil else { return }
+        wsTask = Task {
+            let stream = await webSocketService.connect(familyId: familyId)
+            for await event in stream {
+                switch event.type {
+                case .nagCreated, .nagUpdated, .nagStatusChanged:
+                    await loadNags()
+                case .excuseSubmitted, .memberAdded, .memberRemoved, .ping, .pong:
+                    break
+                }
+            }
+        }
+    }
+
+    private func stopWebSocket() {
+        wsTask?.cancel()
+        wsTask = nil
+        Task { await webSocketService.disconnect() }
     }
 }

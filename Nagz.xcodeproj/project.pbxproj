@@ -81,6 +81,7 @@
 		A02F31959B76DCC68EDD01EA /* ConnectionListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 65B5A59245D815BE4F037687 /* ConnectionListViewModel.swift */; };
 		A162D3663B6E637EFC3AC318 /* LoginViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AA44AE0BEBA58C043C996A1 /* LoginViewModel.swift */; };
 		A1D1DFE47E74F80A86E4EDF0 /* Phase4ViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64A2FA953CD86193ED97EFAD /* Phase4ViewModelTests.swift */; };
+		A5B6D3FBA1FCB465BC5164EC /* WebSocketService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E48765280848B00D4764541 /* WebSocketService.swift */; };
 		A922A5B3B8F9CDCF4BD36533 /* APIClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9690A2B5BD1CBA627F52AF4E /* APIClient.swift */; };
 		A99865BA24EB19746267C03B /* AppEnvironment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6E621A4F0EDD94F399E2C9DA /* AppEnvironment.swift */; };
 		A9C26BD7772B632CECDF917E /* NagRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C524E4F6DAAD0936C7DC24B /* NagRowView.swift */; };
@@ -177,6 +178,7 @@
 		478FD6A5253FF850A9EC7832 /* CreateFamilyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateFamilyView.swift; sourceTree = "<group>"; };
 		49E63852FE42057F07D13A9E /* IncentiveModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IncentiveModels.swift; sourceTree = "<group>"; };
 		4CCC28A3FD2C73A684280A8B /* JoinFamilyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JoinFamilyView.swift; sourceTree = "<group>"; };
+		4E48765280848B00D4764541 /* WebSocketService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebSocketService.swift; sourceTree = "<group>"; };
 		5243F4CFE024BC04B61879D1 /* Enums.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Enums.swift; sourceTree = "<group>"; };
 		52C07FF964E0F9AE14A6B179 /* ChildNagListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChildNagListView.swift; sourceTree = "<group>"; };
 		59967DFB14517E9CBB7944FC /* ConsentListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConsentListView.swift; sourceTree = "<group>"; };
@@ -479,6 +481,7 @@
 				17D33EACD9E91105C8BA2127 /* PushNotificationService.swift */,
 				7321DCBD5A00F79FB61647A6 /* SyncService.swift */,
 				D917295C9B5550C0BE6F63EF /* VersionChecker.swift */,
+				4E48765280848B00D4764541 /* WebSocketService.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -798,6 +801,7 @@
 				CC898491EAE1236F629698BA /* SyncService.swift in Sources */,
 				8FE044ED4C9F9F4B97EBED73 /* VersionChecker.swift in Sources */,
 				648A714E50978D32602CF46C /* VersionModels.swift in Sources */,
+				A5B6D3FBA1FCB465BC5164EC /* WebSocketService.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

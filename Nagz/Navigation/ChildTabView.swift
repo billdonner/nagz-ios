@@ -5,6 +5,7 @@ struct ChildTabView: View {
     let authManager: AuthManager
     let apiClient: APIClient
     let syncService: SyncService
+    let webSocketService: WebSocketService
 
     @State private var showSettings = false
 
@@ -18,7 +19,8 @@ struct ChildTabView: View {
             ChildNagListView(
                 apiClient: apiClient,
                 familyId: familyId,
-                currentUserId: authManager.currentUser?.id
+                currentUserId: authManager.currentUser?.id,
+                webSocketService: webSocketService
             )
             .navigationTitle("My Nags")
             .toolbar {

@@ -8,6 +8,7 @@ struct NagzApp: App {
     private let apiClient: APIClient
     private let databaseManager: DatabaseManager?
     private let syncService: SyncService?
+    private let webSocketService: WebSocketService
     private let aiService: (any AIService)?
     private let databaseError: String?
     @State private var authManager: AuthManager
@@ -41,10 +42,13 @@ struct NagzApp: App {
             dbError = error.localizedDescription
         }
 
+        let ws = WebSocketService(keychainService: keychain)
+
         let auth = AuthManager(apiClient: api, keychainService: keychain, syncService: sync)
 
         self.keychainService = keychain
         self.apiClient = api
+        self.webSocketService = ws
         self.databaseManager = db
         self.syncService = sync
         self.aiService = ai
@@ -64,6 +68,7 @@ struct NagzApp: App {
                     apiClient: apiClient,
                     pushService: pushService,
                     syncService: syncService,
+                    webSocketService: webSocketService,
                     versionChecker: versionChecker
                 )
                 .environment(\.apiClient, apiClient)

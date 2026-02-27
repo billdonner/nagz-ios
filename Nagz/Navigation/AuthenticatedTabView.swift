@@ -6,15 +6,17 @@ struct AuthenticatedTabView: View {
     let apiClient: APIClient
     let pushService: PushNotificationService
     let syncService: SyncService
+    let webSocketService: WebSocketService
 
     @State private var familyViewModel: FamilyViewModel
     @State private var nagNavigationPath = NavigationPath()
 
-    init(authManager: AuthManager, apiClient: APIClient, pushService: PushNotificationService, syncService: SyncService) {
+    init(authManager: AuthManager, apiClient: APIClient, pushService: PushNotificationService, syncService: SyncService, webSocketService: WebSocketService) {
         self.authManager = authManager
         self.apiClient = apiClient
         self.pushService = pushService
         self.syncService = syncService
+        self.webSocketService = webSocketService
         _familyViewModel = State(initialValue: FamilyViewModel(apiClient: apiClient))
     }
 
@@ -82,7 +84,8 @@ struct AuthenticatedTabView: View {
                 apiClient: apiClient,
                 familyId: familyViewModel.family?.familyId,
                 canCreateNags: canCreateNags,
-                currentUserId: authManager.currentUser?.id
+                currentUserId: authManager.currentUser?.id,
+                webSocketService: webSocketService
             )
             .navigationDestination(for: UUID.self) { nagId in
                 NagDetailView(apiClient: apiClient, nagId: nagId, currentUserId: currentUserId, isGuardian: isGuardian)

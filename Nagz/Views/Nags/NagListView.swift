@@ -5,16 +5,18 @@ struct NagListView: View {
     let canCreateNags: Bool
     let familyId: UUID?
     let currentUserId: UUID?
+    let webSocketService: WebSocketService
     @State private var showCreateNag = false
-    @State private var refreshTimer: Timer?
+    @State private var wsTask: Task<Void, Never>?
     @Environment(\.scenePhase) private var scenePhase
 
-    init(apiClient: APIClient, familyId: UUID?, canCreateNags: Bool, currentUserId: UUID? = nil) {
+    init(apiClient: APIClient, familyId: UUID?, canCreateNags: Bool, currentUserId: UUID? = nil, webSocketService: WebSocketService) {
         let vm = NagListViewModel(apiClient: apiClient)
         _viewModel = State(initialValue: vm)
         self.familyId = familyId
         self.canCreateNags = canCreateNags
         self.currentUserId = currentUserId
+        self.webSocketService = webSocketService
     }
 
     var body: some View {
@@ -94,17 +96,17 @@ struct NagListView: View {
             if !viewModel.nags.isEmpty {
                 Task { await viewModel.loadNags() }
             }
-            startAutoRefresh()
+            startWebSocket()
         }
         .onDisappear {
-            stopAutoRefresh()
+            stopWebSocket()
         }
         .onChange(of: scenePhase) {
             if scenePhase == .active {
                 Task { await viewModel.loadNags() }
-                startAutoRefresh()
+                startWebSocket()
             } else {
-                stopAutoRefresh()
+                stopWebSocket()
             }
         }
         .refreshable { await viewModel.refresh() }
@@ -113,17 +115,26 @@ struct NagListView: View {
         }
     }
 
-    private func startAutoRefresh() {
-        stopAutoRefresh()
-        refreshTimer = Timer.scheduledTimer(withTimeInterval: 30, repeats: true) { _ in
-            Task { @MainActor in
-                await viewModel.loadNags()
+    private func startWebSocket() {
+        guard let familyId, wsTask == nil else { return }
+        wsTask = Task {
+            let stream = await webSocketService.connect(familyId: familyId)
+            for await event in stream {
+                switch event.type {
+                case .nagCreated, .nagUpdated, .nagStatusChanged, .excuseSubmitted:
+                    await viewModel.loadNags()
+                case .memberAdded, .memberRemoved:
+                    break // Not relevant for nag list
+                case .ping, .pong:
+                    break
+                }
             }
         }
     }
 
-    private func stopAutoRefresh() {
-        refreshTimer?.invalidate()
-        refreshTimer = nil
+    private func stopWebSocket() {
+        wsTask?.cancel()
+        wsTask = nil
+        Task { await webSocketService.disconnect() }
     }
 }

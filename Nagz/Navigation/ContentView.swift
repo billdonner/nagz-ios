@@ -5,6 +5,7 @@ struct ContentView: View {
     let apiClient: APIClient
     let pushService: PushNotificationService
     let syncService: SyncService
+    let webSocketService: WebSocketService
     let versionChecker: VersionChecker
 
     @AppStorage("hasSeenOnboarding") private var hasSeenOnboarding = false
@@ -59,14 +60,16 @@ struct ContentView: View {
                 ChildTabView(
                     authManager: authManager,
                     apiClient: apiClient,
-                    syncService: syncService
+                    syncService: syncService,
+                    webSocketService: webSocketService
                 )
             } else {
                 AuthenticatedTabView(
                     authManager: authManager,
                     apiClient: apiClient,
                     pushService: pushService,
-                    syncService: syncService
+                    syncService: syncService,
+                    webSocketService: webSocketService
                 )
             }
         }
