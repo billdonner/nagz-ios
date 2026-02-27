@@ -74,7 +74,7 @@ struct NagListView: View {
                             }
 
                             if !nagsForOthers.isEmpty {
-                                Section("For Others") {
+                                Section("Nagz to Others:") {
                                     ForEach(nagsForOthers) { nag in
                                         NavigationLink(value: nag.id) {
                                             NagRowView(nag: nag, currentUserId: currentUserId)
