@@ -54,6 +54,7 @@ struct ConnectionListView: View {
                             } label: {
                                 Image(systemName: "xmark.circle")
                             }
+                            .buttonStyle(.borderless)
                         }
                     }
                 }
@@ -117,11 +118,13 @@ struct ConnectionListView: View {
                     }
                 ))
                 .labelsHidden()
+                .buttonStyle(.borderless)
                 Button(role: .destructive) {
                     Task { await viewModel.revoke(id: connection.id) }
                 } label: {
                     Image(systemName: "xmark.circle")
                 }
+                .buttonStyle(.borderless)
             }
 
             if let stats = viewModel.connectionStats[connection.id] {
