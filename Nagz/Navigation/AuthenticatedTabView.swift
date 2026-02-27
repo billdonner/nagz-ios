@@ -220,6 +220,25 @@ private struct FamilyTabContent: View {
                             .foregroundStyle(.secondary)
                     }
 
+                    if let childCode = family.childCode {
+                        Section("Kid Login Code") {
+                            HStack {
+                                Text(childCode)
+                                    .font(.system(.title3, design: .monospaced))
+                                    .bold()
+                                Spacer()
+                                Button {
+                                    UIPasteboard.general.string = childCode
+                                } label: {
+                                    Image(systemName: "doc.on.doc")
+                                }
+                            }
+                            Text("Kids use this code + their username + PIN to sign in on their own device.")
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                        }
+                    }
+
                     Section {
                         Button("Log Out", role: .destructive) {
                             Task { await authManager.logout() }

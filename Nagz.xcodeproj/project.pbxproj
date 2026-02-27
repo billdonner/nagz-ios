@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		022785549CA30F29EE5D1189 /* EscalationBadge.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E6DEEBE1B334FC5685FC4E5 /* EscalationBadge.swift */; };
+		0351ECFBABBD6006E425B4BA /* ChildLoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88AA3B64F59D3D24FA91281B /* ChildLoginView.swift */; };
 		09ABEFE60F83398710D571FB /* JoinFamilyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4CCC28A3FD2C73A684280A8B /* JoinFamilyView.swift */; };
 		09F05C30C15A7DD1691B8E69 /* FamilyModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3103D76E83889066B4CDC006 /* FamilyModels.swift */; };
 		0B0A4DA780062CDF107BB721 /* CompleteNagIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = D9F6250F88777E53820A4F59 /* CompleteNagIntent.swift */; };
@@ -20,6 +21,8 @@
 		286523391EC02803D1DD724E /* EditNagView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 185EF763DF413C6E39A88743 /* EditNagView.swift */; };
 		2A63ED0A586E3570ED2CDA8D /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72F118F344FB4C3411FAAEC4 /* LoginView.swift */; };
 		2C5C0179A7849D66DDBE2A57 /* MemberListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAD16D6E59A98D9D44F48D03 /* MemberListViewModel.swift */; };
+		30EACC0DF07C98604911212D /* ChildSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E1FCB46DE5A18A14B9B3D86 /* ChildSettingsView.swift */; };
+		30FA929AFB9BFB4C088C904F /* ChildLoginViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80CC6ECFE73948450B574D3E /* ChildLoginViewModel.swift */; };
 		30FE0CA1C7AE1A7C39EBC6A1 /* ExcuseModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 159D7C43D155D86EE40E00A7 /* ExcuseModels.swift */; };
 		31786F9BFF5056BF5DD0FB91 /* SafetyModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = A14A7ACF3D604B6E110A26B4 /* SafetyModels.swift */; };
 		33ECF4A54330D14672B855EB /* DatabaseManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0859112BEE5F101B319AFE76 /* DatabaseManager.swift */; };
@@ -36,10 +39,13 @@
 		48F29924A9EAEE816CE948E5 /* NagDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 83E67D051966AD3EDD9F8D7C /* NagDetailView.swift */; };
 		49E8DCA9F8BEADFF7072B9E0 /* NagzIntentError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74DEF78D6D5B4D5777557403 /* NagzIntentError.swift */; };
 		4B90156F8357D1396A095922 /* FamilyMemberEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 380014CE84898708152E95D9 /* FamilyMemberEntity.swift */; };
+		4EB168C1EC00F8360532A492 /* ChildNagRowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF91FF14F9B6661EF3E3BBE5 /* ChildNagRowView.swift */; };
 		505CA8990F29CD58610ABF47 /* AuthenticatedTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E89A05814372C9BCE15E6EC /* AuthenticatedTabView.swift */; };
+		553C3C39F4C65BA967C818EA /* ChildNagListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52C07FF964E0F9AE14A6B179 /* ChildNagListView.swift */; };
 		5623F365A067F7E33C395F7D /* PolicyDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6ED1D6F2ECDC7A749F865DCD /* PolicyDetailView.swift */; };
 		577DDC65B9F769BBF403122F /* KeychainAccess in Frameworks */ = {isa = PBXBuildFile; productRef = 545A46357975BAA1644730CE /* KeychainAccess */; };
 		58997B57F6EEF60B40681A54 /* GamificationViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9DBB9A681F612EC3473C6868 /* GamificationViewModel.swift */; };
+		5C6D1B7A29FCDA749A160A9C /* ChildControlsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC83E054B31232050F5192EA /* ChildControlsView.swift */; };
 		60753DD6A5B3A56B59878C5F /* ConnectionListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 467128F4726233C3AAE17CB0 /* ConnectionListView.swift */; };
 		648A714E50978D32602CF46C /* VersionModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCA86773FC15EB5B201B38D0 /* VersionModels.swift */; };
 		69072BBDECA8680C5104363E /* AccountView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D2C31A6C1CA6645B991FD667 /* AccountView.swift */; };
@@ -114,6 +120,7 @@
 		E5FBFF061C137C8F92E30030 /* InviteConnectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BB814065DDF1AE7736CE000 /* InviteConnectionView.swift */; };
 		E6C2D67EBC5D812CF590C0AD /* IncentiveRulesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1618B20BD4EBDD00C94901B5 /* IncentiveRulesView.swift */; };
 		EBFA84D9138F0B611957E4B0 /* ReportsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4A715516D53FF9CD1661B2E /* ReportsView.swift */; };
+		F0AB75924FFE303B835955DC /* ChildTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8046B20FB1D7A89FDFDDBD8 /* ChildTabView.swift */; };
 		F527047B44CB0A89B8A82E21 /* NagDetailViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D8B860496CD6D4BE858F1F2 /* NagDetailViewModel.swift */; };
 		F754AE5579AB840BF5144223 /* FamilyMemberQuery.swift in Sources */ = {isa = PBXBuildFile; fileRef = 900FB4265B1BED2475827172 /* FamilyMemberQuery.swift */; };
 		FA33F894752016C4B3020AB3 /* LegalDocumentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C51ABC6C49366CC13AA23E5C /* LegalDocumentView.swift */; };
@@ -171,6 +178,7 @@
 		49E63852FE42057F07D13A9E /* IncentiveModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IncentiveModels.swift; sourceTree = "<group>"; };
 		4CCC28A3FD2C73A684280A8B /* JoinFamilyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JoinFamilyView.swift; sourceTree = "<group>"; };
 		5243F4CFE024BC04B61879D1 /* Enums.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Enums.swift; sourceTree = "<group>"; };
+		52C07FF964E0F9AE14A6B179 /* ChildNagListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChildNagListView.swift; sourceTree = "<group>"; };
 		59967DFB14517E9CBB7944FC /* ConsentListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConsentListView.swift; sourceTree = "<group>"; };
 		5A69383318CB720FC401D0D7 /* PaginatedResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaginatedResponse.swift; sourceTree = "<group>"; };
 		5C524E4F6DAAD0936C7DC24B /* NagRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NagRowView.swift; sourceTree = "<group>"; };
@@ -187,9 +195,12 @@
 		74DEF78D6D5B4D5777557403 /* NagzIntentError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NagzIntentError.swift; sourceTree = "<group>"; };
 		799222C076E18C851FFF7C9E /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		7B70AA17D1E21D3916FD048C /* EnvironmentValues+API.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "EnvironmentValues+API.swift"; sourceTree = "<group>"; };
+		80CC6ECFE73948450B574D3E /* ChildLoginViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChildLoginViewModel.swift; sourceTree = "<group>"; };
 		83E67D051966AD3EDD9F8D7C /* NagDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NagDetailView.swift; sourceTree = "<group>"; };
+		88AA3B64F59D3D24FA91281B /* ChildLoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChildLoginView.swift; sourceTree = "<group>"; };
 		88BCE00F95D3F26F9BD4F880 /* NagzTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = NagzTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		8C70FE14961CC2F9E8593105 /* FamilyStatusIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FamilyStatusIntent.swift; sourceTree = "<group>"; };
+		8E1FCB46DE5A18A14B9B3D86 /* ChildSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChildSettingsView.swift; sourceTree = "<group>"; };
 		8F8430225ED802B793D2E6C2 /* Date+Formatting.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Date+Formatting.swift"; sourceTree = "<group>"; };
 		900FB4265B1BED2475827172 /* FamilyMemberQuery.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FamilyMemberQuery.swift; sourceTree = "<group>"; };
 		90C1EED5F97864A105AE2117 /* SafetyViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SafetyViewModel.swift; sourceTree = "<group>"; };
@@ -229,6 +240,7 @@
 		D2C31A6C1CA6645B991FD667 /* AccountView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountView.swift; sourceTree = "<group>"; };
 		D3BF64C56EBAEE04E21E7452 /* MemberRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemberRowView.swift; sourceTree = "<group>"; };
 		D6518A68E624AD12C6521FA5 /* EditNagViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditNagViewModel.swift; sourceTree = "<group>"; };
+		D8046B20FB1D7A89FDFDDBD8 /* ChildTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChildTabView.swift; sourceTree = "<group>"; };
 		D917295C9B5550C0BE6F63EF /* VersionChecker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VersionChecker.swift; sourceTree = "<group>"; };
 		D9F6250F88777E53820A4F59 /* CompleteNagIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompleteNagIntent.swift; sourceTree = "<group>"; };
 		DAD16D6E59A98D9D44F48D03 /* MemberListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemberListViewModel.swift; sourceTree = "<group>"; };
@@ -244,6 +256,8 @@
 		F73099FD428BA8EC44A85ECB /* APIEndpoint.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIEndpoint.swift; sourceTree = "<group>"; };
 		FB2AF689B606E365EF7055E5 /* PolicyModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PolicyModels.swift; sourceTree = "<group>"; };
 		FC1268A6068C60F603BC606E /* IncentiveRulesViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IncentiveRulesViewModel.swift; sourceTree = "<group>"; };
+		FC83E054B31232050F5192EA /* ChildControlsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChildControlsView.swift; sourceTree = "<group>"; };
+		FF91FF14F9B6661EF3E3BBE5 /* ChildNagRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChildNagRowView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -262,6 +276,7 @@
 		0A740E1700A8B69EB3A5DB91 /* Nags */ = {
 			isa = PBXGroup;
 			children = (
+				52C07FF964E0F9AE14A6B179 /* ChildNagListView.swift */,
 				E84EB1DEEB1724609FA6FFC9 /* CreateNagView.swift */,
 				185EF763DF413C6E39A88743 /* EditNagView.swift */,
 				83E67D051966AD3EDD9F8D7C /* NagDetailView.swift */,
@@ -338,6 +353,7 @@
 		77D45262F1049B35555CB25A /* Guardian */ = {
 			isa = PBXGroup;
 			children = (
+				FC83E054B31232050F5192EA /* ChildControlsView.swift */,
 				B16BEEBE6F3B1BEACF53FFAC /* DeliveryHistoryView.swift */,
 				6ED1D6F2ECDC7A749F865DCD /* PolicyDetailView.swift */,
 				EBD44C1B308F9911F7BCBC0C /* PolicyListView.swift */,
@@ -470,6 +486,7 @@
 		D088B41B923A66EE9F11DF1B /* Components */ = {
 			isa = PBXGroup;
 			children = (
+				FF91FF14F9B6661EF3E3BBE5 /* ChildNagRowView.swift */,
 				4390EE8B448189A83504758C /* ErrorBanner.swift */,
 				9E6DEEBE1B334FC5685FC4E5 /* EscalationBadge.swift */,
 				D3BF64C56EBAEE04E21E7452 /* MemberRowView.swift */,
@@ -481,6 +498,8 @@
 		D59D9B456A0D9F660CDF8790 /* Auth */ = {
 			isa = PBXGroup;
 			children = (
+				88AA3B64F59D3D24FA91281B /* ChildLoginView.swift */,
+				8E1FCB46DE5A18A14B9B3D86 /* ChildSettingsView.swift */,
 				72F118F344FB4C3411FAAEC4 /* LoginView.swift */,
 				AE0B9F4BCBAB9DA56A1A82E9 /* SignupView.swift */,
 			);
@@ -504,6 +523,7 @@
 			isa = PBXGroup;
 			children = (
 				1E89A05814372C9BCE15E6EC /* AuthenticatedTabView.swift */,
+				D8046B20FB1D7A89FDFDDBD8 /* ChildTabView.swift */,
 				3EDC2854A3127F68733D4958 /* ContentView.swift */,
 			);
 			path = Navigation;
@@ -524,6 +544,7 @@
 		F25C983ADF72DD78A90EB077 /* ViewModels */ = {
 			isa = PBXGroup;
 			children = (
+				80CC6ECFE73948450B574D3E /* ChildLoginViewModel.swift */,
 				65B5A59245D815BE4F037687 /* ConnectionListViewModel.swift */,
 				A2167A24BA46966A1CC5F470 /* ConsentViewModel.swift */,
 				2D5DE9C0FB044817490BD132 /* CreateNagViewModel.swift */,
@@ -680,6 +701,13 @@
 				505CA8990F29CD58610ABF47 /* AuthenticatedTabView.swift in Sources */,
 				3442D55AEDBE7F239642D7FF /* CachedRecords.swift in Sources */,
 				9A67032E0886B847102D1DA1 /* CheckOverdueIntent.swift in Sources */,
+				5C6D1B7A29FCDA749A160A9C /* ChildControlsView.swift in Sources */,
+				0351ECFBABBD6006E425B4BA /* ChildLoginView.swift in Sources */,
+				30FA929AFB9BFB4C088C904F /* ChildLoginViewModel.swift in Sources */,
+				553C3C39F4C65BA967C818EA /* ChildNagListView.swift in Sources */,
+				4EB168C1EC00F8360532A492 /* ChildNagRowView.swift in Sources */,
+				30EACC0DF07C98604911212D /* ChildSettingsView.swift in Sources */,
+				F0AB75924FFE303B835955DC /* ChildTabView.swift in Sources */,
 				0B0A4DA780062CDF107BB721 /* CompleteNagIntent.swift in Sources */,
 				60753DD6A5B3A56B59878C5F /* ConnectionListView.swift in Sources */,
 				A02F31959B76DCC68EDD01EA /* ConnectionListViewModel.swift in Sources */,

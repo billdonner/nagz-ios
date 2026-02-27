@@ -26,6 +26,7 @@ struct APIEndpoint {
     enum HTTPMethod: String {
         case get = "GET"
         case post = "POST"
+        case put = "PUT"
         case patch = "PATCH"
         case delete = "DELETE"
     }
@@ -67,6 +68,15 @@ struct APIEndpoint {
             path: "/auth/refresh",
             method: .post,
             body: RefreshRequest(refreshToken: refreshToken),
+            requiresAuth: false
+        )
+    }
+
+    static func childLogin(familyCode: String, username: String, pin: String) -> APIEndpoint {
+        APIEndpoint(
+            path: "/auth/child-login",
+            method: .post,
+            body: ChildLoginRequest(familyCode: familyCode, username: username, pin: pin),
             requiresAuth: false
         )
     }
@@ -245,11 +255,11 @@ struct APIEndpoint {
         )
     }
 
-    static func createMember(familyId: UUID, displayName: String, role: FamilyRole) -> APIEndpoint {
+    static func createMember(familyId: UUID, displayName: String, role: FamilyRole, username: String? = nil, pin: String? = nil) -> APIEndpoint {
         APIEndpoint(
             path: "/families/\(familyId)/members/create",
             method: .post,
-            body: MemberCreateAndAdd(displayName: displayName, role: role)
+            body: MemberCreateAndAdd(displayName: displayName, role: role, username: username, pin: pin)
         )
     }
 
@@ -257,6 +267,34 @@ struct APIEndpoint {
         APIEndpoint(
             path: "/families/\(familyId)/members/\(userId)",
             method: .delete
+        )
+    }
+
+    static func setChildCredentials(familyId: UUID, userId: UUID, username: String, pin: String) -> APIEndpoint {
+        APIEndpoint(
+            path: "/families/\(familyId)/members/\(userId)/credentials",
+            method: .put,
+            body: ChildCredentialsSet(username: username, pin: pin)
+        )
+    }
+
+    static func changePin(familyId: UUID, userId: UUID, currentPin: String, newPin: String) -> APIEndpoint {
+        APIEndpoint(
+            path: "/families/\(familyId)/members/\(userId)/pin",
+            method: .patch,
+            body: PinChangeRequest(currentPin: currentPin, newPin: newPin)
+        )
+    }
+
+    static func getChildSettings(familyId: UUID, userId: UUID) -> APIEndpoint {
+        APIEndpoint(path: "/families/\(familyId)/children/\(userId)/settings")
+    }
+
+    static func updateChildSettings(familyId: UUID, userId: UUID, update: ChildSettingsUpdate) -> APIEndpoint {
+        APIEndpoint(
+            path: "/families/\(familyId)/children/\(userId)/settings",
+            method: .patch,
+            body: update
         )
     }
 

@@ -3,8 +3,12 @@ import SwiftUI
 struct LoginView: View {
     @State private var viewModel: LoginViewModel
     @Binding var showSignup: Bool
+    @State private var showChildLogin = false
+
+    private let authManager: AuthManager
 
     init(authManager: AuthManager, showSignup: Binding<Bool>) {
+        self.authManager = authManager
         _viewModel = State(initialValue: LoginViewModel(authManager: authManager))
         _showSignup = showSignup
     }
@@ -62,6 +66,17 @@ struct LoginView: View {
                     showSignup = true
                 }
             }
+
+            Section {
+                Button {
+                    showChildLogin = true
+                } label: {
+                    Label("I'm a Kid", systemImage: "face.smiling.fill")
+                        .frame(maxWidth: .infinity)
+                }
+                .tint(.orange)
+            }
+
             Section {
                 Text("Nagz uses accounts so your family members can share reminders, track tasks, and receive notifications across devices. Your data stays private and you can delete your account at any time.")
                     .font(.footnote)
@@ -69,5 +84,8 @@ struct LoginView: View {
             }
         }
         .navigationTitle("Nagz")
+        .sheet(isPresented: $showChildLogin) {
+            ChildLoginView(authManager: authManager)
+        }
     }
 }

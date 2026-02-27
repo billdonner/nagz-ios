@@ -12,6 +12,12 @@ struct SignupRequest: Encodable {
     let dateOfBirth: Date?
 }
 
+struct ChildLoginRequest: Encodable {
+    let familyCode: String
+    let username: String
+    let pin: String
+}
+
 struct RefreshRequest: Encodable {
     let refreshToken: String
 }
@@ -21,6 +27,8 @@ struct AuthResponse: Decodable {
     let refreshToken: String
     let tokenType: String
     let user: AccountResponse
+    let familyId: UUID?
+    let familyRole: String?
 }
 
 struct AccountResponse: Decodable, Identifiable, Sendable {

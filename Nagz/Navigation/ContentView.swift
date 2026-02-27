@@ -55,6 +55,12 @@ struct ContentView: View {
                         .foregroundStyle(.secondary)
                 }
                 .padding()
+            } else if authManager.isChildUser {
+                ChildTabView(
+                    authManager: authManager,
+                    apiClient: apiClient,
+                    syncService: syncService
+                )
             } else {
                 AuthenticatedTabView(
                     authManager: authManager,
