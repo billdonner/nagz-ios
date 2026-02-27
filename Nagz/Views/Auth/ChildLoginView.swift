@@ -2,6 +2,7 @@ import SwiftUI
 
 struct ChildLoginView: View {
     @State private var viewModel: ChildLoginViewModel
+    @FocusState private var pinFocused: Bool
     @Environment(\.dismiss) private var dismiss
 
     init(authManager: AuthManager) {
@@ -18,20 +19,25 @@ struct ChildLoginView: View {
                 Text("Kid Sign In")
                     .font(.title.bold())
 
-                Text("Ask your parent for the family code and your username.")
+                Text("Ask your parent for the Kid Login Code and your username.")
                     .font(.subheadline)
                     .foregroundStyle(.secondary)
                     .multilineTextAlignment(.center)
 
                 VStack(spacing: 16) {
-                    TextField("Family Code", text: $viewModel.familyCode)
-                        .textInputAutocapitalization(.characters)
-                        .autocorrectionDisabled()
-                        .font(.system(.title3, design: .monospaced))
-                        .multilineTextAlignment(.center)
-                        .padding()
-                        .background(Color(.systemGray6))
-                        .clipShape(RoundedRectangle(cornerRadius: 12))
+                    VStack(spacing: 4) {
+                        Text("Kid Login Code")
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                        TextField("e.g. NAG7K2", text: $viewModel.familyCode)
+                            .textInputAutocapitalization(.characters)
+                            .autocorrectionDisabled()
+                            .font(.system(.title3, design: .monospaced))
+                            .multilineTextAlignment(.center)
+                            .padding()
+                            .background(Color(.systemGray6))
+                            .clipShape(RoundedRectangle(cornerRadius: 12))
+                    }
 
                     TextField("Username", text: $viewModel.username)
                         .textInputAutocapitalization(.never)
@@ -83,7 +89,7 @@ struct ChildLoginView: View {
 
     private var pinField: some View {
         VStack(spacing: 8) {
-            Text("PIN")
+            Text("4-Digit PIN")
                 .font(.caption)
                 .foregroundStyle(.secondary)
 
@@ -100,14 +106,15 @@ struct ChildLoginView: View {
                         .foregroundStyle(digit.isEmpty ? .tertiary : .primary)
                 }
             }
+            .contentShape(Rectangle())
+            .onTapGesture { pinFocused = true }
 
-            // Hidden text field for PIN input
             TextField("", text: $viewModel.pin)
                 .keyboardType(.numberPad)
+                .focused($pinFocused)
                 .frame(width: 1, height: 1)
                 .opacity(0.01)
                 .onChange(of: viewModel.pin) { _, newValue in
-                    // Limit to 4 digits
                     let filtered = String(newValue.prefix(4).filter(\.isNumber))
                     if filtered != newValue {
                         viewModel.pin = filtered
