@@ -51,6 +51,7 @@ final class ManageMembersViewModel {
             let _: MemberDetail = try await apiClient.request(
                 .createMember(familyId: familyId, displayName: newMemberName.trimmingCharacters(in: .whitespaces), role: newMemberRole)
             )
+            await apiClient.invalidateCache(prefix: "/families")
             showCreateSheet = false
             newMemberName = ""
             newMemberRole = .child
@@ -70,6 +71,7 @@ final class ManageMembersViewModel {
             let _: MemberResponse = try await apiClient.request(
                 .removeMember(familyId: familyId, userId: member.userId)
             )
+            await apiClient.invalidateCache(prefix: "/families")
             await load()
         } catch let error as APIError {
             errorMessage = error.errorDescription

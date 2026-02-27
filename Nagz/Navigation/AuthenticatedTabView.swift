@@ -308,6 +308,9 @@ private struct FamilyTabContent: View {
                     }
                 }
                 .navigationTitle(family.name)
+                .onAppear {
+                    Task { await viewModel.loadFamily(id: family.familyId) }
+                }
             } else {
                 VStack(spacing: 20) {
                     Text("Welcome to Nagz!")
