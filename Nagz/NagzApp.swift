@@ -33,10 +33,10 @@ struct NagzApp: App {
             db = database
             sync = SyncService(apiClient: api, db: database)
 
-            // AI services: on-device with server fallback
+            // AI services: NagzAI adapter with server fallback
             let serverAI = ServerAIService(apiClient: api)
-            let onDeviceAI = OnDeviceAIService(db: database, fallback: serverAI)
-            ai = onDeviceAI
+            let nagzAI = NagzAIAdapter(db: database, fallback: serverAI)
+            ai = nagzAI
         } catch {
             DebugLogger.shared.log("Database init failed: \(error.localizedDescription)", level: .error)
             dbError = error.localizedDescription

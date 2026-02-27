@@ -1,6 +1,6 @@
 import Foundation
 
-/// Protocol for AI operations — implemented by both ServerAIService and OnDeviceAIService.
+/// Protocol for AI operations — implemented by both ServerAIService and NagzAIAdapter.
 protocol AIService: Sendable {
     func summarizeExcuse(_ text: String, nagId: UUID) async throws -> ExcuseSummaryResponse
     func selectTone(nagId: UUID) async throws -> ToneSelectResponse

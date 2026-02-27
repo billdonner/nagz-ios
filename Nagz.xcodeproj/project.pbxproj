@@ -30,6 +30,7 @@
 		350FB4B166D078DD5BC0EEC9 /* CreateNagViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D5DE9C0FB044817490BD132 /* CreateNagViewModel.swift */; };
 		396E4226730469AEA60B71D9 /* NagListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3EC5EC449162BDDDA1AEA55E /* NagListViewModel.swift */; };
 		3D690C5895332B064AB5750A /* LegalModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = F46A3E90EEC26B840C950557 /* LegalModels.swift */; };
+		3F839196F729C55C3BA08E8D /* NagzAIAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44DB9A94BE69B3EBE0B81F17 /* NagzAIAdapter.swift */; };
 		41624A0FA5DBA542A0351B6C /* EscalationModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04D5AC512A990EFC2E729F29 /* EscalationModels.swift */; };
 		424953649E34B0D46C75BD5F /* ModelDecodingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1FBFCDE4C04F3EC809309128 /* ModelDecodingTests.swift */; };
 		4440085F3A155A314DC293BE /* PushNotificationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17D33EACD9E91105C8BA2127 /* PushNotificationService.swift */; };
@@ -45,6 +46,7 @@
 		5623F365A067F7E33C395F7D /* PolicyDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6ED1D6F2ECDC7A749F865DCD /* PolicyDetailView.swift */; };
 		577DDC65B9F769BBF403122F /* KeychainAccess in Frameworks */ = {isa = PBXBuildFile; productRef = 545A46357975BAA1644730CE /* KeychainAccess */; };
 		58997B57F6EEF60B40681A54 /* GamificationViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9DBB9A681F612EC3473C6868 /* GamificationViewModel.swift */; };
+		59BD6575E5DB1963CC5318A7 /* NagzAI in Frameworks */ = {isa = PBXBuildFile; productRef = AA0470813CE5E9E39FC7A9BA /* NagzAI */; };
 		5C6D1B7A29FCDA749A160A9C /* ChildControlsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC83E054B31232050F5192EA /* ChildControlsView.swift */; };
 		60753DD6A5B3A56B59878C5F /* ConnectionListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 467128F4726233C3AAE17CB0 /* ConnectionListView.swift */; };
 		648A714E50978D32602CF46C /* VersionModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCA86773FC15EB5B201B38D0 /* VersionModels.swift */; };
@@ -90,7 +92,6 @@
 		ABE7491D55FBA095F89BFD3A /* ManageMembersView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 615BFEFFC265637815DB1707 /* ManageMembersView.swift */; };
 		ACBE1FC8906E623F15349BAA /* CreateNagIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4570F057307070C0CF2C47D /* CreateNagIntent.swift */; };
 		AEFCF8156E0CF766CC91D2B2 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2524FDBBE8F215CAB498AD90 /* Constants.swift */; };
-		B0F605FE26C3101FE56C4803 /* OnDeviceAIService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6CC10FBF6817DAB04DCE30B /* OnDeviceAIService.swift */; };
 		B4181171676EAD0BACA7E4AA /* DeliveryModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C2745952F84266C12B43D6F /* DeliveryModels.swift */; };
 		B45D7C13CBAF43DDD2DC7EF7 /* CreateFamilyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 478FD6A5253FF850A9EC7832 /* CreateFamilyView.swift */; };
 		B5C3E058B2FF4E6F43F5AD53 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 987A5CE42CC1B28C6E9697DA /* Assets.xcassets */; };
@@ -174,6 +175,7 @@
 		3EDC2854A3127F68733D4958 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		3FDB7AE9D441B80CBA3645F1 /* DebugLogger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DebugLogger.swift; sourceTree = "<group>"; };
 		4390EE8B448189A83504758C /* ErrorBanner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorBanner.swift; sourceTree = "<group>"; };
+		44DB9A94BE69B3EBE0B81F17 /* NagzAIAdapter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NagzAIAdapter.swift; sourceTree = "<group>"; };
 		467128F4726233C3AAE17CB0 /* ConnectionListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectionListView.swift; sourceTree = "<group>"; };
 		478FD6A5253FF850A9EC7832 /* CreateFamilyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateFamilyView.swift; sourceTree = "<group>"; };
 		49E63852FE42057F07D13A9E /* IncentiveModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IncentiveModels.swift; sourceTree = "<group>"; };
@@ -229,13 +231,13 @@
 		B16BEEBE6F3B1BEACF53FFAC /* DeliveryHistoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeliveryHistoryView.swift; sourceTree = "<group>"; };
 		B1C39F97A1E2D4580F9FA2ED /* NagEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NagEntity.swift; sourceTree = "<group>"; };
 		B2070199AFE540C086F22328 /* AIService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AIService.swift; sourceTree = "<group>"; };
+		B38F76873061364A98CBC6F4 /* nagz-ai */ = {isa = PBXFileReference; lastKnownFileType = folder; name = "nagz-ai"; path = "../nagz-ai"; sourceTree = SOURCE_ROOT; };
 		B53EA32F83C1765C5E316E83 /* IntentTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IntentTests.swift; sourceTree = "<group>"; };
 		BAA9ECF7D3600FB6AF4C758C /* ReportModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReportModels.swift; sourceTree = "<group>"; };
 		BD1EC9622D9A307210DFE613 /* IntentServiceContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IntentServiceContainer.swift; sourceTree = "<group>"; };
 		C3304DDCA502144AB4F456FB /* DeviceModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeviceModels.swift; sourceTree = "<group>"; };
 		C48EF0BFA6111245B86B2971 /* FamilyViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FamilyViewModel.swift; sourceTree = "<group>"; };
 		C51ABC6C49366CC13AA23E5C /* LegalDocumentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LegalDocumentView.swift; sourceTree = "<group>"; };
-		C6CC10FBF6817DAB04DCE30B /* OnDeviceAIService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnDeviceAIService.swift; sourceTree = "<group>"; };
 		C8D5A1D2FBCFD9344C12FD96 /* AIModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AIModels.swift; sourceTree = "<group>"; };
 		C9555685DE01F4548E6AC6A0 /* PreferenceModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreferenceModels.swift; sourceTree = "<group>"; };
 		CCA86773FC15EB5B201B38D0 /* VersionModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VersionModels.swift; sourceTree = "<group>"; };
@@ -269,6 +271,7 @@
 			files = (
 				577DDC65B9F769BBF403122F /* KeychainAccess in Frameworks */,
 				46EEE8DB4387C89E94E33E66 /* GRDB in Frameworks */,
+				59BD6575E5DB1963CC5318A7 /* NagzAI in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -305,6 +308,14 @@
 				4DB96EA334C05B7155CCE478 /* Views */,
 			);
 			path = Nagz;
+			sourceTree = "<group>";
+		};
+		11328E1723658A75A55970B1 /* Packages */ = {
+			isa = PBXGroup;
+			children = (
+				B38F76873061364A98CBC6F4 /* nagz-ai */,
+			);
+			name = Packages;
 			sourceTree = "<group>";
 		};
 		1EBD9D3165D1A844B322E43D /* Gamification */ = {
@@ -348,6 +359,7 @@
 				AE9F39D8D6DE81E447905298 /* PrivacyInfo.xcprivacy */,
 				0FA30C570EC8C33D010A9F2E /* Nagz */,
 				EFC42ED55F75194D27D42A94 /* NagzTests */,
+				11328E1723658A75A55970B1 /* Packages */,
 				4D3CC44B0C07A86AD308A8BE /* Products */,
 			);
 			sourceTree = "<group>";
@@ -477,7 +489,7 @@
 				1AC6950A07FD4A8909F73946 /* AuthManager.swift */,
 				3FDB7AE9D441B80CBA3645F1 /* DebugLogger.swift */,
 				62B0E5FF945FF5C1DF5EA1D3 /* KeychainService.swift */,
-				C6CC10FBF6817DAB04DCE30B /* OnDeviceAIService.swift */,
+				44DB9A94BE69B3EBE0B81F17 /* NagzAIAdapter.swift */,
 				17D33EACD9E91105C8BA2127 /* PushNotificationService.swift */,
 				7321DCBD5A00F79FB61647A6 /* SyncService.swift */,
 				D917295C9B5550C0BE6F63EF /* VersionChecker.swift */,
@@ -631,6 +643,7 @@
 			packageProductDependencies = (
 				545A46357975BAA1644730CE /* KeychainAccess */,
 				6AA6D2A0605204CDBCCED3B3 /* GRDB */,
+				AA0470813CE5E9E39FC7A9BA /* NagzAI */,
 			);
 			productName = Nagz;
 			productReference = A88D52E67BB456B1C310B4A3 /* Nagz.app */;
@@ -664,6 +677,7 @@
 			packageReferences = (
 				B3EE353BC8F5F0D49247FA9E /* XCRemoteSwiftPackageReference "GRDB.swift" */,
 				DB471355E3D294EFBC7ABD99 /* XCRemoteSwiftPackageReference "KeychainAccess" */,
+				E461B9DC78FA21FD330B2A4D /* XCLocalSwiftPackageReference "../nagz-ai" */,
 			);
 			preferredProjectObjectVersion = 77;
 			projectDirPath = "";
@@ -775,10 +789,10 @@
 				396E4226730469AEA60B71D9 /* NagListViewModel.swift in Sources */,
 				9E3B5FA1D29A914B45079842 /* NagModels.swift in Sources */,
 				A9C26BD7772B632CECDF917E /* NagRowView.swift in Sources */,
+				3F839196F729C55C3BA08E8D /* NagzAIAdapter.swift in Sources */,
 				DA6060AE8EAE463303B6F915 /* NagzApp.swift in Sources */,
 				49E8DCA9F8BEADFF7072B9E0 /* NagzIntentError.swift in Sources */,
 				6B2B1510A1A976D4A10E0ECC /* NagzShortcutsProvider.swift in Sources */,
-				B0F605FE26C3101FE56C4803 /* OnDeviceAIService.swift in Sources */,
 				71FAD77F4EB7237EBA677EBB /* OnboardingView.swift in Sources */,
 				7A6DD790F8FADCFDDB11E379 /* PaginatedResponse.swift in Sources */,
 				5623F365A067F7E33C395F7D /* PolicyDetailView.swift in Sources */,
@@ -1065,6 +1079,13 @@
 		};
 /* End XCConfigurationList section */
 
+/* Begin XCLocalSwiftPackageReference section */
+		E461B9DC78FA21FD330B2A4D /* XCLocalSwiftPackageReference "../nagz-ai" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = "../nagz-ai";
+		};
+/* End XCLocalSwiftPackageReference section */
+
 /* Begin XCRemoteSwiftPackageReference section */
 		B3EE353BC8F5F0D49247FA9E /* XCRemoteSwiftPackageReference "GRDB.swift" */ = {
 			isa = XCRemoteSwiftPackageReference;
@@ -1094,6 +1115,10 @@
 			isa = XCSwiftPackageProductDependency;
 			package = B3EE353BC8F5F0D49247FA9E /* XCRemoteSwiftPackageReference "GRDB.swift" */;
 			productName = GRDB;
+		};
+		AA0470813CE5E9E39FC7A9BA /* NagzAI */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = NagzAI;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
