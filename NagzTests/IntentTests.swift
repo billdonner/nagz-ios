@@ -122,7 +122,8 @@ struct IntentTests {
             familyId: familyId,
             role: .child,
             status: .active,
-            joinedAt: Date()
+            joinedAt: Date(),
+            hasChildLogin: nil
         )
 
         let entity = FamilyMemberEntity(from: member)
@@ -140,7 +141,8 @@ struct IntentTests {
             familyId: UUID(),
             role: .participant,
             status: .active,
-            joinedAt: Date()
+            joinedAt: Date(),
+            hasChildLogin: nil
         )
 
         let entity = FamilyMemberEntity(from: member)

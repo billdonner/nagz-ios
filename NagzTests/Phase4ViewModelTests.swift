@@ -788,8 +788,8 @@ final class RecurrenceTests: XCTestCase {
         XCTAssertEqual(Recurrence.monthly.displayName, "Monthly")
     }
 
-    func testRecurrenceHasThreeCases() {
-        XCTAssertEqual(Recurrence.allCases.count, 3)
+    func testRecurrenceHasSevenCases() {
+        XCTAssertEqual(Recurrence.allCases.count, 7)
     }
 }
 
