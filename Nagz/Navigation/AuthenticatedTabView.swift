@@ -143,12 +143,13 @@ private struct FamilyTabContent: View {
                 List {
                     Section("Family") {
                         LabeledContent("Name", value: family.name)
-                        NavigationLink("Members") {
-                            MemberListView(apiClient: apiClient, familyId: family.familyId)
-                        }
                         if isAdmin {
-                            NavigationLink("Manage Members") {
+                            NavigationLink("Members") {
                                 ManageMembersView(apiClient: apiClient, familyId: family.familyId)
+                            }
+                        } else {
+                            NavigationLink("Members") {
+                                MemberListView(apiClient: apiClient, familyId: family.familyId)
                             }
                         }
                     }
