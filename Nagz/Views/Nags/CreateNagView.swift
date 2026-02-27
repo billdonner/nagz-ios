@@ -104,6 +104,11 @@ struct CreateNagView: View {
                             Text(r.displayName).tag(r as Recurrence?)
                         }
                     }
+                    .onChange(of: viewModel.recurrence) {
+                        if let r = viewModel.recurrence {
+                            viewModel.dueAt = Date().addingTimeInterval(r.timeInterval)
+                        }
+                    }
                 }
 
                 Section("Description (Optional)") {

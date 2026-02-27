@@ -129,6 +129,19 @@ enum Recurrence: String, Codable, CaseIterable {
     var iconName: String {
         "repeat"
     }
+
+    /// Suggested initial due interval for this recurrence.
+    var timeInterval: TimeInterval {
+        switch self {
+        case .every5Minutes: 5 * 60
+        case .every15Minutes: 15 * 60
+        case .every30Minutes: 30 * 60
+        case .hourly: 60 * 60
+        case .daily: 24 * 60 * 60
+        case .weekly: 7 * 24 * 60 * 60
+        case .monthly: 30 * 24 * 60 * 60
+        }
+    }
 }
 
 enum ConnectionStatus: String, Codable {
