@@ -72,6 +72,7 @@ struct NagzApp: App {
                     versionChecker: versionChecker
                 )
                 .environment(\.apiClient, apiClient)
+                .environment(\.aiService, aiService)
                 .onAppear {
                     appDelegate.pushService = pushService
                 }

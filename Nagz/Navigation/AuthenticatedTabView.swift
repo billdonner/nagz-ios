@@ -174,6 +174,14 @@ private struct FamilyTabContent: View {
                         }
                     }
 
+                    if isAdmin {
+                        Section("AI Insights") {
+                            NavigationLink("Family Insights") {
+                                FamilyInsightsView(familyId: family.familyId, currentUserId: currentUserId)
+                            }
+                        }
+                    }
+
                     Section("Gamification") {
                         NavigationLink("Points & Streaks") {
                             GamificationView(
