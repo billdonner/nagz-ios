@@ -279,7 +279,7 @@ private struct FamilyTabContent: View {
                     Section("Invite Code") {
                         HStack {
                             Text(family.inviteCode)
-                                .font(.system(.body, design: .monospaced))
+                                .font(.system(.title3, design: .monospaced).weight(.semibold))
                             Spacer()
                             Button {
                                 UIPasteboard.general.string = family.inviteCode
@@ -287,9 +287,13 @@ private struct FamilyTabContent: View {
                                 Image(systemName: "doc.on.doc")
                             }
                         }
-                        Text("Share this code with family members so they can join.")
-                            .font(.caption)
-                            .foregroundStyle(.secondary)
+                        ShareLink(
+                            item: "Join our family \"\(family.name)\" on Nagz! Use invite code: \(family.inviteCode)",
+                            subject: Text("Join \(family.name) on Nagz"),
+                            message: Text("Use this code to join our family in the Nagz app.")
+                        ) {
+                            Label("Send Invite", systemImage: "square.and.arrow.up")
+                        }
                     }
 
 
