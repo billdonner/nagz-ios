@@ -11,6 +11,7 @@ struct AIInsightsSection: View {
     @State private var prediction: PredictCompletionResponse?
     @State private var isLoading = true
     @State private var errorMessage: String?
+    @State private var appeared = false
 
     init(nagId: UUID, nag: NagResponse? = nil) {
         self.nagId = nagId
@@ -25,21 +26,29 @@ struct AIInsightsSection: View {
                         ProgressView()
                             .controlSize(.small)
                         Text("Analyzing...")
-                            .font(.subheadline)
+                            .font(.body)
                             .foregroundStyle(.secondary)
+                            .opacity(appeared ? 0.4 : 1.0)
+                            .animation(.easeInOut(duration: 1.0).repeatForever(autoreverses: true), value: appeared)
                     }
                 }
                 .task { await fetchInsights() }
+                .onAppear { appeared = true }
             } else if tone != nil || coaching != nil || prediction != nil {
                 Section("AI Insights") {
                     if let tone {
-                        ToneRow(tone: tone)
+                        ToneRow(tone: tone, appeared: appeared)
                     }
                     if let coaching {
-                        CoachingRow(coaching: coaching)
+                        CoachingRow(coaching: coaching, appeared: appeared)
                     }
                     if let prediction {
-                        PredictionRow(prediction: prediction)
+                        PredictionRow(prediction: prediction, appeared: appeared)
+                    }
+                }
+                .onAppear {
+                    withAnimation(.easeOut(duration: 0.4)) {
+                        appeared = true
                     }
                 }
             } else if let errorMessage {
@@ -56,6 +65,7 @@ struct AIInsightsSection: View {
         guard let aiService else {
             // No AI service — try direct heuristics if we have nag data
             await tryDirectHeuristics()
+            appeared = false
             isLoading = false
             return
         }
@@ -89,6 +99,7 @@ struct AIInsightsSection: View {
         if tone == nil && coaching == nil && prediction == nil {
             errorMessage = "AI insights unavailable"
         }
+        appeared = false
         isLoading = false
     }
 
@@ -177,21 +188,37 @@ struct AIInsightsSection: View {
 
 private struct ToneRow: View {
     let tone: ToneSelectResponse
+    let appeared: Bool
 
     var body: some View {
-        HStack(spacing: 8) {
+        HStack(spacing: 10) {
+            Image(systemName: toneIcon)
+                .font(.body)
+                .foregroundStyle(toneColor)
+
             Text(tone.tone.rawValue.capitalized)
-                .font(.caption.weight(.semibold))
-                .padding(.horizontal, 8)
-                .padding(.vertical, 4)
+                .font(.callout.weight(.semibold))
+                .padding(.horizontal, 10)
+                .padding(.vertical, 5)
                 .foregroundStyle(toneColor)
                 .background(toneColor.opacity(0.15))
                 .clipShape(Capsule())
 
             Text(tone.reason)
-                .font(.subheadline)
-                .foregroundStyle(.secondary)
+                .font(.body)
+                .foregroundStyle(.primary)
                 .lineLimit(2)
+        }
+        .opacity(appeared ? 1 : 0)
+        .offset(x: appeared ? 0 : -20)
+        .animation(.easeOut(duration: 0.4), value: appeared)
+    }
+
+    private var toneIcon: String {
+        switch tone.tone {
+        case .supportive: "heart.fill"
+        case .firm: "exclamationmark.triangle.fill"
+        case .neutral: "hand.raised.fill"
         }
     }
 
@@ -206,42 +233,64 @@ private struct ToneRow: View {
 
 private struct CoachingRow: View {
     let coaching: CoachingResponse
+    let appeared: Bool
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 4) {
+        VStack(alignment: .leading, spacing: 6) {
             HStack(spacing: 6) {
                 Image(systemName: "lightbulb.fill")
                     .foregroundStyle(.yellow)
-                    .font(.subheadline)
+                    .font(.body)
                 Text(coaching.tip)
-                    .font(.subheadline)
+                    .font(.body)
             }
             Text(coaching.scenario)
-                .font(.caption)
-                .foregroundStyle(.secondary)
+                .font(.subheadline)
+                .foregroundStyle(.purple)
         }
+        .padding(10)
+        .background(.fill.quaternary)
+        .clipShape(RoundedRectangle(cornerRadius: 10))
+        .opacity(appeared ? 1 : 0)
+        .offset(x: appeared ? 0 : -20)
+        .animation(.easeOut(duration: 0.4).delay(0.15), value: appeared)
     }
 }
 
 private struct PredictionRow: View {
     let prediction: PredictCompletionResponse
+    let appeared: Bool
+
+    @State private var animatedLikelihood: Double = 0
 
     var body: some View {
         VStack(alignment: .leading, spacing: 6) {
             HStack {
                 Text("Completion Likelihood")
-                    .font(.subheadline)
+                    .font(.body.weight(.medium))
                 Spacer()
                 Text("\(Int(prediction.likelihood * 100))%")
-                    .font(.subheadline.weight(.semibold))
+                    .font(.title3.weight(.bold))
                     .foregroundStyle(likelihoodColor)
             }
-            ProgressView(value: prediction.likelihood)
+            ProgressView(value: animatedLikelihood)
                 .tint(likelihoodColor)
+                .scaleEffect(y: 2, anchor: .center)
+                .padding(.vertical, 2)
             if let reminderTime = prediction.suggestedReminderTime {
                 Text("Suggested reminder: \(reminderTime.relativeDisplay)")
-                    .font(.caption)
+                    .font(.subheadline)
                     .foregroundStyle(.secondary)
+            }
+        }
+        .opacity(appeared ? 1 : 0)
+        .offset(x: appeared ? 0 : -20)
+        .animation(.easeOut(duration: 0.4).delay(0.3), value: appeared)
+        .onChange(of: appeared) {
+            if appeared {
+                withAnimation(.easeOut(duration: 0.8).delay(0.3)) {
+                    animatedLikelihood = prediction.likelihood
+                }
             }
         }
     }
