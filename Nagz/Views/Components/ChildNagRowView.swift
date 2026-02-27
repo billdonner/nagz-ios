@@ -17,6 +17,10 @@ struct ChildNagRowView: View {
         }
     }
 
+    private var urgency: ChildUrgency {
+        ChildUrgency(dueAt: nag.dueAt, status: nag.status)
+    }
+
     var body: some View {
         HStack(spacing: 16) {
             Image(systemName: nag.category.iconName)
@@ -33,7 +37,7 @@ struct ChildNagRowView: View {
 
                 Text(nag.dueAt, style: .relative)
                     .font(.subheadline)
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(urgency.textColor)
             }
 
             Spacer()
@@ -59,6 +63,53 @@ struct ChildNagRowView: View {
         .padding()
         .background(Color(.systemBackground))
         .clipShape(RoundedRectangle(cornerRadius: 16))
-        .shadow(color: .black.opacity(0.08), radius: 4, y: 2)
+        .shadow(color: urgency.shadowColor, radius: urgency.shadowRadius, y: 2)
+    }
+}
+
+// MARK: - Child Urgency
+
+private enum ChildUrgency {
+    case calm, approaching, dueSoon, overdue, critical
+
+    init(dueAt: Date, status: NagStatus) {
+        guard status == .open else { self = .calm; return }
+        let interval = dueAt.timeIntervalSince(Date())
+        switch interval {
+        case let t where t > 24 * 3600: self = .calm
+        case let t where t > 2 * 3600:  self = .approaching
+        case let t where t > 0:         self = .dueSoon
+        case let t where t > -3600:     self = .overdue
+        default:                         self = .critical
+        }
+    }
+
+    var textColor: Color {
+        switch self {
+        case .calm:        .secondary
+        case .approaching: .blue
+        case .dueSoon:     .orange
+        case .overdue:     .orange
+        case .critical:    .red
+        }
+    }
+
+    var shadowColor: Color {
+        switch self {
+        case .calm:        .black.opacity(0.08)
+        case .approaching: .blue.opacity(0.12)
+        case .dueSoon:     .orange.opacity(0.15)
+        case .overdue:     .orange.opacity(0.20)
+        case .critical:    .red.opacity(0.25)
+        }
+    }
+
+    var shadowRadius: CGFloat {
+        switch self {
+        case .calm, .approaching: 4
+        case .dueSoon:            6
+        case .overdue:            8
+        case .critical:           10
+        }
     }
 }
