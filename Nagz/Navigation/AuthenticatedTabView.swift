@@ -128,6 +128,14 @@ private struct FamilyTabContent: View {
     let isAdmin: Bool
     let currentUserId: UUID
 
+    private func memberColor(for role: FamilyRole) -> Color {
+        switch role {
+        case .guardian: .blue
+        case .participant: .orange
+        case .child: .green
+        }
+    }
+
     static var appVersion: String {
         Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "?"
     }
@@ -141,15 +149,67 @@ private struct FamilyTabContent: View {
                 ProgressView()
             } else if let family = viewModel.family {
                 List {
-                    Section("Family") {
-                        LabeledContent("Name", value: family.name)
-                        if isAdmin {
-                            NavigationLink("Members") {
-                                ManageMembersView(apiClient: apiClient, familyId: family.familyId, childCode: family.childCode)
+                    // Family members at a glance
+                    if !viewModel.members.isEmpty {
+                        Section {
+                            ForEach(viewModel.members.filter { $0.status != .removed }) { member in
+                                HStack(spacing: 12) {
+                                    Text(String((member.displayName ?? "?").prefix(1)).uppercased())
+                                        .font(.caption.weight(.bold))
+                                        .foregroundStyle(.white)
+                                        .frame(width: 32, height: 32)
+                                        .background(memberColor(for: member.role))
+                                        .clipShape(Circle())
+
+                                    VStack(alignment: .leading, spacing: 2) {
+                                        Text(member.displayName ?? "Unknown")
+                                            .font(.body)
+                                        Text(member.role.rawValue.capitalized)
+                                            .font(.caption)
+                                            .foregroundStyle(.secondary)
+                                    }
+
+                                    Spacer()
+
+                                    if member.userId == currentUserId {
+                                        Text("You")
+                                            .font(.caption2.weight(.semibold))
+                                            .padding(.horizontal, 8)
+                                            .padding(.vertical, 2)
+                                            .foregroundStyle(.blue)
+                                            .background(Color.blue.opacity(0.12))
+                                            .clipShape(Capsule())
+                                    }
+                                }
+                                .padding(.vertical, 2)
                             }
-                        } else {
-                            NavigationLink("Members") {
-                                MemberListView(apiClient: apiClient, familyId: family.familyId)
+
+                            if isAdmin {
+                                NavigationLink {
+                                    ManageMembersView(apiClient: apiClient, familyId: family.familyId, childCode: family.childCode)
+                                } label: {
+                                    Label("Manage Members", systemImage: "person.badge.plus")
+                                }
+                            } else {
+                                NavigationLink {
+                                    MemberListView(apiClient: apiClient, familyId: family.familyId)
+                                } label: {
+                                    Label("All Members", systemImage: "person.2")
+                                }
+                            }
+                        } header: {
+                            Text("\(viewModel.members.filter { $0.status != .removed }.count) Members")
+                        }
+                    } else {
+                        Section("Family") {
+                            if isAdmin {
+                                NavigationLink("Members") {
+                                    ManageMembersView(apiClient: apiClient, familyId: family.familyId, childCode: family.childCode)
+                                }
+                            } else {
+                                NavigationLink("Members") {
+                                    MemberListView(apiClient: apiClient, familyId: family.familyId)
+                                }
                             }
                         }
                     }

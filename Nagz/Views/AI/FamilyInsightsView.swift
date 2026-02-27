@@ -113,7 +113,7 @@ private struct MemberDigestRow: View {
     let member: MemberSummary
 
     private var displayInitial: String {
-        let name = member.displayName ?? String(member.userId.uuidString.prefix(1))
+        let name = member.displayName ?? "?"
         return String(name.prefix(1)).uppercased()
     }
 
@@ -132,7 +132,7 @@ private struct MemberDigestRow: View {
                 .background(avatarColor)
                 .clipShape(Circle())
 
-            Text(member.displayName ?? String(member.userId.uuidString.prefix(8)))
+            Text(member.displayName ?? "Member")
                 .font(.body)
             Spacer()
             Text("\(member.completed)/\(member.totalNags)")
