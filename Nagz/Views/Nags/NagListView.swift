@@ -12,6 +12,7 @@ struct NagListView: View {
     @State private var aiSummary: String?
     @State private var showAISummary = false
     @State private var generatingSummary = false
+    @AppStorage("nagz_ai_personality") private var personalityRaw: String = AIPersonality.standard.rawValue
     @Environment(\.scenePhase) private var scenePhase
 
     init(apiClient: APIClient, familyId: UUID?, canCreateNags: Bool, currentUserId: UUID? = nil, webSocketService: WebSocketService) {
@@ -195,7 +196,8 @@ struct NagListView: View {
             )
         }
         let filterStatus: String? = viewModel.filter == .all ? nil : viewModel.filter.nagStatus?.rawValue
-        let context = ListSummaryContext(nags: items, filterStatus: filterStatus, isChild: false)
+        let personality = AIPersonality(rawValue: personalityRaw) ?? .standard
+        let context = ListSummaryContext(nags: items, filterStatus: filterStatus, isChild: false, personality: personality)
         do {
             let result = try await NagzAI.Router().listSummary(context: context)
             aiSummary = result.summary

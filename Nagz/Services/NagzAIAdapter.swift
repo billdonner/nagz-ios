@@ -214,6 +214,9 @@ actor NagzAIAdapter: AIService {
             return (total, completed)
         }
 
+        let personalityRaw = UserDefaults.standard.string(forKey: "nagz_ai_personality") ?? AIPersonality.standard.rawValue
+        let personality = AIPersonality(rawValue: personalityRaw) ?? .standard
+
         return NagzAI.AIContext(
             nagId: nagId,
             userId: UUID(uuidString: nag.recipientId)!,
@@ -227,7 +230,8 @@ actor NagzAIAdapter: AIService {
             categoryTotal: catStats.total,
             categoryCompleted: catStats.completed,
             overallTotal: allStats.total,
-            overallCompleted: allStats.completed
+            overallCompleted: allStats.completed,
+            personality: personality
         )
     }
 
