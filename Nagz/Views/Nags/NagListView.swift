@@ -11,6 +11,7 @@ struct NagListView: View {
     @State private var wsTask: Task<Void, Never>?
     @State private var aiSummary: String?
     @State private var showAISummary = false
+    @State private var generatingSummary = false
     @Environment(\.scenePhase) private var scenePhase
 
     init(apiClient: APIClient, familyId: UUID?, canCreateNags: Bool, currentUserId: UUID? = nil, webSocketService: WebSocketService) {
@@ -95,11 +96,21 @@ struct NagListView: View {
         }
         .navigationTitle("Nagz")
         .toolbar {
-            ToolbarItem(placement: .automatic) {
-                Button { Task { await generateSummary() } } label: {
-                    Image(systemName: "sparkles")
+            ToolbarItem(placement: .topBarLeading) {
+                Button {
+                    generatingSummary = true
+                    Task {
+                        await generateSummary()
+                        generatingSummary = false
+                    }
+                } label: {
+                    if generatingSummary {
+                        ProgressView()
+                    } else {
+                        Image(systemName: "sparkles")
+                    }
                 }
-                .disabled(viewModel.nags.isEmpty)
+                .disabled(viewModel.nags.isEmpty || generatingSummary)
             }
             if canCreateNags {
                 ToolbarItem(placement: .primaryAction) {
@@ -111,10 +122,12 @@ struct NagListView: View {
                 }
             }
         }
-        .alert("AI Analysis", isPresented: $showAISummary) {
-            Button("OK", role: .cancel) {}
-        } message: {
-            Text(aiSummary ?? "")
+        .sheet(isPresented: $showAISummary) {
+            AISummarySheet(
+                nags: viewModel.nags,
+                currentUserId: currentUserId,
+                summaryText: aiSummary ?? ""
+            )
         }
         .sheet(isPresented: $showCreateNag) {
             Task { await viewModel.loadNags() }
