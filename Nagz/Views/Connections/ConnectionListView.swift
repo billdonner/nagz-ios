@@ -3,6 +3,7 @@ import SwiftUI
 struct ConnectionListView: View {
     @State private var viewModel: ConnectionListViewModel
     @State private var showInvite = false
+    @State private var connectionToRemove: ConnectionResponse?
 
     init(apiClient: APIClient) {
         _viewModel = State(initialValue: ConnectionListViewModel(apiClient: apiClient))
@@ -70,6 +71,11 @@ struct ConnectionListView: View {
                 } else {
                     ForEach(viewModel.connections) { connection in
                         connectionRow(connection)
+                            .swipeActions(edge: .trailing, allowsFullSwipe: false) {
+                                Button("Remove", role: .destructive) {
+                                    connectionToRemove = connection
+                                }
+                            }
                     }
                 }
             }
@@ -79,6 +85,22 @@ struct ConnectionListView: View {
                     Text(error)
                         .foregroundStyle(.red)
                 }
+            }
+        }
+        .alert("Remove Connection?", isPresented: Binding(
+            get: { connectionToRemove != nil },
+            set: { if !$0 { connectionToRemove = nil } }
+        )) {
+            Button("Cancel", role: .cancel) { connectionToRemove = nil }
+            Button("Remove", role: .destructive) {
+                if let conn = connectionToRemove {
+                    Task { await viewModel.revoke(id: conn.id) }
+                    connectionToRemove = nil
+                }
+            }
+        } message: {
+            if let conn = connectionToRemove {
+                Text("This will disconnect you from \(conn.otherPartyDisplayName ?? conn.otherPartyEmail ?? conn.inviteeEmail). You'll need to re-invite them to reconnect.")
             }
         }
         .navigationTitle("People")
@@ -118,12 +140,6 @@ struct ConnectionListView: View {
                     }
                 ))
                 .labelsHidden()
-                .buttonStyle(.borderless)
-                Button(role: .destructive) {
-                    Task { await viewModel.revoke(id: connection.id) }
-                } label: {
-                    Image(systemName: "xmark.circle")
-                }
                 .buttonStyle(.borderless)
             }
 
