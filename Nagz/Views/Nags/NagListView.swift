@@ -6,6 +6,8 @@ struct NagListView: View {
     let familyId: UUID?
     let currentUserId: UUID?
     @State private var showCreateNag = false
+    @State private var refreshTimer: Timer?
+    @Environment(\.scenePhase) private var scenePhase
 
     init(apiClient: APIClient, familyId: UUID?, canCreateNags: Bool, currentUserId: UUID? = nil) {
         let vm = NagListViewModel(apiClient: apiClient)
@@ -92,10 +94,36 @@ struct NagListView: View {
             if !viewModel.nags.isEmpty {
                 Task { await viewModel.loadNags() }
             }
+            startAutoRefresh()
+        }
+        .onDisappear {
+            stopAutoRefresh()
+        }
+        .onChange(of: scenePhase) {
+            if scenePhase == .active {
+                Task { await viewModel.loadNags() }
+                startAutoRefresh()
+            } else {
+                stopAutoRefresh()
+            }
         }
         .refreshable { await viewModel.refresh() }
         .onChange(of: viewModel.filter) {
             Task { await viewModel.loadNags() }
         }
+    }
+
+    private func startAutoRefresh() {
+        stopAutoRefresh()
+        refreshTimer = Timer.scheduledTimer(withTimeInterval: 30, repeats: true) { _ in
+            Task { @MainActor in
+                await viewModel.loadNags()
+            }
+        }
+    }
+
+    private func stopAutoRefresh() {
+        refreshTimer?.invalidate()
+        refreshTimer = nil
     }
 }
