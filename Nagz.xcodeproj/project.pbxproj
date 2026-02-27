@@ -29,6 +29,7 @@
 		3442D55AEDBE7F239642D7FF /* CachedRecords.swift in Sources */ = {isa = PBXBuildFile; fileRef = 09228CDDB89EBA4479C10F8B /* CachedRecords.swift */; };
 		350FB4B166D078DD5BC0EEC9 /* CreateNagViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D5DE9C0FB044817490BD132 /* CreateNagViewModel.swift */; };
 		396E4226730469AEA60B71D9 /* NagListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3EC5EC449162BDDDA1AEA55E /* NagListViewModel.swift */; };
+		3C0F3EADA1A554C91A52AB47 /* EnvironmentValues+Database.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9259350F4BA842138CBD7E79 /* EnvironmentValues+Database.swift */; };
 		3D690C5895332B064AB5750A /* LegalModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = F46A3E90EEC26B840C950557 /* LegalModels.swift */; };
 		3F839196F729C55C3BA08E8D /* NagzAIAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44DB9A94BE69B3EBE0B81F17 /* NagzAIAdapter.swift */; };
 		41624A0FA5DBA542A0351B6C /* EscalationModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04D5AC512A990EFC2E729F29 /* EscalationModels.swift */; };
@@ -213,6 +214,7 @@
 		8F8430225ED802B793D2E6C2 /* Date+Formatting.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Date+Formatting.swift"; sourceTree = "<group>"; };
 		900FB4265B1BED2475827172 /* FamilyMemberQuery.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FamilyMemberQuery.swift; sourceTree = "<group>"; };
 		90C1EED5F97864A105AE2117 /* SafetyViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SafetyViewModel.swift; sourceTree = "<group>"; };
+		9259350F4BA842138CBD7E79 /* EnvironmentValues+Database.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "EnvironmentValues+Database.swift"; sourceTree = "<group>"; };
 		95C278AF89622477580059EE /* ManageMembersViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManageMembersViewModel.swift; sourceTree = "<group>"; };
 		9690A2B5BD1CBA627F52AF4E /* APIClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIClient.swift; sourceTree = "<group>"; };
 		987A5CE42CC1B28C6E9697DA /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -399,6 +401,7 @@
 				8F8430225ED802B793D2E6C2 /* Date+Formatting.swift */,
 				32E79F766FA3ADAA76B955F3 /* EnvironmentValues+AI.swift */,
 				7B70AA17D1E21D3916FD048C /* EnvironmentValues+API.swift */,
+				9259350F4BA842138CBD7E79 /* EnvironmentValues+Database.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -768,6 +771,7 @@
 				B8924A914C8E48A117B9E506 /* Enums.swift in Sources */,
 				819FCF0B39F62DA3FFDEAD64 /* EnvironmentValues+AI.swift in Sources */,
 				2622990D0DCE09B21DB99D10 /* EnvironmentValues+API.swift in Sources */,
+				3C0F3EADA1A554C91A52AB47 /* EnvironmentValues+Database.swift in Sources */,
 				8FDC13F68CD74018BD19792D /* ErrorBanner.swift in Sources */,
 				C6AD093090BB94EE3660E7B1 /* ErrorModels.swift in Sources */,
 				022785549CA30F29EE5D1189 /* EscalationBadge.swift in Sources */,

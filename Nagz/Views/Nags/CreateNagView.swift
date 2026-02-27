@@ -8,6 +8,7 @@ struct CreateNagView: View {
     @State private var isLoadingRecipients = true
     @State private var recipientLoadError: String?
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.databaseManager) private var databaseManager
     private let apiClient: APIClient
     private let familyId: UUID?
     private let currentUserId: UUID?
@@ -74,6 +75,13 @@ struct CreateNagView: View {
                                 }) {
                                     viewModel.contextFamilyId = nil
                                     viewModel.contextConnectionId = conn.id
+                                }
+                                Task {
+                                    await viewModel.applySmartDefaults(
+                                        db: databaseManager,
+                                        creatorId: currentUserId,
+                                        recipientId: rid
+                                    )
                                 }
                             }
                         }

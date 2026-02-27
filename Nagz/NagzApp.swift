@@ -73,6 +73,7 @@ struct NagzApp: App {
                 )
                 .environment(\.apiClient, apiClient)
                 .environment(\.aiService, aiService)
+                .environment(\.databaseManager, databaseManager)
                 .onAppear {
                     appDelegate.pushService = pushService
                 }

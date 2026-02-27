@@ -31,6 +31,24 @@ final class CreateNagViewModel {
         recipientId != nil && dueAt > Date() && (contextFamilyId != nil || contextConnectionId != nil)
     }
 
+    func applySmartDefaults(db: DatabaseManager?, creatorId: UUID?, recipientId: UUID) async {
+        guard let db, let creatorId else { return }
+        do {
+            let (cat, done) = try await db.nagDefaults(
+                creatorId: creatorId.uuidString,
+                recipientId: recipientId.uuidString
+            )
+            if let cat, let c = NagCategory(rawValue: cat) {
+                category = c
+            }
+            if let done, let d = DoneDefinition(rawValue: done) {
+                doneDefinition = d
+            }
+        } catch {
+            // Non-critical — keep existing defaults
+        }
+    }
+
     func createNag() async {
         guard let recipientId else { return }
         isLoading = true

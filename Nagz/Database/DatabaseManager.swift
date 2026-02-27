@@ -101,6 +101,28 @@ actor DatabaseManager {
         return migrator
     }
 
+    // MARK: - Smart Defaults
+
+    /// Returns the most frequently used category and doneDefinition for a creator→recipient pair.
+    func nagDefaults(creatorId: String, recipientId: String) throws -> (category: String?, doneDefinition: String?) {
+        try dbPool.read { db in
+            let rows = try CachedNag
+                .filter(Column("creatorId") == creatorId)
+                .filter(Column("recipientId") == recipientId)
+                .fetchAll(db)
+
+            guard !rows.isEmpty else { return (nil, nil) }
+
+            let catCounts = Dictionary(grouping: rows, by: \.category)
+            let topCat = catCounts.max(by: { $0.value.count < $1.value.count })?.key
+
+            let doneCounts = Dictionary(grouping: rows, by: \.doneDefinition)
+            let topDone = doneCounts.max(by: { $0.value.count < $1.value.count })?.key
+
+            return (topCat, topDone)
+        }
+    }
+
     // MARK: - Cleanup
 
     /// Remove events older than the retention period.
