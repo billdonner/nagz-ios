@@ -87,6 +87,12 @@ struct NagListView: View {
             viewModel.setFamily(familyId)
             await viewModel.loadNags()
         }
+        .onAppear {
+            // Reload when returning from detail view (e.g. after completing a nag)
+            if !viewModel.nags.isEmpty {
+                Task { await viewModel.loadNags() }
+            }
+        }
         .refreshable { await viewModel.refresh() }
         .onChange(of: viewModel.filter) {
             Task { await viewModel.loadNags() }
