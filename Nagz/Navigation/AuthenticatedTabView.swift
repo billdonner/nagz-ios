@@ -33,7 +33,7 @@ struct AuthenticatedTabView: View {
     }
 
     private var isGuardian: Bool {
-        myRole == .guardian
+        myRole == .guardian || authManager.currentRole == .guardian
     }
 
     private var canCreateNags: Bool {
