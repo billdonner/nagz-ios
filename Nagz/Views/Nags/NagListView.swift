@@ -1,4 +1,5 @@
 import SwiftUI
+import NagzAI
 
 struct NagListView: View {
     @State var viewModel: NagListViewModel
@@ -8,6 +9,8 @@ struct NagListView: View {
     let webSocketService: WebSocketService
     @State private var showCreateNag = false
     @State private var wsTask: Task<Void, Never>?
+    @State private var aiSummary: String?
+    @State private var showAISummary = false
     @Environment(\.scenePhase) private var scenePhase
 
     init(apiClient: APIClient, familyId: UUID?, canCreateNags: Bool, currentUserId: UUID? = nil, webSocketService: WebSocketService) {
@@ -92,6 +95,12 @@ struct NagListView: View {
         }
         .navigationTitle("Nagz")
         .toolbar {
+            ToolbarItem(placement: .automatic) {
+                Button { Task { await generateSummary() } } label: {
+                    Image(systemName: "sparkles")
+                }
+                .disabled(viewModel.nags.isEmpty)
+            }
             if canCreateNags {
                 ToolbarItem(placement: .primaryAction) {
                     Button {
@@ -101,6 +110,11 @@ struct NagListView: View {
                     }
                 }
             }
+        }
+        .alert("AI Analysis", isPresented: $showAISummary) {
+            Button("OK", role: .cancel) {}
+        } message: {
+            Text(aiSummary ?? "")
         }
         .sheet(isPresented: $showCreateNag) {
             Task { await viewModel.loadNags() }
@@ -156,5 +170,26 @@ struct NagListView: View {
         wsTask?.cancel()
         wsTask = nil
         Task { await webSocketService.disconnect() }
+    }
+
+    private func generateSummary() async {
+        let items = viewModel.nags.map { nag in
+            NagSummaryItem(
+                category: nag.category.rawValue,
+                status: nag.status.rawValue,
+                dueAt: nag.dueAt,
+                description: nag.description
+            )
+        }
+        let filterStatus: String? = viewModel.filter == .all ? nil : viewModel.filter.nagStatus?.rawValue
+        let context = ListSummaryContext(nags: items, filterStatus: filterStatus, isChild: false)
+        do {
+            let result = try await NagzAI.Router().listSummary(context: context)
+            aiSummary = result.summary
+            showAISummary = true
+        } catch {
+            aiSummary = "Couldn't generate summary."
+            showAISummary = true
+        }
     }
 }
