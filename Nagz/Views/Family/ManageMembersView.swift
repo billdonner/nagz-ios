@@ -10,15 +10,46 @@ struct ManageMembersView: View {
 
     private let apiClient: APIClient
     private let familyId: UUID
+    private let childCode: String?
 
-    init(apiClient: APIClient, familyId: UUID) {
+    init(apiClient: APIClient, familyId: UUID, childCode: String? = nil) {
         self.apiClient = apiClient
         self.familyId = familyId
+        self.childCode = childCode
         _viewModel = State(initialValue: ManageMembersViewModel(apiClient: apiClient, familyId: familyId))
     }
 
     var body: some View {
         List {
+            if let childCode {
+                Section("Kid Login Code") {
+                    VStack(spacing: 12) {
+                        HStack {
+                            Spacer()
+                            Text(childCode)
+                                .font(.system(size: 28, weight: .bold, design: .monospaced))
+                                .tracking(4)
+                            Spacer()
+                            Button {
+                                UIPasteboard.general.string = childCode
+                            } label: {
+                                Image(systemName: "doc.on.doc")
+                            }
+                        }
+                        .padding()
+                        .background(Color(.systemYellow).opacity(0.15))
+                        .clipShape(RoundedRectangle(cornerRadius: 12))
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 12)
+                                .stroke(Color.orange, lineWidth: 2)
+                        )
+                    }
+                    Text("Kids use this code + their username + PIN to sign in.")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
+            }
+
             ForEach(viewModel.members) { member in
                 HStack {
                     VStack(alignment: .leading, spacing: 4) {
