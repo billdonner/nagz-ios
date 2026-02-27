@@ -149,39 +149,45 @@ private struct FamilyTabContent: View {
                 ProgressView()
             } else if let family = viewModel.family {
                 List {
-                    // Family members at a glance
+                    // Family members as horizontal scroll
                     if !viewModel.members.isEmpty {
                         Section {
-                            ForEach(viewModel.members.filter { $0.status != .removed }) { member in
-                                HStack(spacing: 12) {
-                                    Text(String((member.displayName ?? "?").prefix(1)).uppercased())
-                                        .font(.caption.weight(.bold))
-                                        .foregroundStyle(.white)
-                                        .frame(width: 32, height: 32)
-                                        .background(memberColor(for: member.role))
-                                        .clipShape(Circle())
+                            ScrollView(.horizontal, showsIndicators: false) {
+                                HStack(spacing: 16) {
+                                    ForEach(viewModel.members.filter { $0.status != .removed }) { member in
+                                        VStack(spacing: 6) {
+                                            ZStack(alignment: .bottomTrailing) {
+                                                Text(String((member.displayName ?? "?").prefix(1)).uppercased())
+                                                    .font(.title3.weight(.bold))
+                                                    .foregroundStyle(.white)
+                                                    .frame(width: 52, height: 52)
+                                                    .background(memberColor(for: member.role))
+                                                    .clipShape(Circle())
 
-                                    VStack(alignment: .leading, spacing: 2) {
-                                        Text(member.displayName ?? "Unknown")
-                                            .font(.body)
-                                        Text(member.role.rawValue.capitalized)
-                                            .font(.caption)
-                                            .foregroundStyle(.secondary)
-                                    }
+                                                if member.userId == currentUserId {
+                                                    Circle()
+                                                        .fill(.blue)
+                                                        .frame(width: 16, height: 16)
+                                                        .overlay {
+                                                            Image(systemName: "star.fill")
+                                                                .font(.system(size: 8))
+                                                                .foregroundStyle(.white)
+                                                        }
+                                                }
+                                            }
 
-                                    Spacer()
+                                            Text(member.displayName ?? "?")
+                                                .font(.caption)
+                                                .lineLimit(1)
+                                                .frame(width: 64)
 
-                                    if member.userId == currentUserId {
-                                        Text("You")
-                                            .font(.caption2.weight(.semibold))
-                                            .padding(.horizontal, 8)
-                                            .padding(.vertical, 2)
-                                            .foregroundStyle(.blue)
-                                            .background(Color.blue.opacity(0.12))
-                                            .clipShape(Capsule())
+                                            Text(member.role.rawValue.capitalized)
+                                                .font(.caption2)
+                                                .foregroundStyle(.secondary)
+                                        }
                                     }
                                 }
-                                .padding(.vertical, 2)
+                                .padding(.vertical, 4)
                             }
 
                             if isAdmin {
