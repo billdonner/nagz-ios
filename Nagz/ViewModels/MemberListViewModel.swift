@@ -49,7 +49,9 @@ final class MemberListViewModel {
             let response: PaginatedResponse<MemberDetail> = try await apiClient.request(
                 .listMembers(familyId: familyId, offset: offset)
             )
-            members.append(contentsOf: response.items)
+            let existingIds = Set(members.map(\.userId))
+            let newItems = response.items.filter { !existingIds.contains($0.userId) }
+            members.append(contentsOf: newItems)
             total = response.total
             offset += response.items.count
         } catch {
