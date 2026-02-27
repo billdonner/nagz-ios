@@ -127,6 +127,8 @@ private struct FamilyTabContent: View {
     let authManager: AuthManager
     let isAdmin: Bool
     let currentUserId: UUID
+    @Environment(\.aiService) private var aiService
+    @State private var digest: DigestResponse?
 
     private func memberColor(for role: FamilyRole) -> Color {
         switch role {
@@ -149,6 +151,43 @@ private struct FamilyTabContent: View {
                 ProgressView()
             } else if let family = viewModel.family {
                 List {
+                    // Inline AI digest at top when there's useful data
+                    if let digest, digest.totals.totalNags > 0 {
+                        Section {
+                            VStack(alignment: .leading, spacing: 8) {
+                                HStack {
+                                    Image(systemName: "sparkles")
+                                        .foregroundStyle(.purple)
+                                    Text("This Week")
+                                        .font(.subheadline.weight(.semibold))
+                                    Spacer()
+                                    NavigationLink {
+                                        FamilyInsightsView(familyId: family.familyId, currentUserId: currentUserId)
+                                    } label: {
+                                        Text("Details")
+                                            .font(.caption)
+                                    }
+                                }
+
+                                Text(digest.summaryText)
+                                    .font(.callout)
+                                    .foregroundStyle(.secondary)
+
+                                HStack(spacing: 0) {
+                                    digestStat(value: digest.totals.completed, label: "Done", color: .green)
+                                    Spacer()
+                                    digestStat(value: digest.totals.open, label: "Open", color: .blue)
+                                    Spacer()
+                                    digestStat(value: digest.totals.missed, label: "Missed", color: .red)
+                                    Spacer()
+                                    Text("\(Int(digest.totals.completionRate * 100))%")
+                                        .font(.title3.weight(.bold).monospacedDigit())
+                                        .foregroundStyle(digest.totals.completionRate >= 0.7 ? .green : .orange)
+                                }
+                            }
+                        }
+                    }
+
                     // Family members as horizontal scroll
                     if !viewModel.members.isEmpty {
                         Section {
@@ -240,14 +279,6 @@ private struct FamilyTabContent: View {
                         }
                     }
 
-                    if isAdmin {
-                        Section("AI Insights") {
-                            NavigationLink("Family Insights") {
-                                FamilyInsightsView(familyId: family.familyId, currentUserId: currentUserId)
-                            }
-                        }
-                    }
-
                     Section("Gamification") {
                         NavigationLink("Points & Streaks") {
                             GamificationView(
@@ -320,6 +351,7 @@ private struct FamilyTabContent: View {
                 .navigationTitle(family.name)
                 .onAppear {
                     Task { await viewModel.loadFamily(id: family.familyId) }
+                    Task { await loadDigest(familyId: family.familyId) }
                 }
             } else {
                 VStack(spacing: 20) {
@@ -362,5 +394,29 @@ private struct FamilyTabContent: View {
         .sheet(isPresented: $viewModel.showJoinSheet) {
             JoinFamilyView(viewModel: viewModel)
         }
+    }
+
+    private func loadDigest(familyId: UUID) async {
+        guard let aiService else { return }
+        do {
+            let d = try await aiService.digest(familyId: familyId)
+            if d.totals.totalNags > 0 {
+                digest = d
+            }
+        } catch {
+            // Non-critical — just don't show the card
+        }
+    }
+
+    private func digestStat(value: Int, label: String, color: Color) -> some View {
+        VStack(spacing: 2) {
+            Text("\(value)")
+                .font(.title3.weight(.bold).monospacedDigit())
+                .foregroundStyle(color)
+            Text(label)
+                .font(.caption2)
+                .foregroundStyle(.secondary)
+        }
+        .frame(maxWidth: .infinity)
     }
 }
