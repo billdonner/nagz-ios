@@ -15,19 +15,23 @@ SwiftUI iOS client for **Nagz**, a family-oriented AI-mediated nagging/reminder 
 
 ## AI Features
 
-Nagz uses a **split AI architecture** — on-device intelligence for privacy-sensitive features and server-side AI for coordination and cross-user analysis.
+Nagz uses a **split AI architecture** — on-device Foundation Models for natural language, heuristic logic for structured data, and server-side fallback.
 
-| Feature | On-Device (iOS) | Server Fallback |
-|---------|-----------------|-----------------|
-| Excuse summarization | Apple Foundation Models (iOS 26+) | Heuristic engine |
-| Tone selection | Local event cache (GRDB) | `/ai/select-tone` |
-| Coaching tips | Local heuristics | `/ai/coaching` |
-| Behavioral patterns | GRDB event analysis | `/ai/patterns` |
-| Completion prediction | Local stats | `/ai/predict-completion` |
-| Push-back evaluation | Local policy check | `/ai/push-back` |
-| Weekly digest | — | `/ai/digest` (server-only) |
+Seven of nine AI operations use on-device LLM (Apple Foundation Models) for personalized text. Two operations (patterns, prediction) stay heuristic-only because they're pure math/counting.
 
-On-device AI processes excuse text and behavioral patterns locally — only structured data (categories, status) is shared with the server. See [AI_ARCHITECTURE.md](https://github.com/billdonner/nagz/blob/main/nagz/Docs/AI_ARCHITECTURE.md) for the full design.
+| Feature | On-Device LLM | Heuristic | Server Fallback |
+|---------|:---:|:---:|:---:|
+| Excuse summarization | summary text | category + confidence | `/ai/summarize-excuse` |
+| Tone selection | reason text | tone enum | `/ai/select-tone` |
+| Coaching tips | personalized tip | scenario + category | `/ai/coaching` |
+| Weekly digest | summary text | member stats + totals | `/ai/digest` |
+| Push-back reminders | message text | tone + shouldPushBack | `/ai/push-back` |
+| List summary | full summary | — | `/ai/list-summary` |
+| Gamification nudges | personalized messages | which nudges + icons | — (on-device only) |
+| Behavioral patterns | — | day-of-week counting | `/ai/patterns` |
+| Completion prediction | — | weighted average | `/ai/predict-completion` |
+
+On-device AI processes text locally — only structured data (categories, status) is shared with the server.
 
 ### Siri & Shortcuts (Implemented)
 
@@ -69,7 +73,7 @@ The dev server is expected at `http://127.0.0.1:9800/api/v1` (use IP, not `local
 
 ```bash
 xcodebuild test -project Nagz.xcodeproj -scheme Nagz \
-  -destination 'platform=iOS Simulator,name=iPhone 16 Pro Max,OS=18.5'
+  -destination 'platform=iOS Simulator,name=iPhone 16 Pro Max,OS=26.0'
 ```
 
 ## Related Repos
