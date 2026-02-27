@@ -31,9 +31,6 @@ actor NagzAIAdapter: AIService {
     }
 
     func selectTone(nagId: UUID) async throws -> ToneSelectResponse {
-        guard try await isCacheFresh() else {
-            return try await fallback.selectTone(nagId: nagId)
-        }
         guard let context = try await buildAIContext(nagId: nagId) else {
             return try await fallback.selectTone(nagId: nagId)
         }
@@ -48,9 +45,6 @@ actor NagzAIAdapter: AIService {
     }
 
     func coaching(nagId: UUID) async throws -> CoachingResponse {
-        guard try await isCacheFresh() else {
-            return try await fallback.coaching(nagId: nagId)
-        }
         guard let context = try await buildAIContext(nagId: nagId) else {
             return try await fallback.coaching(nagId: nagId)
         }
@@ -111,9 +105,6 @@ actor NagzAIAdapter: AIService {
     }
 
     func predictCompletion(nagId: UUID) async throws -> PredictCompletionResponse {
-        guard try await isCacheFresh() else {
-            return try await fallback.predictCompletion(nagId: nagId)
-        }
         guard let context = try await buildAIContext(nagId: nagId) else {
             return try await fallback.predictCompletion(nagId: nagId)
         }
@@ -127,9 +118,6 @@ actor NagzAIAdapter: AIService {
     }
 
     func pushBack(nagId: UUID) async throws -> PushBackResponse {
-        guard try await isCacheFresh() else {
-            return try await fallback.pushBack(nagId: nagId)
-        }
         guard let context = try await buildAIContext(nagId: nagId) else {
             return try await fallback.pushBack(nagId: nagId)
         }

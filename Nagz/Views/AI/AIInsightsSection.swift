@@ -7,11 +7,23 @@ struct AIInsightsSection: View {
     @State private var tone: ToneSelectResponse?
     @State private var coaching: CoachingResponse?
     @State private var prediction: PredictCompletionResponse?
-    @State private var loaded = false
+    @State private var isLoading = true
+    @State private var errorMessage: String?
 
     var body: some View {
-        Group {
-            if loaded, tone != nil || coaching != nil || prediction != nil {
+        if aiService != nil {
+            if isLoading {
+                Section("AI Insights") {
+                    HStack {
+                        ProgressView()
+                            .controlSize(.small)
+                        Text("Analyzing...")
+                            .font(.subheadline)
+                            .foregroundStyle(.secondary)
+                    }
+                }
+                .task { await fetchInsights() }
+            } else if tone != nil || coaching != nil || prediction != nil {
                 Section("AI Insights") {
                     if let tone {
                         ToneRow(tone: tone)
@@ -23,26 +35,53 @@ struct AIInsightsSection: View {
                         PredictionRow(prediction: prediction)
                     }
                 }
+            } else if let errorMessage {
+                Section("AI Insights") {
+                    Text(errorMessage)
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
             }
         }
-        .task { await fetchInsights() }
     }
 
     private func fetchInsights() async {
         guard let aiService else {
-            loaded = true
+            isLoading = false
             return
         }
 
-        async let toneResult = try? aiService.selectTone(nagId: nagId)
-        async let coachingResult = try? aiService.coaching(nagId: nagId)
-        async let predictionResult = try? aiService.predictCompletion(nagId: nagId)
+        DebugLogger.shared.log("AIInsightsSection: fetching for nag \(nagId)")
 
-        let (t, c, p) = await (toneResult, coachingResult, predictionResult)
-        tone = t
-        coaching = c
-        prediction = p
-        loaded = true
+        var errors: [String] = []
+
+        do {
+            tone = try await aiService.selectTone(nagId: nagId)
+        } catch {
+            DebugLogger.shared.log("AIInsightsSection: selectTone failed: \(error)", level: .warning)
+            errors.append("tone: \(error.localizedDescription)")
+        }
+
+        do {
+            coaching = try await aiService.coaching(nagId: nagId)
+        } catch {
+            DebugLogger.shared.log("AIInsightsSection: coaching failed: \(error)", level: .warning)
+            errors.append("coaching: \(error.localizedDescription)")
+        }
+
+        do {
+            prediction = try await aiService.predictCompletion(nagId: nagId)
+        } catch {
+            DebugLogger.shared.log("AIInsightsSection: predictCompletion failed: \(error)", level: .warning)
+            errors.append("prediction: \(error.localizedDescription)")
+        }
+
+        if tone == nil && coaching == nil && prediction == nil {
+            let detail = errors.joined(separator: "; ")
+            errorMessage = "AI insights unavailable: \(detail)"
+            DebugLogger.shared.log("AIInsightsSection: all failed — \(detail)", level: .error)
+        }
+        isLoading = false
     }
 }
 
