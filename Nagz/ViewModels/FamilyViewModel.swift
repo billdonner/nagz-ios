@@ -26,7 +26,7 @@ final class FamilyViewModel {
     }
 
     func loadFamily(id: UUID) async {
-        isLoading = true
+        if family == nil { isLoading = true }
         errorMessage = nil
         do {
             let loadedFamily: FamilyResponse = try await apiClient.cachedRequest(.getFamily(id: id), ttl: 300)
