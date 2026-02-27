@@ -95,6 +95,36 @@ struct AIInsightsSection: View {
     private func tryDirectHeuristics() async {
         guard let nag else { return }
 
+        // Derive synthetic stats from the nag's own state so results vary per nag
+        let isOverdue = nag.status == .open && nag.dueAt < Date()
+        let missCount7D: Int
+        let streak: Int
+        let overallTotal: Int
+        let overallCompleted: Int
+
+        switch nag.status {
+        case .completed:
+            missCount7D = 0
+            streak = 1
+            overallTotal = 1
+            overallCompleted = 1
+        case .missed:
+            missCount7D = 1
+            streak = 0
+            overallTotal = 1
+            overallCompleted = 0
+        case .open where isOverdue:
+            missCount7D = 1
+            streak = 0
+            overallTotal = 1
+            overallCompleted = 0
+        default:
+            missCount7D = 0
+            streak = nag.category == .homework ? 1 : 0
+            overallTotal = 0
+            overallCompleted = 0
+        }
+
         let context = NagzAI.AIContext(
             nagId: nag.id,
             userId: nag.recipientId,
@@ -102,13 +132,13 @@ struct AIInsightsSection: View {
             category: nag.category.rawValue,
             status: nag.status.rawValue,
             dueAt: nag.dueAt,
-            missCount7D: 0,
-            streak: 0,
+            missCount7D: missCount7D,
+            streak: streak,
             timeConflictCount: 0,
-            categoryTotal: 0,
-            categoryCompleted: 0,
-            overallTotal: 0,
-            overallCompleted: 0
+            categoryTotal: overallTotal,
+            categoryCompleted: overallCompleted,
+            overallTotal: overallTotal,
+            overallCompleted: overallCompleted
         )
 
         let router = NagzAI.Router(preferHeuristic: true)
