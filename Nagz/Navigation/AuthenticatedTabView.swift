@@ -92,7 +92,7 @@ struct AuthenticatedTabView: View {
             }
         }
         .tabItem {
-            Label("Nags", systemImage: "bell.fill")
+            Label("Nagz", systemImage: "bell.fill")
         }
     }
 

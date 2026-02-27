@@ -19,6 +19,16 @@ struct NagListView: View {
         self.webSocketService = webSocketService
     }
 
+    private var nagsForMe: [NagResponse] {
+        guard let userId = currentUserId else { return viewModel.nags }
+        return viewModel.nags.filter { $0.recipientId == userId }
+    }
+
+    private var nagsForOthers: [NagResponse] {
+        guard let userId = currentUserId else { return [] }
+        return viewModel.nags.filter { $0.recipientId != userId }
+    }
+
     var body: some View {
         VStack(spacing: 0) {
             Picker("Filter", selection: $viewModel.filter) {
@@ -43,34 +53,44 @@ struct NagListView: View {
                     }
                 } else if viewModel.nags.isEmpty {
                     ContentUnavailableView {
-                        Label("No Nags", systemImage: "checkmark.circle")
+                        Label("No Nagz", systemImage: "checkmark.circle")
                     } description: {
-                        Text(viewModel.filter == .open ? "All caught up!" : "No nags to show.")
+                        Text(viewModel.filter == .open ? "All caught up!" : "No nagz to show.")
                     }
                 } else {
                     TimelineView(.periodic(from: .now, by: 60)) { _ in
                         List {
-                            ForEach(viewModel.nags) { nag in
-                                NavigationLink(value: nag.id) {
-                                    NagRowView(nag: nag, currentUserId: currentUserId)
-                                }
-                                .task {
-                                    if nag.id == viewModel.nags.last?.id {
-                                        await viewModel.loadMore()
+                            if !nagsForMe.isEmpty {
+                                Section("For Me") {
+                                    ForEach(nagsForMe) { nag in
+                                        NavigationLink(value: nag.id) {
+                                            NagRowView(nag: nag, currentUserId: currentUserId)
+                                        }
                                     }
                                 }
                             }
+
+                            if !nagsForOthers.isEmpty {
+                                Section("For Others") {
+                                    ForEach(nagsForOthers) { nag in
+                                        NavigationLink(value: nag.id) {
+                                            NagRowView(nag: nag, currentUserId: currentUserId)
+                                        }
+                                    }
+                                }
+                            }
+
                             if viewModel.isLoadingMore {
                                 ProgressView()
                                     .frame(maxWidth: .infinity)
                             }
                         }
-                        .listStyle(.plain)
+                        .listStyle(.insetGrouped)
                     }
                 }
             }
         }
-        .navigationTitle("Nags")
+        .navigationTitle("Nagz")
         .toolbar {
             if canCreateNags {
                 ToolbarItem(placement: .primaryAction) {
@@ -124,7 +144,7 @@ struct NagListView: View {
                 case .nagCreated, .nagUpdated, .nagStatusChanged, .excuseSubmitted:
                     await viewModel.loadNags()
                 case .memberAdded, .memberRemoved:
-                    break // Not relevant for nag list
+                    break
                 case .ping, .pong:
                     break
                 }
