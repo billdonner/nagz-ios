@@ -1,7 +1,9 @@
 import SwiftUI
+import NagzAI
 
 struct AIInsightsSection: View {
     let nagId: UUID
+    let nag: NagResponse?
     @Environment(\.aiService) private var aiService
 
     @State private var tone: ToneSelectResponse?
@@ -10,8 +12,13 @@ struct AIInsightsSection: View {
     @State private var isLoading = true
     @State private var errorMessage: String?
 
+    init(nagId: UUID, nag: NagResponse? = nil) {
+        self.nagId = nagId
+        self.nag = nag
+    }
+
     var body: some View {
-        if aiService != nil {
+        if aiService != nil || nag != nil {
             if isLoading {
                 Section("AI Insights") {
                     HStack {
@@ -47,41 +54,92 @@ struct AIInsightsSection: View {
 
     private func fetchInsights() async {
         guard let aiService else {
+            // No AI service — try direct heuristics if we have nag data
+            await tryDirectHeuristics()
             isLoading = false
             return
         }
 
         DebugLogger.shared.log("AIInsightsSection: fetching for nag \(nagId)")
 
-        var errors: [String] = []
-
         do {
             tone = try await aiService.selectTone(nagId: nagId)
         } catch {
             DebugLogger.shared.log("AIInsightsSection: selectTone failed: \(error)", level: .warning)
-            errors.append("tone: \(error.localizedDescription)")
         }
 
         do {
             coaching = try await aiService.coaching(nagId: nagId)
         } catch {
             DebugLogger.shared.log("AIInsightsSection: coaching failed: \(error)", level: .warning)
-            errors.append("coaching: \(error.localizedDescription)")
         }
 
         do {
             prediction = try await aiService.predictCompletion(nagId: nagId)
         } catch {
             DebugLogger.shared.log("AIInsightsSection: predictCompletion failed: \(error)", level: .warning)
-            errors.append("prediction: \(error.localizedDescription)")
+        }
+
+        // If all service calls failed, try direct heuristics as last resort
+        if tone == nil && coaching == nil && prediction == nil {
+            DebugLogger.shared.log("AIInsightsSection: all service calls failed, trying direct heuristics", level: .warning)
+            await tryDirectHeuristics()
         }
 
         if tone == nil && coaching == nil && prediction == nil {
-            let detail = errors.joined(separator: "; ")
-            errorMessage = "AI insights unavailable: \(detail)"
-            DebugLogger.shared.log("AIInsightsSection: all failed — \(detail)", level: .error)
+            errorMessage = "AI insights unavailable"
         }
         isLoading = false
+    }
+
+    private func tryDirectHeuristics() async {
+        guard let nag else { return }
+
+        let context = NagzAI.AIContext(
+            nagId: nag.id,
+            userId: nag.recipientId,
+            familyId: nag.familyId ?? nag.creatorId,
+            category: nag.category.rawValue,
+            status: nag.status.rawValue,
+            dueAt: nag.dueAt,
+            missCount7D: 0,
+            streak: 0,
+            timeConflictCount: 0,
+            categoryTotal: 0,
+            categoryCompleted: 0,
+            overallTotal: 0,
+            overallCompleted: 0
+        )
+
+        let router = NagzAI.Router(preferHeuristic: true)
+
+        if let result = try? await router.selectTone(context: context) {
+            tone = ToneSelectResponse(
+                nagId: nag.id,
+                tone: AITone(rawValue: result.tone.rawValue) ?? .neutral,
+                missCount7D: result.missCount7D,
+                streak: result.streak,
+                reason: result.reason
+            )
+        }
+
+        if let result = try? await router.coaching(context: context) {
+            coaching = CoachingResponse(
+                nagId: nag.id,
+                tip: result.tip,
+                category: result.category,
+                scenario: result.scenario
+            )
+        }
+
+        if let result = try? await router.predictCompletion(context: context) {
+            prediction = PredictCompletionResponse(
+                nagId: nag.id,
+                likelihood: result.likelihood,
+                suggestedReminderTime: result.suggestedReminderTime,
+                factors: result.factors.map { CompletionFactor(name: $0.name, value: $0.value) }
+            )
+        }
     }
 }
 

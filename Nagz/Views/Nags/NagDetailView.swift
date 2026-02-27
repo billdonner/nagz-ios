@@ -69,7 +69,7 @@ struct NagDetailView: View {
                         }
                     }
 
-                    AIInsightsSection(nagId: nag.id)
+                    AIInsightsSection(nagId: nag.id, nag: nag)
 
                     // Mark Complete section (recipient only, open nags)
                     if nag.status == .open && nag.recipientId == currentUserId {
