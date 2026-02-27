@@ -85,9 +85,18 @@ final class AuthManager {
         let response: AuthResponse = try await apiClient.request(.login(email: email, password: password))
         try await keychainService.saveTokens(access: response.accessToken, refresh: response.refreshToken)
         state = .authenticated(user: response.user)
-        currentRole = nil // Regular login — role determined by family membership
         UserDefaults.standard.set(response.user.id.uuidString, forKey: "nagz_user_id")
-        UserDefaults.standard.removeObject(forKey: "nagz_family_role")
+        // Restore family context from login response
+        if let familyId = response.familyId {
+            UserDefaults.standard.set(familyId.uuidString, forKey: "nagz_family_id")
+        }
+        if let role = response.familyRole, let familyRole = FamilyRole(rawValue: role) {
+            currentRole = familyRole
+            UserDefaults.standard.set(role, forKey: "nagz_family_role")
+        } else {
+            currentRole = nil
+            UserDefaults.standard.removeObject(forKey: "nagz_family_role")
+        }
         DebugLogger.shared.log("Login successful")
     }
 
