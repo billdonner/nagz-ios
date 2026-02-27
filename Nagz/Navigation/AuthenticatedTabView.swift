@@ -226,16 +226,26 @@ private struct FamilyTabContent: View {
 
                     if let childCode = family.childCode {
                         Section("Kid Login Code") {
-                            HStack {
-                                Text(childCode)
-                                    .font(.system(.title3, design: .monospaced))
-                                    .bold()
-                                Spacer()
-                                Button {
-                                    UIPasteboard.general.string = childCode
-                                } label: {
-                                    Image(systemName: "doc.on.doc")
+                            VStack(spacing: 12) {
+                                HStack {
+                                    Spacer()
+                                    Text(childCode)
+                                        .font(.system(size: 28, weight: .bold, design: .monospaced))
+                                        .tracking(4)
+                                    Spacer()
+                                    Button {
+                                        UIPasteboard.general.string = childCode
+                                    } label: {
+                                        Image(systemName: "doc.on.doc")
+                                    }
                                 }
+                                .padding()
+                                .background(Color(.systemYellow).opacity(0.15))
+                                .clipShape(RoundedRectangle(cornerRadius: 12))
+                                .overlay(
+                                    RoundedRectangle(cornerRadius: 12)
+                                        .stroke(Color.orange, lineWidth: 2)
+                                )
                             }
                             Text("Kids use this code + their username + PIN to sign in on their own device.")
                                 .font(.caption)
