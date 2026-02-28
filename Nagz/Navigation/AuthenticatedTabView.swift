@@ -133,6 +133,7 @@ private struct FamilyTabContent: View {
     let currentUserId: UUID
     @Environment(\.aiService) private var aiService
     @State private var digest: DigestResponse?
+    @State private var showOnboarding = false
 
     private func memberColor(for role: FamilyRole) -> Color {
         switch role {
@@ -339,6 +340,14 @@ private struct FamilyTabContent: View {
 
 
                     Section {
+                        Button {
+                            showOnboarding = true
+                        } label: {
+                            Label("What's New in Nagz", systemImage: "sparkles")
+                        }
+                    }
+
+                    Section {
                         Button("Log Out", role: .destructive) {
                             Task { await authManager.logout() }
                         }
@@ -397,6 +406,9 @@ private struct FamilyTabContent: View {
         }
         .sheet(isPresented: $viewModel.showJoinSheet) {
             JoinFamilyView(viewModel: viewModel)
+        }
+        .sheet(isPresented: $showOnboarding) {
+            OnboardingView(isRerun: true)
         }
     }
 
