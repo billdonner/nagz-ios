@@ -4,9 +4,14 @@ struct ConnectionListView: View {
     @State private var viewModel: ConnectionListViewModel
     @State private var showInvite = false
     @State private var connectionToRemove: ConnectionResponse?
+    @State private var connectionToNag: ConnectionResponse?
+    let familyId: UUID?
+    let currentUserId: UUID?
 
-    init(apiClient: APIClient) {
+    init(apiClient: APIClient, familyId: UUID? = nil, currentUserId: UUID? = nil) {
         _viewModel = State(initialValue: ConnectionListViewModel(apiClient: apiClient))
+        self.familyId = familyId
+        self.currentUserId = currentUserId
     }
 
     var body: some View {
@@ -70,12 +75,17 @@ struct ConnectionListView: View {
                     }
                 } else {
                     ForEach(viewModel.connections) { connection in
-                        connectionRow(connection)
-                            .swipeActions(edge: .trailing, allowsFullSwipe: false) {
-                                Button("Remove", role: .destructive) {
-                                    connectionToRemove = connection
-                                }
+                        Button {
+                            connectionToNag = connection
+                        } label: {
+                            connectionRow(connection)
+                        }
+                        .buttonStyle(.plain)
+                        .swipeActions(edge: .trailing, allowsFullSwipe: false) {
+                            Button("Remove", role: .destructive) {
+                                connectionToRemove = connection
                             }
+                        }
                     }
                 }
             }
@@ -117,6 +127,14 @@ struct ConnectionListView: View {
             Task { await viewModel.loadConnections() }
         } content: {
             InviteConnectionView(viewModel: viewModel)
+        }
+        .sheet(item: $connectionToNag) { connection in
+            CreateNagView(
+                apiClient: viewModel.apiClient,
+                familyId: familyId,
+                currentUserId: currentUserId,
+                preselectedConnectionId: connection.id
+            )
         }
         .task { await viewModel.loadConnections() }
         .refreshable { await viewModel.loadConnections() }

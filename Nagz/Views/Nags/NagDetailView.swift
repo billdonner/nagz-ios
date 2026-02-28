@@ -71,9 +71,9 @@ struct NagDetailView: View {
 
                     AIInsightsSection(nagId: nag.id, nag: nag)
 
-                    // Mark Complete section (recipient only, open nags)
+                    // Actions (recipient only, open nags)
                     if nag.status == .open && nag.recipientId == currentUserId {
-                        Section {
+                        Section("Actions") {
                             if nag.doneDefinition == .binaryWithNote {
                                 if showNoteField {
                                     TextField("Add a note...", text: $completionNote, axis: .vertical)
@@ -108,21 +108,14 @@ struct NagDetailView: View {
                                 }
                             }
                             .disabled(viewModel.isUpdating || showCompletionCelebration)
-                        }
-                    }
 
-                    // Submit Excuse section (recipient only, open nags)
-                    if nag.status == .open && nag.recipientId == currentUserId {
-                        Section {
                             Button {
                                 showExcuseSheet = true
                             } label: {
                                 Label("Submit Excuse", systemImage: "text.bubble")
                                     .frame(maxWidth: .infinity)
                             }
-                        }
 
-                        Section {
                             Button {
                                 Task { await viewModel.snooze(minutes: 15) }
                             } label: {

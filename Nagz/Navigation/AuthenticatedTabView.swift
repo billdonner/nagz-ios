@@ -98,7 +98,11 @@ struct AuthenticatedTabView: View {
 
     private var peopleTab: some View {
         NavigationStack {
-            ConnectionListView(apiClient: apiClient)
+            ConnectionListView(
+                apiClient: apiClient,
+                familyId: familyViewModel.family?.familyId,
+                currentUserId: authManager.currentUser?.id
+            )
         }
         .tabItem {
             Label("People", systemImage: "person.2.fill")
