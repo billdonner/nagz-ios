@@ -51,22 +51,14 @@ struct NagDetailView: View {
                     }
 
                     Section("Details") {
-                        LabeledContent("Category") {
-                            Label(nag.category.displayName, systemImage: nag.category.iconName)
-                        }
-                        LabeledContent("Due") {
-                            Text(nag.dueAt.relativeDisplay)
-                        }
-                        LabeledContent("Completion") {
-                            Text(nag.doneDefinition.displayName)
-                        }
+                        LabeledContent("Category", value: nag.category.displayName)
+                        LabeledContent("Due", value: nag.dueAt.relativeDisplay)
+                        LabeledContent("Completion", value: nag.doneDefinition.displayName)
                         if let desc = nag.description {
                             Text(desc)
                         }
                         if let recurrence = nag.recurrence {
-                            LabeledContent("Repeats") {
-                                Text(recurrence.displayName)
-                            }
+                            LabeledContent("Repeats", value: recurrence.displayName)
                         }
                     }
 
