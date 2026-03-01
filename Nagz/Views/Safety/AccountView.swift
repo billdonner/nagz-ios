@@ -18,7 +18,9 @@ struct AccountView: View {
     var body: some View {
         List {
             accountSection
-            personalitySection
+            if NagzAI.Router.isAppleIntelligenceAvailable {
+                personalitySection
+            }
             legalSection
             feedbackSection
             exportSection

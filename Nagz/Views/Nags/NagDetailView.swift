@@ -1,4 +1,5 @@
 import SwiftUI
+import NagzAI
 
 struct NagDetailView: View {
     @State private var viewModel: NagDetailViewModel
@@ -69,7 +70,9 @@ struct NagDetailView: View {
                         }
                     }
 
-                    AIInsightsSection(nagId: nag.id, nag: nag)
+                    if NagzAI.Router.isAppleIntelligenceAvailable {
+                        AIInsightsSection(nagId: nag.id, nag: nag)
+                    }
 
                     // Actions (recipient only, open nags)
                     if nag.status == .open && nag.recipientId == currentUserId {

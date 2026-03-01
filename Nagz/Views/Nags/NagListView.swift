@@ -114,21 +114,23 @@ struct NagListView: View {
                     .font(.caption2)
                     .foregroundStyle(.tertiary)
             }
-            ToolbarItem(placement: .topBarLeading) {
-                Button {
-                    generatingSummary = true
-                    Task {
-                        await generateSummary()
-                        generatingSummary = false
+            if NagzAI.Router.isAppleIntelligenceAvailable {
+                ToolbarItem(placement: .topBarLeading) {
+                    Button {
+                        generatingSummary = true
+                        Task {
+                            await generateSummary()
+                            generatingSummary = false
+                        }
+                    } label: {
+                        if generatingSummary {
+                            ProgressView()
+                        } else {
+                            Image(systemName: "sparkles")
+                        }
                     }
-                } label: {
-                    if generatingSummary {
-                        ProgressView()
-                    } else {
-                        Image(systemName: "sparkles")
-                    }
+                    .disabled(viewModel.nags.isEmpty || generatingSummary)
                 }
-                .disabled(viewModel.nags.isEmpty || generatingSummary)
             }
             if canCreateNags {
                 ToolbarItem(placement: .primaryAction) {

@@ -47,11 +47,13 @@ struct ChildNagListView: View {
         .onAppear { startWebSocket() }
         .onDisappear { stopWebSocket() }
         .toolbar {
-            ToolbarItem(placement: .automatic) {
-                Button { Task { await generateSummary() } } label: {
-                    Image(systemName: "sparkles")
+            if NagzAI.Router.isAppleIntelligenceAvailable {
+                ToolbarItem(placement: .automatic) {
+                    Button { Task { await generateSummary() } } label: {
+                        Image(systemName: "sparkles")
+                    }
+                    .disabled(nags.isEmpty)
                 }
-                .disabled(nags.isEmpty)
             }
         }
         .alert("How You're Doing", isPresented: $showAISummary) {
