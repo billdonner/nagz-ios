@@ -1146,6 +1146,7 @@
 		};
 		AA0470813CE5E9E39FC7A9BA /* NagzAI */ = {
 			isa = XCSwiftPackageProductDependency;
+			package = E461B9DC78FA21FD330B2A4D /* XCLocalSwiftPackageReference "../nagz-ai" */;
 			productName = NagzAI;
 		};
 /* End XCSwiftPackageProductDependency section */

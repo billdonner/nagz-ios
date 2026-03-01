@@ -4,12 +4,15 @@ import UserNotifications
 @MainActor
 class AppDelegate: NSObject, UIApplicationDelegate {
     var pushService: PushNotificationService?
+    private var notificationDelegate: NotificationDelegate?
 
     func application(
         _ application: UIApplication,
         didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil
     ) -> Bool {
-        UNUserNotificationCenter.current().delegate = NotificationDelegate(appDelegate: self)
+        let delegate = NotificationDelegate(appDelegate: self)
+        notificationDelegate = delegate
+        UNUserNotificationCenter.current().delegate = delegate
         return true
     }
 

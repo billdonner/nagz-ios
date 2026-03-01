@@ -2,6 +2,7 @@ import SwiftUI
 import MessageUI
 import UIKit
 
+@MainActor
 enum DeviceDiagnostics {
     static var summary: String {
         let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "?"
@@ -56,15 +57,15 @@ struct MailComposeView: UIViewControllerRepresentable {
 
     func updateUIViewController(_ uiViewController: MFMailComposeViewController, context: Context) {}
 
-    @MainActor
-    final class Coordinator: NSObject, MFMailComposeViewControllerDelegate {
+    final class Coordinator: NSObject, @preconcurrency MFMailComposeViewControllerDelegate {
         let dismiss: DismissAction
 
         init(dismiss: DismissAction) {
             self.dismiss = dismiss
         }
 
-        nonisolated func mailComposeController(
+        @MainActor
+        func mailComposeController(
             _ controller: MFMailComposeViewController,
             didFinishWith result: MFMailComposeResult,
             error: Error?
