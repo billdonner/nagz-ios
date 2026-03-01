@@ -217,29 +217,7 @@ struct NagDetailView: View {
             )
         }
         .sheet(isPresented: $showExcuseResponse) {
-            ExcuseResponseSheet(
-                excuseSummary: lastExcuseResponse ?? "",
-                onSnooze: {
-                    showExcuseResponse = false
-                    Task { await viewModel.snooze(minutes: 15) }
-                },
-                onTryAgain: {
-                    showExcuseResponse = false
-                },
-                onDone: {
-                    showExcuseResponse = false
-                    Task {
-                        await viewModel.markComplete(note: "Completed after excuse")
-                        if viewModel.errorMessage == nil {
-                            withAnimation(.spring(duration: 0.4)) {
-                                showCompletionCelebration = true
-                            }
-                            try? await Task.sleep(for: .seconds(1.5))
-                            dismiss()
-                        }
-                    }
-                }
-            )
+            ExcuseResponseSheet(excuseSummary: lastExcuseResponse ?? "")
         }
         .onChange(of: showEditSheet) { _, isPresented in
             if !isPresented {
@@ -344,75 +322,47 @@ private struct ExcuseSubmitSheet: View {
 
 private struct ExcuseResponseSheet: View {
     let excuseSummary: String
-    let onSnooze: () -> Void
-    let onTryAgain: () -> Void
-    let onDone: () -> Void
     @Environment(\.dismiss) private var dismiss
 
     var body: some View {
         NavigationStack {
             VStack(spacing: 24) {
-                Image(systemName: "text.bubble.fill")
-                    .font(.system(size: 48))
-                    .foregroundStyle(.blue)
-                    .padding(.top, 24)
+                Spacer()
 
-                Text("Excuse Received")
+                Image(systemName: "paperplane.circle.fill")
+                    .font(.system(size: 64))
+                    .foregroundStyle(.green)
+
+                Text("Excuse Sent")
                     .font(.title2.weight(.semibold))
 
-                Text(excuseSummary)
+                Text("\"\(excuseSummary)\"")
                     .font(.body)
                     .foregroundStyle(.secondary)
                     .multilineTextAlignment(.center)
                     .padding(.horizontal)
+                    .italic()
 
-                Divider()
-                    .padding(.horizontal)
-
-                Text("What would you like to do?")
+                Text("The person who nagged you will review your excuse and decide what happens next.")
                     .font(.subheadline)
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(.tertiary)
+                    .multilineTextAlignment(.center)
+                    .padding(.horizontal, 32)
 
-                VStack(spacing: 12) {
-                    Button {
-                        onSnooze()
-                    } label: {
-                        Label("Snooze 15 minutes", systemImage: "clock.badge.xmark")
-                            .frame(maxWidth: .infinity)
-                    }
-                    .buttonStyle(.bordered)
-                    .controlSize(.large)
-
-                    Button {
-                        onTryAgain()
-                    } label: {
-                        Label("I'll try to do it", systemImage: "arrow.clockwise")
-                            .frame(maxWidth: .infinity)
-                    }
-                    .buttonStyle(.bordered)
-                    .controlSize(.large)
-
-                    Button {
-                        onDone()
-                    } label: {
-                        Label("Actually, it's done!", systemImage: "checkmark.circle.fill")
-                            .frame(maxWidth: .infinity)
-                    }
-                    .buttonStyle(.borderedProminent)
-                    .tint(.green)
-                    .controlSize(.large)
-                }
-                .padding(.horizontal)
-
+                Spacer()
                 Spacer()
             }
             .navigationTitle("Excuse")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
-                ToolbarItem(placement: .cancellationAction) {
+                ToolbarItem(placement: .confirmationAction) {
                     Button("Close") { dismiss() }
                 }
             }
+        }
+        .task {
+            try? await Task.sleep(for: .seconds(10))
+            dismiss()
         }
     }
 }
