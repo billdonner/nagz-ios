@@ -202,6 +202,7 @@ struct NagDetailView: View {
             ExcuseSubmitSheet(
                 excuseText: $excuseText,
                 isSubmitting: viewModel.isUpdating,
+                errorMessage: viewModel.errorMessage,
                 onSubmit: {
                     Task {
                         await viewModel.submitExcuse(text: excuseText)
@@ -302,6 +303,7 @@ private struct CompletionCelebrationView: View {
 private struct ExcuseSubmitSheet: View {
     @Binding var excuseText: String
     let isSubmitting: Bool
+    let errorMessage: String?
     let onSubmit: () -> Void
     @Environment(\.dismiss) private var dismiss
 
@@ -312,6 +314,14 @@ private struct ExcuseSubmitSheet: View {
                     TextField("Explain your reason...", text: $excuseText, axis: .vertical)
                         .lineLimit(3...8)
                 }
+
+                if let error = errorMessage {
+                    Section {
+                        Text(error)
+                            .foregroundStyle(.red)
+                            .font(.callout)
+                    }
+                }
             }
             .navigationTitle("Submit Excuse")
             .navigationBarTitleDisplayMode(.inline)
@@ -320,8 +330,12 @@ private struct ExcuseSubmitSheet: View {
                     Button("Cancel") { dismiss() }
                 }
                 ToolbarItem(placement: .confirmationAction) {
-                    Button("Submit") { onSubmit() }
-                        .disabled(excuseText.trimmingCharacters(in: .whitespaces).isEmpty || isSubmitting)
+                    if isSubmitting {
+                        ProgressView()
+                    } else {
+                        Button("Submit") { onSubmit() }
+                            .disabled(excuseText.trimmingCharacters(in: .whitespaces).isEmpty)
+                    }
                 }
             }
         }

@@ -4,6 +4,7 @@ struct AISummarySheet: View {
     let nags: [NagResponse]
     let currentUserId: UUID?
     let summaryText: String
+    var filterLabel: String = "All"
     @Environment(\.dismiss) private var dismiss
 
     private var overdueNags: [NagResponse] {
@@ -26,10 +27,14 @@ struct AISummarySheet: View {
         nags.filter { $0.status == .completed }.count
     }
 
+    private var isOpenFilter: Bool {
+        filterLabel == "Open" || filterLabel == "All"
+    }
+
     var body: some View {
         NavigationStack {
             List {
-                if !overdueNags.isEmpty {
+                if isOpenFilter && !overdueNags.isEmpty {
                     Section {
                         ForEach(overdueNags) { nag in
                             urgencyRow(nag: nag, color: .red)
@@ -41,7 +46,7 @@ struct AISummarySheet: View {
                     }
                 }
 
-                if !dueSoonNags.isEmpty {
+                if isOpenFilter && !dueSoonNags.isEmpty {
                     Section {
                         ForEach(dueSoonNags) { nag in
                             urgencyRow(nag: nag, color: .orange)
@@ -57,22 +62,18 @@ struct AISummarySheet: View {
                     Text(summaryText)
                         .font(.body)
                 } header: {
-                    Label("AI Summary", systemImage: "sparkles")
+                    Label("AI Summary — \(filterLabel)", systemImage: "sparkles")
                         .font(.subheadline.weight(.bold))
                 }
 
                 Section {
                     HStack {
-                        statBadge(count: openCount, label: "Open", color: .blue)
-                        Spacer()
-                        statBadge(count: completedCount, label: "Done", color: .green)
-                        Spacer()
-                        statBadge(count: overdueNags.count, label: "Overdue", color: .red)
+                        statBadge(count: nags.count, label: filterLabel, color: filterColor)
                     }
                     .padding(.vertical, 4)
                 }
             }
-            .navigationTitle("What Needs Attention")
+            .navigationTitle(navigationTitle)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .confirmationAction) {
@@ -81,6 +82,25 @@ struct AISummarySheet: View {
             }
         }
         .presentationDetents([.medium, .large])
+    }
+
+    private var navigationTitle: String {
+        switch filterLabel {
+        case "All": "What Needs Attention"
+        case "Open": "Open Nagz"
+        case "Completed": "Completed Nagz"
+        case "Missed": "Missed Nagz"
+        default: "Nagz — \(filterLabel)"
+        }
+    }
+
+    private var filterColor: Color {
+        switch filterLabel {
+        case "Open": .blue
+        case "Completed": .green
+        case "Missed": .red
+        default: .primary
+        }
     }
 
     private func urgencyRow(nag: NagResponse, color: Color) -> some View {

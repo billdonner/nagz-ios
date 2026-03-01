@@ -127,7 +127,8 @@ struct NagListView: View {
             AISummarySheet(
                 nags: viewModel.nags,
                 currentUserId: currentUserId,
-                summaryText: aiSummary ?? ""
+                summaryText: aiSummary ?? "",
+                filterLabel: viewModel.filter.rawValue
             )
         }
         .sheet(isPresented: $showCreateNag) {
@@ -187,7 +188,9 @@ struct NagListView: View {
     }
 
     private func generateSummary() async {
-        let items = viewModel.nags.map { nag in
+        // Pass only the nags the user is currently viewing
+        let visibleNags = viewModel.nags
+        let items = visibleNags.map { nag in
             NagSummaryItem(
                 category: nag.category.rawValue,
                 status: nag.status.rawValue,
