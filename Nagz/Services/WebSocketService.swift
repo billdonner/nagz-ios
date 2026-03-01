@@ -150,8 +150,15 @@ actor WebSocketService {
                         break
                     }
                 } catch {
-                    DebugLogger.shared.log("WebSocket: receive error — \(error.localizedDescription)", level: .warning)
-                    await self.handleDisconnect()
+                    let closeCode = await self.webSocketTask?.closeCode ?? .invalid
+                    DebugLogger.shared.log("WebSocket: receive error (close code \(closeCode.rawValue)) — \(error.localizedDescription)", level: .warning)
+                    // Close code 4001 = auth failure — don't retry with same token
+                    if closeCode.rawValue == 4001 {
+                        DebugLogger.shared.log("WebSocket: auth failed, stopping reconnect", level: .warning)
+                        await self.handleAuthFailure()
+                    } else {
+                        await self.handleDisconnect()
+                    }
                     return
                 }
             }
@@ -216,6 +223,19 @@ actor WebSocketService {
 
     private func resetReconnectDelay() {
         reconnectDelay = 1
+    }
+
+    private func handleAuthFailure() async {
+        isConnected = false
+        receiveTask?.cancel()
+        receiveTask = nil
+        pingTask?.cancel()
+        pingTask = nil
+        webSocketTask?.cancel(with: .goingAway, reason: nil)
+        webSocketTask = nil
+        // Don't reconnect — token is expired/invalid. The next app foreground
+        // cycle will refresh the token and call connect() again.
+        shouldReconnect = false
     }
 
     private func handleDisconnect() async {
