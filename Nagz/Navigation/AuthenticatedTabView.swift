@@ -101,7 +101,8 @@ struct AuthenticatedTabView: View {
             ConnectionListView(
                 apiClient: apiClient,
                 familyId: familyViewModel.family?.familyId,
-                currentUserId: authManager.currentUser?.id
+                currentUserId: authManager.currentUser?.id,
+                webSocketService: webSocketService
             )
         }
         .tabItem {

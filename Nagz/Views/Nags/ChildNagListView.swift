@@ -95,7 +95,7 @@ struct ChildNagListView: View {
                 switch event.type {
                 case .nagCreated, .nagUpdated, .nagStatusChanged:
                     await loadNags()
-                case .excuseSubmitted, .memberAdded, .memberRemoved, .ping, .pong:
+                case .excuseSubmitted, .memberAdded, .memberRemoved, .connectionInvited, .connectionAccepted, .ping, .pong:
                     break
                 }
             }

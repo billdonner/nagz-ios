@@ -171,7 +171,7 @@ struct NagListView: View {
                 switch event.type {
                 case .nagCreated, .nagUpdated, .nagStatusChanged, .excuseSubmitted:
                     await viewModel.loadNags()
-                case .memberAdded, .memberRemoved:
+                case .memberAdded, .memberRemoved, .connectionInvited, .connectionAccepted:
                     break
                 case .ping, .pong:
                     break

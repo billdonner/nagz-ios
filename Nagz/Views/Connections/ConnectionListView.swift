@@ -5,13 +5,16 @@ struct ConnectionListView: View {
     @State private var showInvite = false
     @State private var connectionToRemove: ConnectionResponse?
     @State private var connectionToNag: ConnectionResponse?
+    @State private var wsTask: Task<Void, Never>?
     let familyId: UUID?
     let currentUserId: UUID?
+    let webSocketService: WebSocketService?
 
-    init(apiClient: APIClient, familyId: UUID? = nil, currentUserId: UUID? = nil) {
+    init(apiClient: APIClient, familyId: UUID? = nil, currentUserId: UUID? = nil, webSocketService: WebSocketService? = nil) {
         _viewModel = State(initialValue: ConnectionListViewModel(apiClient: apiClient))
         self.familyId = familyId
         self.currentUserId = currentUserId
+        self.webSocketService = webSocketService
     }
 
     var body: some View {
@@ -137,7 +140,29 @@ struct ConnectionListView: View {
             )
         }
         .task { await viewModel.loadConnections() }
+        .task { startWebSocket() }
+        .onDisappear { stopWebSocket() }
         .refreshable { await viewModel.loadConnections() }
+    }
+
+    private func startWebSocket() {
+        guard let familyId, let webSocketService, wsTask == nil else { return }
+        wsTask = Task {
+            let stream = await webSocketService.connect(familyId: familyId)
+            for await event in stream {
+                switch event.type {
+                case .connectionInvited, .connectionAccepted:
+                    await viewModel.loadConnections()
+                default:
+                    break
+                }
+            }
+        }
+    }
+
+    private func stopWebSocket() {
+        wsTask?.cancel()
+        wsTask = nil
     }
 
     private func connectionRow(_ connection: ConnectionResponse) -> some View {

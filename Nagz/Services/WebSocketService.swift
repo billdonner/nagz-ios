@@ -8,6 +8,8 @@ enum NagEventType: String, Sendable {
     case excuseSubmitted = "excuse_submitted"
     case memberAdded = "member_added"
     case memberRemoved = "member_removed"
+    case connectionInvited = "connection_invited"
+    case connectionAccepted = "connection_accepted"
     case ping
     case pong
 }

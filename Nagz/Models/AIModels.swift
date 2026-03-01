@@ -135,7 +135,19 @@ struct SyncResponse: Decodable, Sendable {
     let nagEvents: [SyncedNagEvent]
     let aiMediationEvents: [SyncedAIMediationEvent]
     let gamificationEvents: [SyncedGamificationEvent]
+    let connections: [SyncedConnection]?
     let serverTime: Date
+}
+
+struct SyncedConnection: Decodable, Sendable {
+    let id: UUID
+    let inviterId: UUID
+    let inviteeId: UUID?
+    let inviteeEmail: String
+    let status: String
+    let trusted: Bool
+    let createdAt: Date
+    let respondedAt: Date?
 }
 
 struct SyncedNag: Decodable, Sendable {
