@@ -19,7 +19,7 @@ enum APIError: Error, LocalizedError {
     case invalidURL
     case unauthorized
     case authenticationFailed(String)
-    case forbidden
+    case forbidden(String)
     case notFound
     case rateLimited
     case validationError(String)
@@ -36,8 +36,8 @@ enum APIError: Error, LocalizedError {
             return "Session expired. Please log in again."
         case .authenticationFailed(let message):
             return message
-        case .forbidden:
-            return "You don't have permission for this action."
+        case .forbidden(let message):
+            return message
         case .notFound:
             return "The requested resource was not found."
         case .rateLimited:

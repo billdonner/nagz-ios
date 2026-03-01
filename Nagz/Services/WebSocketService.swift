@@ -123,7 +123,6 @@ actor WebSocketService {
         self.webSocketTask = task
         task.resume()
         isConnected = true
-        reconnectDelay = 1
 
         DebugLogger.shared.log("WebSocket: connecting to \(url.host ?? "?")")
 
@@ -139,6 +138,7 @@ actor WebSocketService {
                 guard let task = await self.webSocketTask else { return }
                 do {
                     let message = try await task.receive()
+                    await self.resetReconnectDelay()
                     switch message {
                     case .string(let text):
                         await self.handleMessage(text)
@@ -212,6 +212,10 @@ actor WebSocketService {
         )
 
         continuation?.yield(event)
+    }
+
+    private func resetReconnectDelay() {
+        reconnectDelay = 1
     }
 
     private func handleDisconnect() async {

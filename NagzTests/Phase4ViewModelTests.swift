@@ -264,8 +264,8 @@ final class APIErrorTests: XCTestCase {
     }
 
     func testForbiddenDescription() {
-        let error = APIError.forbidden
-        XCTAssertEqual(error.errorDescription, "You don't have permission for this action.")
+        let error = APIError.forbidden("Only the nag recipient can perform this action")
+        XCTAssertEqual(error.errorDescription, "Only the nag recipient can perform this action")
     }
 
     func testNotFoundDescription() {
@@ -320,7 +320,7 @@ final class APIErrorTests: XCTestCase {
     }
 
     func testForbiddenIsNotRetryable() {
-        XCTAssertFalse(APIError.forbidden.isRetryable)
+        XCTAssertFalse(APIError.forbidden("denied").isRetryable)
     }
 
     func testValidationErrorIsNotRetryable() {

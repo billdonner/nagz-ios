@@ -264,7 +264,7 @@ actor APIClient {
             let msg = envelope.error.message
             switch statusCode {
             case 401: return .authenticationFailed(msg)
-            case 403: return .forbidden
+            case 403: return .forbidden(msg)
             case 404: return .notFound
             case 422: return .validationError(msg)
             case 429: return .rateLimited
