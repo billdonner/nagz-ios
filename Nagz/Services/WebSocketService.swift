@@ -152,9 +152,10 @@ actor WebSocketService {
                 } catch {
                     let closeCode = await self.webSocketTask?.closeCode ?? .invalid
                     DebugLogger.shared.log("WebSocket: receive error (close code \(closeCode.rawValue)) — \(error.localizedDescription)", level: .warning)
-                    // Close code 4001 = auth failure — don't retry with same token
-                    if closeCode.rawValue == 4001 {
-                        DebugLogger.shared.log("WebSocket: auth failed, stopping reconnect", level: .warning)
+                    // Close code 4001 = auth failure, 4002 = server infra issue — don't retry
+                    let code = closeCode.rawValue
+                    if code == 4001 || code == 4002 {
+                        DebugLogger.shared.log("WebSocket: server rejected (\(code)), stopping reconnect", level: .warning)
                         await self.handleAuthFailure()
                     } else {
                         await self.handleDisconnect()
