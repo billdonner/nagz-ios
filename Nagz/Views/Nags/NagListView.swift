@@ -97,6 +97,11 @@ struct NagListView: View {
         }
         .navigationTitle("Nagz")
         .toolbar {
+            ToolbarItem(placement: .bottomBar) {
+                Text("v\(Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "?") (\(Bundle.main.infoDictionary?["CFBundleVersion"] as? String ?? "?"))")
+                    .font(.caption2)
+                    .foregroundStyle(.tertiary)
+            }
             ToolbarItem(placement: .topBarLeading) {
                 Button {
                     generatingSummary = true
