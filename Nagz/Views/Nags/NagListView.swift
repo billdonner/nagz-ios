@@ -34,6 +34,18 @@ struct NagListView: View {
         return viewModel.nags.filter { $0.recipientId != userId }
     }
 
+    /// Group "For Me" nags by who sent them (counterpart = creator)
+    private var nagsForMeByCounterpart: [(name: String, nags: [NagResponse])] {
+        let grouped = Dictionary(grouping: nagsForMe) { $0.creatorDisplayName ?? "Unknown" }
+        return grouped.sorted { $0.key < $1.key }.map { (name: $0.key, nags: $0.value) }
+    }
+
+    /// Group "Nagz to Others" by who they're for (counterpart = recipient)
+    private var nagsForOthersByCounterpart: [(name: String, nags: [NagResponse])] {
+        let grouped = Dictionary(grouping: nagsForOthers) { $0.recipientDisplayName ?? "Unknown" }
+        return grouped.sorted { $0.key < $1.key }.map { (name: $0.key, nags: $0.value) }
+    }
+
     var body: some View {
         VStack(spacing: 0) {
             Picker("Filter", selection: $viewModel.filter) {
@@ -65,9 +77,9 @@ struct NagListView: View {
                 } else {
                     TimelineView(.periodic(from: .now, by: 60)) { _ in
                         List {
-                            if !nagsForMe.isEmpty {
-                                Section("For Me") {
-                                    ForEach(nagsForMe) { nag in
+                            ForEach(nagsForMeByCounterpart, id: \.name) { group in
+                                Section("From \(group.name)") {
+                                    ForEach(group.nags) { nag in
                                         NavigationLink(value: nag.id) {
                                             NagRowView(nag: nag, currentUserId: currentUserId)
                                         }
@@ -75,9 +87,9 @@ struct NagListView: View {
                                 }
                             }
 
-                            if !nagsForOthers.isEmpty {
-                                Section("Nagz to Others:") {
-                                    ForEach(nagsForOthers) { nag in
+                            ForEach(nagsForOthersByCounterpart, id: \.name) { group in
+                                Section("To \(group.name)") {
+                                    ForEach(group.nags) { nag in
                                         NavigationLink(value: nag.id) {
                                             NagRowView(nag: nag, currentUserId: currentUserId)
                                         }
