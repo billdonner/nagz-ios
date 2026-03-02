@@ -2,15 +2,20 @@
 import SwiftUI
 import NagzAI
 
-struct NagChatView: View {
-    let nag: NagResponse
+struct GlobalChatView: View {
     let apiClient: APIClient
-    let personality: AIPersonality
-    var databaseManager: DatabaseManager?
-    let onDismissReload: () -> Void
+    let currentUserId: UUID
+    let familyId: UUID?
+    let userName: String
+    let familyName: String?
+    let memberNames: [String]
 
-    @State private var viewModel = NagChatViewModel()
-    @Environment(\.dismiss) private var dismiss
+    @State private var viewModel = GlobalChatViewModel()
+    @AppStorage("nagz_ai_personality") private var personalityRaw: String = AIPersonality.standard.rawValue
+
+    private var personality: AIPersonality {
+        AIPersonality(rawValue: personalityRaw) ?? .standard
+    }
 
     var body: some View {
         NavigationStack {
@@ -64,7 +69,7 @@ struct NagChatView: View {
 
                 // Input bar
                 HStack(spacing: 8) {
-                    TextField("Type a message...", text: $viewModel.inputText, axis: .vertical)
+                    TextField("Ask me anything...", text: $viewModel.inputText, axis: .vertical)
                         .lineLimit(1...4)
                         .textFieldStyle(.plain)
                         .padding(.horizontal, 12)
@@ -83,39 +88,32 @@ struct NagChatView: View {
                 .padding(.horizontal, 12)
                 .padding(.vertical, 8)
             }
-            .navigationTitle("Chat")
+            .navigationTitle("Talk to Nagz")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .principal) {
                     VStack(spacing: 0) {
-                        Text("Chat")
+                        Text("Talk to Nagz")
                             .font(.headline)
                         Text(personality.displayName)
                             .font(.caption2)
                             .foregroundStyle(.secondary)
                     }
                 }
-                ToolbarItem(placement: .cancellationAction) {
-                    Button {
-                        if viewModel.nagWasMutated {
-                            onDismissReload()
-                        }
-                        dismiss()
-                    } label: {
-                        Image(systemName: "xmark.circle.fill")
-                            .symbolRenderingMode(.hierarchical)
-                    }
-                }
             }
         }
         .onAppear {
-            viewModel.setupSession(
-                nag: nag,
-                apiClient: apiClient,
-                personality: personality,
-                databaseManager: databaseManager,
-                onMutated: { }
-            )
+            if viewModel.messages.isEmpty {
+                viewModel.setupSession(
+                    apiClient: apiClient,
+                    currentUserId: currentUserId,
+                    familyId: familyId,
+                    userName: userName,
+                    familyName: familyName,
+                    memberNames: memberNames,
+                    personality: personality
+                )
+            }
         }
     }
 

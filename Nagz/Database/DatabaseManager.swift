@@ -98,7 +98,47 @@ actor DatabaseManager {
             }
         }
 
+        migrator.registerMigration("v2_chat_messages") { db in
+            try db.create(table: "cached_chat_messages") { t in
+                t.primaryKey("id", .text).notNull()
+                t.column("nagId", .text).notNull().references("cached_nags")
+                t.column("role", .text).notNull()
+                t.column("content", .text).notNull()
+                t.column("timestamp", .double).notNull()
+            }
+            try db.create(
+                index: "idx_chat_messages_nag",
+                on: "cached_chat_messages",
+                columns: ["nagId", "timestamp"]
+            )
+        }
+
         return migrator
+    }
+
+    // MARK: - Chat Messages
+
+    func saveChatMessage(_ message: CachedChatMessage) async throws {
+        try await writer.write { db in
+            try message.insert(db)
+        }
+    }
+
+    func chatMessages(forNagId nagId: String) async throws -> [CachedChatMessage] {
+        try await dbPool.read { db in
+            try CachedChatMessage
+                .filter(Column("nagId") == nagId)
+                .order(Column("timestamp").asc)
+                .fetchAll(db)
+        }
+    }
+
+    func deleteChatMessages(forNagId nagId: String) async throws {
+        try await writer.write { db in
+            _ = try CachedChatMessage
+                .filter(Column("nagId") == nagId)
+                .deleteAll(db)
+        }
     }
 
     // MARK: - Smart Defaults
@@ -148,6 +188,7 @@ actor DatabaseManager {
             try db.execute(sql: "DELETE FROM cached_nag_events")
             try db.execute(sql: "DELETE FROM cached_ai_mediation_events")
             try db.execute(sql: "DELETE FROM cached_gamification_events")
+            try db.execute(sql: "DELETE FROM cached_chat_messages")
             try db.execute(sql: "DELETE FROM cached_preferences")
             try db.execute(sql: "DELETE FROM sync_metadata")
         }

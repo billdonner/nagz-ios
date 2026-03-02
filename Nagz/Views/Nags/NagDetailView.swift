@@ -14,6 +14,7 @@ struct NagDetailView: View {
     @State private var showChat = false
     @AppStorage("nagz_ai_personality") private var personalityRaw: String = AIPersonality.standard.rawValue
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.databaseManager) private var databaseManager
     let apiClient: APIClient
     let currentUserId: UUID
     let isGuardian: Bool
@@ -237,6 +238,7 @@ struct NagDetailView: View {
                     nag: nag,
                     apiClient: apiClient,
                     personality: AIPersonality(rawValue: personalityRaw) ?? .standard,
+                    databaseManager: databaseManager,
                     onDismissReload: {
                         Task { await viewModel.load() }
                     }

@@ -1,5 +1,6 @@
 import SwiftUI
 import AppIntents
+import NagzAI
 
 struct AuthenticatedTabView: View {
     let authManager: AuthManager
@@ -52,6 +53,12 @@ struct AuthenticatedTabView: View {
                 .tag(1)
             familyTab
                 .tag(2)
+            #if canImport(FoundationModels)
+            if NagzAI.Router.isAppleIntelligenceAvailable {
+                chatTab
+                    .tag(3)
+            }
+            #endif
         }
         .task {
             pushService.requestPermissionAndRegister()
@@ -109,6 +116,27 @@ struct AuthenticatedTabView: View {
             Label("People", systemImage: "person.2.fill")
         }
     }
+
+    #if canImport(FoundationModels)
+    @ViewBuilder
+    private var chatTab: some View {
+        NavigationStack {
+            GlobalChatView(
+                apiClient: apiClient,
+                currentUserId: currentUserId,
+                familyId: familyViewModel.family?.familyId,
+                userName: authManager.currentUser?.displayName ?? authManager.currentUser?.email ?? "User",
+                familyName: familyViewModel.family?.name,
+                memberNames: familyViewModel.members
+                    .filter { $0.status != .removed }
+                    .compactMap(\.displayName)
+            )
+        }
+        .tabItem {
+            Label("Chat", systemImage: "sparkles.bubble")
+        }
+    }
+    #endif
 
     private var familyTab: some View {
         NavigationStack {

@@ -1,5 +1,6 @@
 import SwiftUI
 import NagzAI
+import AppIntents
 
 struct NagListView: View {
     @State var viewModel: NagListViewModel
@@ -72,7 +73,10 @@ struct NagListView: View {
                     ContentUnavailableView {
                         Label("No Nagz", systemImage: "checkmark.circle")
                     } description: {
-                        Text(viewModel.filter == .open ? "All caught up!" : "No nagz to show.")
+                        VStack(spacing: 12) {
+                            Text(viewModel.filter == .open ? "All caught up!" : "No nagz to show.")
+                            SiriTipView(intent: CreateNagIntent(), isVisible: .constant(true))
+                        }
                     }
                 } else {
                     TimelineView(.periodic(from: .now, by: 60)) { _ in

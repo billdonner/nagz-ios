@@ -1,0 +1,280 @@
+#if canImport(FoundationModels)
+import Foundation
+import FoundationModels
+
+// MARK: - List Nags Tool
+
+struct ListNagsTool: Tool {
+    let name = "listNags"
+    let description = "List the user's current nags/tasks. Use when they ask to see their tasks, what's overdue, or what they need to do."
+
+    @Generable
+    struct Arguments {
+        @Guide(description: "Optional status filter: 'open', 'completed', 'missed', or empty for all open.")
+        let status: String
+    }
+
+    let apiClient: APIClient
+    let familyId: UUID?
+    let currentUserId: UUID
+    let collector: ToolResultCollector
+
+    nonisolated func call(arguments: Arguments) async throws -> String {
+        guard let familyId else {
+            await collector.record("📋 No family set up")
+            return "No family set up yet — create or join a family first."
+        }
+
+        let statusFilter: NagStatus? = switch arguments.status.lowercased() {
+        case "completed": .completed
+        case "missed": .missed
+        case "open", "": .open
+        default: .open
+        }
+
+        let allNags: [NagResponse] = try await apiClient.request(
+            .listNags(familyId: familyId, status: statusFilter)
+        )
+
+        // Filter to nags assigned to current user
+        let myNags = allNags.filter { $0.recipientId == currentUserId }
+
+        if myNags.isEmpty {
+            await collector.record("📋 No tasks found")
+            return "No tasks found matching that criteria."
+        }
+
+        let overdue = myNags.filter { $0.dueAt < Date() }
+        var summary = "Found \(myNags.count) task\(myNags.count == 1 ? "" : "s")."
+
+        if !overdue.isEmpty {
+            summary += " \(overdue.count) overdue."
+        }
+
+        let list = myNags.prefix(10).map { nag -> String in
+            let desc = nag.description ?? nag.category.displayName
+            let due = nag.dueAt < Date() ? "OVERDUE" : "due \(nag.dueAt.formatted(date: .abbreviated, time: .shortened))"
+            return "• \(desc) (\(due))"
+        }.joined(separator: "\n")
+
+        await collector.record("📋 Listed \(myNags.count) task\(myNags.count == 1 ? "" : "s")")
+        return "\(summary)\n\n\(list)"
+    }
+}
+
+// MARK: - Create Nag Tool
+
+struct CreateNagTool: Tool {
+    let name = "createNag"
+    let description = "Create a new nag/task/reminder. Use when the user says 'remind me to...', 'nag me about...', or 'add a task'. Parse natural language times into delayHours."
+
+    @Generable
+    struct Arguments {
+        @Guide(description: "What the user wants to be reminded about.")
+        let taskDescription: String
+
+        @Guide(description: "Category: chores, meds, homework, appointments, or other.")
+        let category: String
+
+        @Guide(description: "Hours from now until due. Examples: 'tomorrow' = 18, 'in an hour' = 1, 'next week' = 168, 'tonight' = 8.")
+        let delayHours: Int
+    }
+
+    let apiClient: APIClient
+    let familyId: UUID?
+    let currentUserId: UUID
+    let collector: ToolResultCollector
+
+    nonisolated func call(arguments: Arguments) async throws -> String {
+        let hours = max(1, min(720, arguments.delayHours))
+        let dueAt = Date().addingTimeInterval(Double(hours) * 3600)
+        let category = NagCategory(rawValue: arguments.category) ?? .other
+
+        let nag = NagCreate(
+            familyId: familyId,
+            recipientId: currentUserId,
+            dueAt: dueAt,
+            category: category,
+            doneDefinition: .binaryCheck,
+            description: arguments.taskDescription
+        )
+
+        let created: NagResponse = try await apiClient.request(.createNag(nag))
+
+        let formatter = DateFormatter()
+        formatter.dateStyle = .medium
+        formatter.timeStyle = .short
+        let dateStr = formatter.string(from: created.dueAt)
+
+        await collector.record("✓ Created: \(arguments.taskDescription) (due \(dateStr))")
+        return "Created task \"\(arguments.taskDescription)\" due \(dateStr)."
+    }
+}
+
+// MARK: - Complete Nag Tool
+
+struct GlobalCompleteTool: Tool {
+    let name = "completeNag"
+    let description = "Mark a task as FINISHED. ONLY use when the user says they ALREADY completed a specific task (past tense). Example: 'I took out the trash', 'finished my homework'. Do NOT use for future actions."
+
+    @Generable
+    struct Arguments {
+        @Guide(description: "Description of the task the user says they finished. Used to fuzzy-match against their task list.")
+        let nagDescription: String
+    }
+
+    let apiClient: APIClient
+    let familyId: UUID?
+    let currentUserId: UUID
+    let collector: ToolResultCollector
+
+    nonisolated func call(arguments: Arguments) async throws -> String {
+        guard let familyId else {
+            return "Could not find that task — no family set up."
+        }
+
+        let allNags: [NagResponse] = try await apiClient.request(
+            .listNags(familyId: familyId, status: .open)
+        )
+        let nags = allNags.filter { $0.recipientId == currentUserId }
+
+        let query = arguments.nagDescription.lowercased()
+        let match = nags.first { nag in
+            let desc = (nag.description ?? nag.category.displayName).lowercased()
+            return desc.contains(query) || query.contains(desc) || fuzzyMatch(query: query, target: desc)
+        }
+
+        guard let match else {
+            await collector.record("❌ Couldn't find matching task")
+            return "I couldn't find a task matching \"\(arguments.nagDescription)\". Try listing your tasks first."
+        }
+
+        let _: NagResponse = try await apiClient.request(
+            .updateNagStatus(nagId: match.id, status: .completed, note: nil)
+        )
+
+        let desc = match.description ?? match.category.displayName
+        await collector.record("✓ Completed: \(desc)")
+        return "Marked \"\(desc)\" as done!"
+    }
+
+    private nonisolated func fuzzyMatch(query: String, target: String) -> Bool {
+        let queryWords = query.split(separator: " ")
+        let matchCount = queryWords.filter { target.contains($0) }.count
+        return matchCount >= max(1, queryWords.count / 2)
+    }
+}
+
+// MARK: - Reschedule Nag Tool
+
+struct GlobalRescheduleTool: Tool {
+    let name = "rescheduleNag"
+    let description = "Postpone a task to a later time. Use when the user wants to delay, defer, or push back a task. Example: 'do homework tomorrow instead', 'push back trash'."
+
+    @Generable
+    struct Arguments {
+        @Guide(description: "Description of the task to reschedule. Used to fuzzy-match against task list.")
+        let nagDescription: String
+
+        @Guide(description: "Hours to delay from now. Examples: 'tomorrow' = 24, 'next week' = 168, 'a few hours' = 3.")
+        let delayHours: Int
+    }
+
+    let apiClient: APIClient
+    let familyId: UUID?
+    let currentUserId: UUID
+    let collector: ToolResultCollector
+
+    nonisolated func call(arguments: Arguments) async throws -> String {
+        guard let familyId else {
+            return "Could not find that task — no family set up."
+        }
+
+        let allNags: [NagResponse] = try await apiClient.request(
+            .listNags(familyId: familyId, status: .open)
+        )
+        let nags = allNags.filter { $0.recipientId == currentUserId }
+
+        let query = arguments.nagDescription.lowercased()
+        let match = nags.first { nag in
+            let desc = (nag.description ?? nag.category.displayName).lowercased()
+            return desc.contains(query) || query.contains(desc) || fuzzyMatch(query: query, target: desc)
+        }
+
+        guard let match else {
+            await collector.record("❌ Couldn't find matching task")
+            return "I couldn't find a task matching \"\(arguments.nagDescription)\". Try listing your tasks first."
+        }
+
+        let hours = max(1, min(720, arguments.delayHours))
+        let newDue = Date().addingTimeInterval(Double(hours) * 3600)
+        let update = NagUpdate(dueAt: newDue, category: nil, doneDefinition: nil)
+        let _: NagResponse = try await apiClient.request(.updateNag(nagId: match.id, update: update))
+
+        let formatter = DateFormatter()
+        formatter.dateStyle = .medium
+        formatter.timeStyle = .short
+        let dateStr = formatter.string(from: newDue)
+
+        let desc = match.description ?? match.category.displayName
+        await collector.record("✓ Rescheduled \"\(desc)\" to \(dateStr)")
+        return "Rescheduled \"\(desc)\" to \(dateStr)."
+    }
+
+    private nonisolated func fuzzyMatch(query: String, target: String) -> Bool {
+        let queryWords = query.split(separator: " ")
+        let matchCount = queryWords.filter { target.contains($0) }.count
+        return matchCount >= max(1, queryWords.count / 2)
+    }
+}
+
+// MARK: - Status Tool
+
+struct NagStatusTool: Tool {
+    let name = "nagStatus"
+    let description = "Give a quick summary of the user's task load — how many open, overdue, and what's coming up next. Use for 'how am I doing?', 'status update', 'what's my workload?'"
+
+    @Generable
+    struct Arguments {}
+
+    let apiClient: APIClient
+    let familyId: UUID?
+    let currentUserId: UUID
+    let collector: ToolResultCollector
+
+    nonisolated func call(arguments: Arguments) async throws -> String {
+        guard let familyId else {
+            return "No family set up yet."
+        }
+
+        let allNags: [NagResponse] = try await apiClient.request(
+            .listNags(familyId: familyId, status: .open)
+        )
+        let nags = allNags.filter { $0.recipientId == currentUserId }
+
+        let now = Date()
+        let overdue = nags.filter { $0.dueAt < now }
+        let upcoming = nags.filter { $0.dueAt >= now }.sorted { $0.dueAt < $1.dueAt }
+
+        var parts: [String] = []
+        parts.append("You have \(nags.count) open task\(nags.count == 1 ? "" : "s").")
+
+        if !overdue.isEmpty {
+            parts.append("\(overdue.count) \(overdue.count == 1 ? "is" : "are") overdue.")
+        }
+
+        if let next = upcoming.first {
+            let desc = next.description ?? next.category.displayName
+            let formatter = RelativeDateTimeFormatter()
+            formatter.unitsStyle = .full
+            let relative = formatter.localizedString(for: next.dueAt, relativeTo: now)
+            parts.append("Next up: \(desc) \(relative).")
+        }
+
+        let summary = parts.joined(separator: " ")
+        await collector.record("📊 Status: \(nags.count) open, \(overdue.count) overdue")
+        return summary
+    }
+}
+
+#endif

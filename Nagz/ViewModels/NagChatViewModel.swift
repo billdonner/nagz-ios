@@ -14,13 +14,41 @@ final class NagChatViewModel {
 
     private var session: LanguageModelSession?
     private var collector: ToolResultCollector?
+    private var databaseManager: DatabaseManager?
+    private var nagId: UUID?
 
     func setupSession(
         nag: NagResponse,
         apiClient: APIClient,
         personality: AIPersonality,
+        databaseManager: DatabaseManager? = nil,
         onMutated: @escaping @Sendable () async -> Void
     ) {
+        self.databaseManager = databaseManager
+        self.nagId = nag.id
+
+        // Load persisted history (read-only — not replayed into LLM session)
+        if let db = databaseManager {
+            Task {
+                do {
+                    let cached = try await db.chatMessages(forNagId: nag.id.uuidString)
+                    if !cached.isEmpty {
+                        let restored = cached.map { msg in
+                            ChatMessage(
+                                role: ChatMessage.Role(rawValue: msg.role),
+                                content: msg.content,
+                                timestamp: Date(timeIntervalSince1970: msg.timestamp)
+                            )
+                        }
+                        // Insert history before the greeting
+                        messages.insert(contentsOf: restored, at: 0)
+                    }
+                } catch {
+                    // Non-critical — just start fresh
+                }
+            }
+        }
+
         let toolCollector = ToolResultCollector()
         self.collector = toolCollector
 
@@ -62,7 +90,9 @@ final class NagChatViewModel {
             dueAt: nag.dueAt,
             personality: personality
         )
-        messages.append(ChatMessage(role: .assistant, content: greeting))
+        let greetingMsg = ChatMessage(role: .assistant, content: greeting)
+        messages.append(greetingMsg)
+        persistMessage(greetingMsg)
     }
 
     func send() async {
@@ -71,7 +101,9 @@ final class NagChatViewModel {
 
         inputText = ""
         errorMessage = nil
-        messages.append(ChatMessage(role: .user, content: text))
+        let userMsg = ChatMessage(role: .user, content: text)
+        messages.append(userMsg)
+        persistMessage(userMsg)
         isGenerating = true
 
         do {
@@ -80,13 +112,17 @@ final class NagChatViewModel {
             // Check for tool actions that fired during this turn
             let toolActions = await collector.drain()
             for action in toolActions {
-                messages.append(ChatMessage(role: .system, content: action))
+                let sysMsg = ChatMessage(role: .system, content: action)
+                messages.append(sysMsg)
+                persistMessage(sysMsg)
                 nagWasMutated = true
             }
 
             let content = response.content.trimmingCharacters(in: .whitespacesAndNewlines)
             if !content.isEmpty {
-                messages.append(ChatMessage(role: .assistant, content: content))
+                let assistantMsg = ChatMessage(role: .assistant, content: content)
+                messages.append(assistantMsg)
+                persistMessage(assistantMsg)
             }
         } catch let error as LanguageModelSession.GenerationError {
             switch error {
@@ -100,6 +136,22 @@ final class NagChatViewModel {
         }
 
         isGenerating = false
+    }
+
+    // MARK: - Private
+
+    private func persistMessage(_ msg: ChatMessage) {
+        guard let db = databaseManager, let nagId else { return }
+        let cached = CachedChatMessage(
+            id: msg.id.uuidString,
+            nagId: nagId.uuidString,
+            role: msg.role.rawString,
+            content: msg.content,
+            timestamp: msg.timestamp.timeIntervalSince1970
+        )
+        Task {
+            try? await db.saveChatMessage(cached)
+        }
     }
 }
 

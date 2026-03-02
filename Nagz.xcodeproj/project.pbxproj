@@ -54,6 +54,7 @@
 		641DFF466D4BD61835AA5D1C /* NagChatViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD0ED840105BFD824370C033 /* NagChatViewModel.swift */; };
 		648A714E50978D32602CF46C /* VersionModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCA86773FC15EB5B201B38D0 /* VersionModels.swift */; };
 		65579D89B58E8349107481F1 /* AISummarySheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = B76F27D7B29AAC4B655C9D76 /* AISummarySheet.swift */; };
+		68280891020C41FA4A61C542 /* GlobalChatTools.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23839E9850FA62258B88596A /* GlobalChatTools.swift */; };
 		69072BBDECA8680C5104363E /* AccountView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D2C31A6C1CA6645B991FD667 /* AccountView.swift */; };
 		69B2329CBD7DCE0EF5D4EF2E /* MemberListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 07D0EAC9F8FFBA5872FD80CF /* MemberListView.swift */; };
 		6A9785BA9A4D40BF26A27C1A /* APIEndpoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = F73099FD428BA8EC44A85ECB /* APIEndpoint.swift */; };
@@ -68,6 +69,7 @@
 		819FCF0B39F62DA3FFDEAD64 /* EnvironmentValues+AI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32E79F766FA3ADAA76B955F3 /* EnvironmentValues+AI.swift */; };
 		81C74DBDC5B5C4147B3B99D7 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3EDC2854A3127F68733D4958 /* ContentView.swift */; };
 		8465FF82F8BB7D1B40E1D8DC /* PreferenceModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9555685DE01F4548E6AC6A0 /* PreferenceModels.swift */; };
+		85016FB30241D8CCB733EB00 /* ChatPersistenceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 284E3D60D0D89FB6DB0AF40C /* ChatPersistenceTests.swift */; };
 		8579B29A3F43AEF61D5C8E26 /* ConnectionModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = F59395DC1BAF57200303E3F1 /* ConnectionModels.swift */; };
 		876657DDB7F29994F1F552D9 /* DebugLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FDB7AE9D441B80CBA3645F1 /* DebugLogger.swift */; };
 		8776E95DB82675F3688BEB91 /* SafetyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9AB45B90E8BEC815179C22DF /* SafetyView.swift */; };
@@ -82,6 +84,7 @@
 		98CF40F3E91F9C6EE85093D9 /* SnoozeNagIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A5F3F576C762EADB7633DEF /* SnoozeNagIntent.swift */; };
 		9A67032E0886B847102D1DA1 /* CheckOverdueIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C57745D002D5B132D09F966 /* CheckOverdueIntent.swift */; };
 		9B56D91A72953824D2A02C83 /* GamificationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AD3190FAD0A5DD8A6323C69C /* GamificationView.swift */; };
+		9BEC613BC13DC5D77C2907F8 /* GlobalChatViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 95FD83ED1507E85C16ECE9B0 /* GlobalChatViewModel.swift */; };
 		9DA8639D59F1348334A51445 /* IncentiveRulesViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC1268A6068C60F603BC606E /* IncentiveRulesViewModel.swift */; };
 		9E3B5FA1D29A914B45079842 /* NagModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B64AA3271570CA97B005E91 /* NagModels.swift */; };
 		9E9777788381B3FE5299DEF1 /* Phase2CoverageTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECE9137ED0D0FA304A0A8EAA /* Phase2CoverageTests.swift */; };
@@ -98,6 +101,7 @@
 		ABE7491D55FBA095F89BFD3A /* ManageMembersView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 615BFEFFC265637815DB1707 /* ManageMembersView.swift */; };
 		ACBE1FC8906E623F15349BAA /* CreateNagIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4570F057307070C0CF2C47D /* CreateNagIntent.swift */; };
 		AEFCF8156E0CF766CC91D2B2 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2524FDBBE8F215CAB498AD90 /* Constants.swift */; };
+		B205AA3933880F504CFEC36F /* ChatToolTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6CFBEE956921FB17649BED8 /* ChatToolTests.swift */; };
 		B4181171676EAD0BACA7E4AA /* DeliveryModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C2745952F84266C12B43D6F /* DeliveryModels.swift */; };
 		B45D7C13CBAF43DDD2DC7EF7 /* CreateFamilyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 478FD6A5253FF850A9EC7832 /* CreateFamilyView.swift */; };
 		B5C3E058B2FF4E6F43F5AD53 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 987A5CE42CC1B28C6E9697DA /* Assets.xcassets */; };
@@ -105,6 +109,7 @@
 		B8924A914C8E48A117B9E506 /* Enums.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5243F4CFE024BC04B61879D1 /* Enums.swift */; };
 		B9EC5FC025893AEFB863FA97 /* SafetyViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90C1EED5F97864A105AE2117 /* SafetyViewModel.swift */; };
 		BC3F961DC9D45F8A5813CA82 /* SignupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE0B9F4BCBAB9DA56A1A82E9 /* SignupView.swift */; };
+		BC8415F6F56F572F1355DF54 /* ChatComponents.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C5050D0559D5B0E3E93A3B7 /* ChatComponents.swift */; };
 		BED7041B5A270167EA6FD99B /* NagListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A03B64D4D5A805C21596C5F0 /* NagListView.swift */; };
 		C072BCF52EA70376D2D99D72 /* AIService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2070199AFE540C086F22328 /* AIService.swift */; };
 		C4511CD48BEEB9803576A532 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 799222C076E18C851FFF7C9E /* AppDelegate.swift */; };
@@ -129,11 +134,14 @@
 		E55E674847582815348C56A8 /* ReportsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6919F4ECE9F941CEA3558B8C /* ReportsViewModel.swift */; };
 		E5FBFF061C137C8F92E30030 /* InviteConnectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0BB814065DDF1AE7736CE000 /* InviteConnectionView.swift */; };
 		E6C2D67EBC5D812CF590C0AD /* IncentiveRulesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1618B20BD4EBDD00C94901B5 /* IncentiveRulesView.swift */; };
+		E7FB5A9845C2A6C24E874BCC /* ChatViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C8AB4DFF208D8DB0D7A18D8 /* ChatViewModelTests.swift */; };
 		EBFA84D9138F0B611957E4B0 /* ReportsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4A715516D53FF9CD1661B2E /* ReportsView.swift */; };
 		F0AB75924FFE303B835955DC /* ChildTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8046B20FB1D7A89FDFDDBD8 /* ChildTabView.swift */; };
+		F361CA236400B843FB2B8057 /* CachedChatMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9BC5EB4AB593B125CFD8E5BB /* CachedChatMessage.swift */; };
 		F527047B44CB0A89B8A82E21 /* NagDetailViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D8B860496CD6D4BE858F1F2 /* NagDetailViewModel.swift */; };
 		F754AE5579AB840BF5144223 /* FamilyMemberQuery.swift in Sources */ = {isa = PBXBuildFile; fileRef = 900FB4265B1BED2475827172 /* FamilyMemberQuery.swift */; };
 		FA33F894752016C4B3020AB3 /* LegalDocumentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C51ABC6C49366CC13AA23E5C /* LegalDocumentView.swift */; };
+		FC800AF90909E2F74CB68319 /* GlobalChatView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E61A148835BBEB04BDAF0A20 /* GlobalChatView.swift */; };
 		FCF72F8A4436C28F1474F2DE /* NagChatTools.swift in Sources */ = {isa = PBXBuildFile; fileRef = FDA455F9DB2574FBBD1D1DA0 /* NagChatTools.swift */; };
 		FDA477888348BFF5346924C4 /* AIModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8D5A1D2FBCFD9344C12FD96 /* AIModels.swift */; };
 /* End PBXBuildFile section */
@@ -171,7 +179,9 @@
 		1D21CD1CA6DC50F3409A8834 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		1E89A05814372C9BCE15E6EC /* AuthenticatedTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticatedTabView.swift; sourceTree = "<group>"; };
 		1FBFCDE4C04F3EC809309128 /* ModelDecodingTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelDecodingTests.swift; sourceTree = "<group>"; };
+		23839E9850FA62258B88596A /* GlobalChatTools.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlobalChatTools.swift; sourceTree = "<group>"; };
 		2524FDBBE8F215CAB498AD90 /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
+		284E3D60D0D89FB6DB0AF40C /* ChatPersistenceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatPersistenceTests.swift; sourceTree = "<group>"; };
 		2C57745D002D5B132D09F966 /* CheckOverdueIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckOverdueIntent.swift; sourceTree = "<group>"; };
 		2D5DE9C0FB044817490BD132 /* CreateNagViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateNagViewModel.swift; sourceTree = "<group>"; };
 		3103D76E83889066B4CDC006 /* FamilyModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FamilyModels.swift; sourceTree = "<group>"; };
@@ -191,6 +201,7 @@
 		467128F4726233C3AAE17CB0 /* ConnectionListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConnectionListView.swift; sourceTree = "<group>"; };
 		478FD6A5253FF850A9EC7832 /* CreateFamilyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateFamilyView.swift; sourceTree = "<group>"; };
 		49E63852FE42057F07D13A9E /* IncentiveModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IncentiveModels.swift; sourceTree = "<group>"; };
+		4C8AB4DFF208D8DB0D7A18D8 /* ChatViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatViewModelTests.swift; sourceTree = "<group>"; };
 		4CCC28A3FD2C73A684280A8B /* JoinFamilyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JoinFamilyView.swift; sourceTree = "<group>"; };
 		4E48765280848B00D4764541 /* WebSocketService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebSocketService.swift; sourceTree = "<group>"; };
 		5243F4CFE024BC04B61879D1 /* Enums.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Enums.swift; sourceTree = "<group>"; };
@@ -211,6 +222,7 @@
 		74DEF78D6D5B4D5777557403 /* NagzIntentError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NagzIntentError.swift; sourceTree = "<group>"; };
 		799222C076E18C851FFF7C9E /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		7B70AA17D1E21D3916FD048C /* EnvironmentValues+API.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "EnvironmentValues+API.swift"; sourceTree = "<group>"; };
+		7C5050D0559D5B0E3E93A3B7 /* ChatComponents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatComponents.swift; sourceTree = "<group>"; };
 		80CC6ECFE73948450B574D3E /* ChildLoginViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChildLoginViewModel.swift; sourceTree = "<group>"; };
 		83E67D051966AD3EDD9F8D7C /* NagDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NagDetailView.swift; sourceTree = "<group>"; };
 		88AA3B64F59D3D24FA91281B /* ChildLoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChildLoginView.swift; sourceTree = "<group>"; };
@@ -223,10 +235,12 @@
 		9259350F4BA842138CBD7E79 /* EnvironmentValues+Database.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "EnvironmentValues+Database.swift"; sourceTree = "<group>"; };
 		938D3FD62622895FDF9D56A2 /* ChatMessage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatMessage.swift; sourceTree = "<group>"; };
 		95C278AF89622477580059EE /* ManageMembersViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManageMembersViewModel.swift; sourceTree = "<group>"; };
+		95FD83ED1507E85C16ECE9B0 /* GlobalChatViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlobalChatViewModel.swift; sourceTree = "<group>"; };
 		9690A2B5BD1CBA627F52AF4E /* APIClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIClient.swift; sourceTree = "<group>"; };
 		987A5CE42CC1B28C6E9697DA /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		9A04D8ECCD329BE62D5CABEC /* SignupViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignupViewModel.swift; sourceTree = "<group>"; };
 		9AB45B90E8BEC815179C22DF /* SafetyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SafetyView.swift; sourceTree = "<group>"; };
+		9BC5EB4AB593B125CFD8E5BB /* CachedChatMessage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CachedChatMessage.swift; sourceTree = "<group>"; };
 		9DBB9A681F612EC3473C6868 /* GamificationViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GamificationViewModel.swift; sourceTree = "<group>"; };
 		9E6DEEBE1B334FC5685FC4E5 /* EscalationBadge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EscalationBadge.swift; sourceTree = "<group>"; };
 		9E704F9C74A46E2A119130C3 /* ServiceAndViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceAndViewModelTests.swift; sourceTree = "<group>"; };
@@ -261,12 +275,14 @@
 		D39DE2EA259DDE6D7C4C7320 /* AIInsightsSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AIInsightsSection.swift; sourceTree = "<group>"; };
 		D3BF64C56EBAEE04E21E7452 /* MemberRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemberRowView.swift; sourceTree = "<group>"; };
 		D6518A68E624AD12C6521FA5 /* EditNagViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditNagViewModel.swift; sourceTree = "<group>"; };
+		D6CFBEE956921FB17649BED8 /* ChatToolTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatToolTests.swift; sourceTree = "<group>"; };
 		D8046B20FB1D7A89FDFDDBD8 /* ChildTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChildTabView.swift; sourceTree = "<group>"; };
 		D917295C9B5550C0BE6F63EF /* VersionChecker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VersionChecker.swift; sourceTree = "<group>"; };
 		D9F6250F88777E53820A4F59 /* CompleteNagIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompleteNagIntent.swift; sourceTree = "<group>"; };
 		DAD16D6E59A98D9D44F48D03 /* MemberListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemberListViewModel.swift; sourceTree = "<group>"; };
 		E4A715516D53FF9CD1661B2E /* ReportsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReportsView.swift; sourceTree = "<group>"; };
 		E5B561981AFC048F7946AFD5 /* NagzShortcutsProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NagzShortcutsProvider.swift; sourceTree = "<group>"; };
+		E61A148835BBEB04BDAF0A20 /* GlobalChatView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlobalChatView.swift; sourceTree = "<group>"; };
 		E65F8952661E5F83A2872401 /* NagCategoryAppEnum.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NagCategoryAppEnum.swift; sourceTree = "<group>"; };
 		E84EB1DEEB1724609FA6FFC9 /* CreateNagView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateNagView.swift; sourceTree = "<group>"; };
 		EBD44C1B308F9911F7BCBC0C /* PolicyListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PolicyListView.swift; sourceTree = "<group>"; };
@@ -311,6 +327,8 @@
 		0B3707B7D9D4146B836CC8B1 /* Chat */ = {
 			isa = PBXGroup;
 			children = (
+				7C5050D0559D5B0E3E93A3B7 /* ChatComponents.swift */,
+				E61A148835BBEB04BDAF0A20 /* GlobalChatView.swift */,
 				3776552E8E19CAC410B10550 /* NagChatView.swift */,
 			);
 			path = Chat;
@@ -348,6 +366,7 @@
 		1ABFF4D37FA05DA977F29287 /* Chat */ = {
 			isa = PBXGroup;
 			children = (
+				23839E9850FA62258B88596A /* GlobalChatTools.swift */,
 				FDA455F9DB2574FBBD1D1DA0 /* NagChatTools.swift */,
 			);
 			path = Chat;
@@ -465,6 +484,7 @@
 		9AFDB1019CA177F867593271 /* Database */ = {
 			isa = PBXGroup;
 			children = (
+				9BC5EB4AB593B125CFD8E5BB /* CachedChatMessage.swift */,
 				09228CDDB89EBA4479C10F8B /* CachedRecords.swift */,
 				0859112BEE5F101B319AFE76 /* DatabaseManager.swift */,
 			);
@@ -584,6 +604,16 @@
 			path = Actions;
 			sourceTree = "<group>";
 		};
+		DC9F23127B20D73C187A47F4 /* Chat */ = {
+			isa = PBXGroup;
+			children = (
+				284E3D60D0D89FB6DB0AF40C /* ChatPersistenceTests.swift */,
+				D6CFBEE956921FB17649BED8 /* ChatToolTests.swift */,
+				4C8AB4DFF208D8DB0D7A18D8 /* ChatViewModelTests.swift */,
+			);
+			path = Chat;
+			sourceTree = "<group>";
+		};
 		EBA462D4633FB7AFB7C79EED /* Navigation */ = {
 			isa = PBXGroup;
 			children = (
@@ -602,6 +632,7 @@
 				ECE9137ED0D0FA304A0A8EAA /* Phase2CoverageTests.swift */,
 				64A2FA953CD86193ED97EFAD /* Phase4ViewModelTests.swift */,
 				9E704F9C74A46E2A119130C3 /* ServiceAndViewModelTests.swift */,
+				DC9F23127B20D73C187A47F4 /* Chat */,
 			);
 			path = NagzTests;
 			sourceTree = "<group>";
@@ -617,6 +648,7 @@
 				D6518A68E624AD12C6521FA5 /* EditNagViewModel.swift */,
 				C48EF0BFA6111245B86B2971 /* FamilyViewModel.swift */,
 				9DBB9A681F612EC3473C6868 /* GamificationViewModel.swift */,
+				95FD83ED1507E85C16ECE9B0 /* GlobalChatViewModel.swift */,
 				FC1268A6068C60F603BC606E /* IncentiveRulesViewModel.swift */,
 				0AA44AE0BEBA58C043C996A1 /* LoginViewModel.swift */,
 				95C278AF89622477580059EE /* ManageMembersViewModel.swift */,
@@ -769,7 +801,9 @@
 				8D8F30C0E7EAE400C16C0C77 /* AuthManager.swift in Sources */,
 				19D475F6D49A24E958EB4E00 /* AuthModels.swift in Sources */,
 				505CA8990F29CD58610ABF47 /* AuthenticatedTabView.swift in Sources */,
+				F361CA236400B843FB2B8057 /* CachedChatMessage.swift in Sources */,
 				3442D55AEDBE7F239642D7FF /* CachedRecords.swift in Sources */,
+				BC8415F6F56F572F1355DF54 /* ChatComponents.swift in Sources */,
 				D14250BEDD2E7436191A319B /* ChatMessage.swift in Sources */,
 				9A67032E0886B847102D1DA1 /* CheckOverdueIntent.swift in Sources */,
 				5C6D1B7A29FCDA749A160A9C /* ChildControlsView.swift in Sources */,
@@ -820,6 +854,9 @@
 				1658C0AC112FE37CF766DA78 /* GamificationModels.swift in Sources */,
 				9B56D91A72953824D2A02C83 /* GamificationView.swift in Sources */,
 				58997B57F6EEF60B40681A54 /* GamificationViewModel.swift in Sources */,
+				68280891020C41FA4A61C542 /* GlobalChatTools.swift in Sources */,
+				FC800AF90909E2F74CB68319 /* GlobalChatView.swift in Sources */,
+				9BEC613BC13DC5D77C2907F8 /* GlobalChatViewModel.swift in Sources */,
 				E14CC869FBBD0CCCF71E2B65 /* IncentiveModels.swift in Sources */,
 				E6C2D67EBC5D812CF590C0AD /* IncentiveRulesView.swift in Sources */,
 				9DA8639D59F1348334A51445 /* IncentiveRulesViewModel.swift in Sources */,
@@ -883,6 +920,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				85016FB30241D8CCB733EB00 /* ChatPersistenceTests.swift in Sources */,
+				B205AA3933880F504CFEC36F /* ChatToolTests.swift in Sources */,
+				E7FB5A9845C2A6C24E874BCC /* ChatViewModelTests.swift in Sources */,
 				D6359AE98AC40702D93A1C6F /* IntentTests.swift in Sources */,
 				424953649E34B0D46C75BD5F /* ModelDecodingTests.swift in Sources */,
 				9E9777788381B3FE5299DEF1 /* Phase2CoverageTests.swift in Sources */,
@@ -985,7 +1025,7 @@
 				CODE_SIGN_ENTITLEMENTS = Nagz/Nagz.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 41;
+				CURRENT_PROJECT_VERSION = 42;
 				DEVELOPMENT_TEAM = NEAY582ME4;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				INFOPLIST_FILE = Nagz/Info.plist;
@@ -1073,7 +1113,7 @@
 				CODE_SIGN_ENTITLEMENTS = Nagz/Nagz.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 41;
+				CURRENT_PROJECT_VERSION = 42;
 				DEVELOPMENT_TEAM = NEAY582ME4;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				INFOPLIST_FILE = Nagz/Info.plist;
