@@ -2,17 +2,24 @@ import SwiftUI
 import NagzAI
 import AppIntents
 
+private enum ViewMode: String {
+    case list, schedule
+}
+
 struct NagListView: View {
     @State var viewModel: NagListViewModel
     let canCreateNags: Bool
     let familyId: UUID?
     let currentUserId: UUID?
     let webSocketService: WebSocketService
+    @State private var viewMode: ViewMode = .list
     @State private var showCreateNag = false
     @State private var wsTask: Task<Void, Never>?
     @State private var aiSummary: String?
     @State private var showAISummary = false
     @State private var generatingSummary = false
+    @State private var scheduleNagId: UUID?
+    @State private var showSchedulePicker = false
     @AppStorage("nagz_ai_personality") private var personalityRaw: String = AIPersonality.standard.rawValue
     @Environment(\.scenePhase) private var scenePhase
 
@@ -93,7 +100,7 @@ struct NagListView: View {
                             SiriTipView(intent: CreateNagIntent(), isVisible: .constant(true))
                         }
                     }
-                } else {
+                } else if viewMode == .list {
                     TimelineView(.periodic(from: .now, by: 60)) { _ in
                         List {
                             ForEach(nagsForMeByCounterpart, id: \.name) { group in
@@ -135,6 +142,19 @@ struct NagListView: View {
                         }
                         .listStyle(.insetGrouped)
                     }
+                } else {
+                    TimelineView(.periodic(from: .now, by: 60)) { _ in
+                        ScheduleNagListView(
+                            nagsForMe: nagsForMe,
+                            nagsForOthers: nagsForOthers,
+                            selfNags: selfNags,
+                            currentUserId: currentUserId,
+                            onSchedule: { nagId in
+                                scheduleNagId = nagId
+                                showSchedulePicker = true
+                            }
+                        )
+                    }
                 }
             }
         }
@@ -163,6 +183,15 @@ struct NagListView: View {
                     .disabled(viewModel.nags.isEmpty || generatingSummary)
                 }
             }
+            ToolbarItem(placement: .topBarTrailing) {
+                Button {
+                    withAnimation {
+                        viewMode = viewMode == .list ? .schedule : .list
+                    }
+                } label: {
+                    Image(systemName: viewMode == .list ? "calendar" : "list.bullet")
+                }
+            }
             if canCreateNags {
                 ToolbarItem(placement: .primaryAction) {
                     Button {
@@ -185,6 +214,20 @@ struct NagListView: View {
             Task { await viewModel.loadNags() }
         } content: {
             CreateNagView(apiClient: viewModel.apiClient, familyId: familyId, currentUserId: currentUserId)
+        }
+        .sheet(isPresented: $showSchedulePicker) {
+            CommitTimePickerSheet { date in
+                if let nagId = scheduleNagId {
+                    Task {
+                        let update = NagUpdate(committedAt: date)
+                        let _: NagResponse = try await viewModel.apiClient.request(
+                            .updateNag(nagId: nagId, update: update)
+                        )
+                        await viewModel.loadNags()
+                    }
+                }
+                showSchedulePicker = false
+            }
         }
         .task {
             viewModel.setFamily(familyId)
