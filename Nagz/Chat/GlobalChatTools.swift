@@ -6,7 +6,7 @@ import FoundationModels
 
 struct ListNagsTool: Tool {
     let name = "listNags"
-    let description = "List the user's current nags/tasks. Use when they ask to see their tasks, what's overdue, or what they need to do."
+    let description = "List ALL nags the user can see — both nags assigned to them AND nags they sent to others. Use when they ask to see tasks, what's overdue, or what anyone needs to do."
 
     @Generable
     struct Arguments {
@@ -37,29 +37,52 @@ struct ListNagsTool: Tool {
         )
         let allNags = page.items
 
-        // Filter to nags assigned to current user
-        let myNags = allNags.filter { $0.recipientId == currentUserId }
-
-        if myNags.isEmpty {
+        if allNags.isEmpty {
             await collector.record("📋 No tasks found")
             return "No tasks found matching that criteria."
         }
 
-        let overdue = myNags.filter { $0.dueAt < Date() }
-        var summary = "Found \(myNags.count) task\(myNags.count == 1 ? "" : "s")."
+        // Split into received, sent to others, and self-nags
+        let receivedFromOthers = allNags.filter { $0.recipientId == currentUserId && $0.creatorId != currentUserId }
+        let sentToOthers = allNags.filter { $0.creatorId == currentUserId && $0.recipientId != currentUserId }
+        let selfNags = allNags.filter { $0.creatorId == currentUserId && $0.recipientId == currentUserId }
 
-        if !overdue.isEmpty {
-            summary += " \(overdue.count) overdue."
+        let now = Date()
+        let allOverdue = allNags.filter { $0.dueAt < now }
+        var parts: [String] = []
+        parts.append("Found \(allNags.count) total task\(allNags.count == 1 ? "" : "s"). \(allOverdue.count) overdue.")
+
+        if !receivedFromOthers.isEmpty {
+            parts.append("\nAssigned to you (\(receivedFromOthers.count)):")
+            for nag in receivedFromOthers.prefix(8) {
+                let desc = nag.description ?? nag.category.displayName
+                let from = nag.creatorDisplayName ?? "someone"
+                let due = nag.dueAt < now ? "OVERDUE" : "due \(nag.dueAt.formatted(date: .abbreviated, time: .shortened))"
+                parts.append("• \(desc) from \(from) (\(due))")
+            }
         }
 
-        let list = myNags.prefix(10).map { nag -> String in
-            let desc = nag.description ?? nag.category.displayName
-            let due = nag.dueAt < Date() ? "OVERDUE" : "due \(nag.dueAt.formatted(date: .abbreviated, time: .shortened))"
-            return "• \(desc) (\(due))"
-        }.joined(separator: "\n")
+        if !sentToOthers.isEmpty {
+            parts.append("\nSent to others (\(sentToOthers.count)):")
+            for nag in sentToOthers.prefix(8) {
+                let desc = nag.description ?? nag.category.displayName
+                let to = nag.recipientDisplayName ?? "someone"
+                let due = nag.dueAt < now ? "OVERDUE" : "due \(nag.dueAt.formatted(date: .abbreviated, time: .shortened))"
+                parts.append("• \(desc) → \(to) (\(due))")
+            }
+        }
 
-        await collector.record("📋 Listed \(myNags.count) task\(myNags.count == 1 ? "" : "s")")
-        return "\(summary)\n\n\(list)"
+        if !selfNags.isEmpty {
+            parts.append("\nYour reminders (\(selfNags.count)):")
+            for nag in selfNags.prefix(5) {
+                let desc = nag.description ?? nag.category.displayName
+                let due = nag.dueAt < now ? "OVERDUE" : "due \(nag.dueAt.formatted(date: .abbreviated, time: .shortened))"
+                parts.append("• \(desc) (\(due))")
+            }
+        }
+
+        await collector.record("📋 Listed \(allNags.count) task\(allNags.count == 1 ? "" : "s")")
+        return parts.joined(separator: "\n")
     }
 }
 
@@ -203,11 +226,11 @@ struct GlobalCompleteTool: Tool {
             return "Could not find that task — no family set up."
         }
 
+        // Search all visible nags, not just ones assigned to me
         let page: PaginatedResponse<NagResponse> = try await apiClient.request(
             .listNags(familyId: familyId, status: .open)
         )
-        let allNags = page.items
-        let nags = allNags.filter { $0.recipientId == currentUserId }
+        let nags = page.items
 
         let query = arguments.nagDescription.lowercased()
         let match = nags.first { nag in
@@ -225,8 +248,9 @@ struct GlobalCompleteTool: Tool {
         )
 
         let desc = match.description ?? match.category.displayName
-        await collector.record("✓ Completed: \(desc)")
-        return "Marked \"\(desc)\" as done!"
+        let who = match.recipientDisplayName ?? "someone"
+        await collector.record("✓ Completed: \(desc) (\(who))")
+        return "Marked \"\(desc)\" (assigned to \(who)) as done!"
     }
 
     private nonisolated func fuzzyMatch(query: String, target: String) -> Bool {
@@ -261,11 +285,11 @@ struct GlobalRescheduleTool: Tool {
             return "Could not find that task — no family set up."
         }
 
+        // Search all visible nags
         let page: PaginatedResponse<NagResponse> = try await apiClient.request(
             .listNags(familyId: familyId, status: .open)
         )
-        let allNags = page.items
-        let nags = allNags.filter { $0.recipientId == currentUserId }
+        let nags = page.items
 
         let query = arguments.nagDescription.lowercased()
         let match = nags.first { nag in
@@ -304,7 +328,7 @@ struct GlobalRescheduleTool: Tool {
 
 struct NagStatusTool: Tool {
     let name = "nagStatus"
-    let description = "Give a quick summary of the user's task load — how many open, overdue, and what's coming up next. Use for 'how am I doing?', 'status update', 'what's my workload?'"
+    let description = "Give a quick summary of ALL the user's tasks — received, sent to others, and self-reminders. Use for 'how am I doing?', 'status update', 'what's my workload?', 'who's overdue?'"
 
     @Generable
     struct Arguments {}
@@ -323,19 +347,35 @@ struct NagStatusTool: Tool {
             .listNags(familyId: familyId, status: .open)
         )
         let allNags = page.items
-        let nags = allNags.filter { $0.recipientId == currentUserId }
 
         let now = Date()
-        let overdue = nags.filter { $0.dueAt < now }
-        let upcoming = nags.filter { $0.dueAt >= now }.sorted { $0.dueAt < $1.dueAt }
+        let received = allNags.filter { $0.recipientId == currentUserId && $0.creatorId != currentUserId }
+        let sent = allNags.filter { $0.creatorId == currentUserId && $0.recipientId != currentUserId }
+        let selfNags = allNags.filter { $0.creatorId == currentUserId && $0.recipientId == currentUserId }
+        let allOverdue = allNags.filter { $0.dueAt < now }
+        let sentOverdue = sent.filter { $0.dueAt < now }
 
         var parts: [String] = []
-        parts.append("You have \(nags.count) open task\(nags.count == 1 ? "" : "s").")
+        parts.append("\(allNags.count) open task\(allNags.count == 1 ? "" : "s") total. \(allOverdue.count) overdue.")
 
-        if !overdue.isEmpty {
-            parts.append("\(overdue.count) \(overdue.count == 1 ? "is" : "are") overdue.")
+        if !received.isEmpty {
+            let receivedOverdue = received.filter { $0.dueAt < now }
+            parts.append("\(received.count) assigned to you (\(receivedOverdue.count) overdue).")
+        }
+        if !sent.isEmpty {
+            parts.append("\(sent.count) sent to others (\(sentOverdue.count) overdue).")
+            // Name who's overdue
+            let overdueByPerson = Dictionary(grouping: sentOverdue) { $0.recipientDisplayName ?? "someone" }
+            for (name, nags) in overdueByPerson.sorted(by: { $0.key < $1.key }) {
+                parts.append("  → \(name): \(nags.count) overdue")
+            }
+        }
+        if !selfNags.isEmpty {
+            let selfOverdue = selfNags.filter { $0.dueAt < now }
+            parts.append("\(selfNags.count) self-reminder\(selfNags.count == 1 ? "" : "s") (\(selfOverdue.count) overdue).")
         }
 
+        let upcoming = allNags.filter { $0.dueAt >= now }.sorted { $0.dueAt < $1.dueAt }
         if let next = upcoming.first {
             let desc = next.description ?? next.category.displayName
             let formatter = RelativeDateTimeFormatter()
@@ -345,7 +385,7 @@ struct NagStatusTool: Tool {
         }
 
         let summary = parts.joined(separator: " ")
-        await collector.record("📊 Status: \(nags.count) open, \(overdue.count) overdue")
+        await collector.record("📊 Status: \(allNags.count) open, \(allOverdue.count) overdue")
         return summary
     }
 }
