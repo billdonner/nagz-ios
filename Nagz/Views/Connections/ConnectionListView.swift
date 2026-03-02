@@ -9,10 +9,12 @@ struct ConnectionListView: View {
     let familyId: UUID?
     let currentUserId: UUID?
     let webSocketService: WebSocketService?
+    let userName: String?
 
-    init(apiClient: APIClient, familyId: UUID? = nil, currentUserId: UUID? = nil, webSocketService: WebSocketService? = nil) {
+    init(apiClient: APIClient, familyId: UUID? = nil, currentUserId: UUID? = nil, webSocketService: WebSocketService? = nil, userName: String? = nil) {
         _viewModel = State(initialValue: ConnectionListViewModel(apiClient: apiClient))
         self.familyId = familyId
+        self.userName = userName
         self.currentUserId = currentUserId
         self.webSocketService = webSocketService
     }
@@ -116,7 +118,7 @@ struct ConnectionListView: View {
                 Text("This will disconnect you from \(conn.otherPartyDisplayName ?? conn.otherPartyEmail ?? conn.inviteeEmail). You'll need to re-invite them to reconnect.")
             }
         }
-        .navigationTitle("People")
+        .navigationTitle(userName.map { "\($0)'s People" } ?? "People")
         .toolbar {
             ToolbarItem(placement: .primaryAction) {
                 Button {

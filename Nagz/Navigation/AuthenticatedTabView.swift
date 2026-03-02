@@ -47,18 +47,18 @@ struct AuthenticatedTabView: View {
 
     var body: some View {
         TabView(selection: $selectedTab) {
-            nagsTab
-                .tag(0)
-            peopleTab
-                .tag(1)
-            familyTab
-                .tag(2)
             #if canImport(FoundationModels)
             if NagzAI.Router.isAppleIntelligenceAvailable {
                 chatTab
-                    .tag(3)
+                    .tag(0)
             }
             #endif
+            nagsTab
+                .tag(1)
+            peopleTab
+                .tag(2)
+            familyTab
+                .tag(3)
         }
         .task {
             pushService.requestPermissionAndRegister()
@@ -71,14 +71,14 @@ struct AuthenticatedTabView: View {
             NagzShortcutsProvider.updateAppShortcutParameters()
             pushService.restorePendingNag()
             if let nagId = pushService.pendingNagId {
-                selectedTab = 0
+                selectedTab = 1
                 nagNavigationPath.append(nagId)
                 pushService.clearPendingNag()
             }
         }
         .onChange(of: pushService.pendingNagId) { _, newValue in
             if let nagId = newValue {
-                selectedTab = 0
+                selectedTab = 1
                 nagNavigationPath.append(nagId)
                 pushService.clearPendingNag()
             }
@@ -109,7 +109,8 @@ struct AuthenticatedTabView: View {
                 apiClient: apiClient,
                 familyId: familyViewModel.family?.familyId,
                 currentUserId: authManager.currentUser?.id,
-                webSocketService: webSocketService
+                webSocketService: webSocketService,
+                userName: authManager.currentUser?.displayName
             )
         }
         .tabItem {
@@ -136,7 +137,7 @@ struct AuthenticatedTabView: View {
             )
         }
         .tabItem {
-            Label("Chat", systemImage: "sparkles.bubble")
+            Label("Chat", systemImage: "bubble.left.and.text.bubble.right.fill")
         }
     }
     #endif
