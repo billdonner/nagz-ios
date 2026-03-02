@@ -53,6 +53,11 @@ struct PreferencesView: View {
                 Text("Get push notifications when nags you sent to others become overdue. Off by default.")
                     .font(.caption)
                     .foregroundStyle(.secondary)
+
+                Toggle("Use commit time for escalation", isOn: $viewModel.useCommitTimeForEscalation)
+                Text("When enabled, escalation timing uses your \"I'll do it by\" time instead of the original due date.")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
             }
 
             if let error = viewModel.errorMessage {

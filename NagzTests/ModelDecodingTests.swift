@@ -816,4 +816,61 @@ final class ModelDecodingTests: XCTestCase {
         XCTAssertTrue(endpoint.path.hasSuffix("/children"))
         XCTAssertEqual(endpoint.method, .get)
     }
+
+    // MARK: - committed_at Tests
+
+    func testNagResponseDecodesWithCommittedAt() throws {
+        let json = """
+        {
+            "id": "550e8400-e29b-41d4-a716-446655440001",
+            "family_id": "550e8400-e29b-41d4-a716-446655440002",
+            "creator_id": "550e8400-e29b-41d4-a716-446655440003",
+            "recipient_id": "550e8400-e29b-41d4-a716-446655440004",
+            "due_at": "2026-02-17T10:00:00+00:00",
+            "category": "homework",
+            "done_definition": "ack_only",
+            "description": "Finish math worksheet",
+            "strategy_template": "friendly_reminder",
+            "status": "open",
+            "created_at": "2026-02-16T14:12:00+00:00",
+            "committed_at": "2026-02-17T08:00:00+00:00"
+        }
+        """.data(using: .utf8)!
+
+        let nag = try decoder.decode(NagResponse.self, from: json)
+        XCTAssertNotNil(nag.committedAt)
+        XCTAssertEqual(nag.status, .open)
+    }
+
+    func testNagResponseDecodesWithoutCommittedAt() throws {
+        let json = """
+        {
+            "id": "550e8400-e29b-41d4-a716-446655440001",
+            "family_id": "550e8400-e29b-41d4-a716-446655440002",
+            "creator_id": "550e8400-e29b-41d4-a716-446655440003",
+            "recipient_id": "550e8400-e29b-41d4-a716-446655440004",
+            "due_at": "2026-02-17T10:00:00+00:00",
+            "category": "chores",
+            "done_definition": "ack_only",
+            "strategy_template": "friendly_reminder",
+            "status": "open",
+            "created_at": "2026-02-16T14:12:00+00:00"
+        }
+        """.data(using: .utf8)!
+
+        let nag = try decoder.decode(NagResponse.self, from: json)
+        XCTAssertNil(nag.committedAt)
+    }
+
+    func testNagUpdateEncodesCommittedAt() throws {
+        let encoder = JSONEncoder()
+        encoder.keyEncodingStrategy = .convertToSnakeCase
+        encoder.dateEncodingStrategy = .iso8601
+        let update = NagUpdate(committedAt: Date(timeIntervalSince1970: 1740000000))
+        let data = try encoder.encode(update)
+        let dict = try JSONSerialization.jsonObject(with: data) as! [String: Any]
+        XCTAssertNotNil(dict["committed_at"])
+        XCTAssertNil(dict["due_at"])
+        XCTAssertNil(dict["category"])
+    }
 }

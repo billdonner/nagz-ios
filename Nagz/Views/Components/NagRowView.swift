@@ -31,6 +31,15 @@ struct NagRowView: View {
                             .font(.caption2)
                             .foregroundStyle(.purple)
                     }
+                    if let committedAt = nag.committedAt, nag.status == .open {
+                        HStack(spacing: 2) {
+                            Image(systemName: "clock.badge.checkmark")
+                                .font(.caption2)
+                            Text(committedAt.relativeDisplay)
+                                .font(.caption)
+                        }
+                        .foregroundStyle(.purple)
+                    }
                     if nag.status == .completed, let completedAt = nag.completedAt {
                         Text("Done \(completedAt.agoDisplay)")
                             .font(.caption)

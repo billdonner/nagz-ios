@@ -12,6 +12,7 @@ struct NagDetailView: View {
     @State private var showExcuseResponse = false
     @State private var lastExcuseResponse: String?
     @State private var showChat = false
+    @State private var showCommitTimePicker = false
     @AppStorage("nagz_ai_personality") private var personalityRaw: String = AIPersonality.standard.rawValue
     @Environment(\.dismiss) private var dismiss
     @Environment(\.databaseManager) private var databaseManager
@@ -62,6 +63,12 @@ struct NagDetailView: View {
                         }
                         if let recurrence = nag.recurrence {
                             LabeledContent("Repeats", value: recurrence.displayName)
+                        }
+                        if let committedAt = nag.committedAt {
+                            LabeledContent("Committed") {
+                                Text(committedAt.relativeDisplay)
+                                    .foregroundStyle(.purple)
+                            }
                         }
                     }
 
@@ -126,6 +133,13 @@ struct NagDetailView: View {
                                 }
                             }
                             .disabled(viewModel.isUpdating)
+
+                            Button {
+                                showCommitTimePicker = true
+                            } label: {
+                                Label("I'll do it by...", systemImage: "clock.badge.checkmark")
+                                    .frame(maxWidth: .infinity)
+                            }
                         }
                     }
 
@@ -230,6 +244,14 @@ struct NagDetailView: View {
         }
         .sheet(isPresented: $showExcuseResponse) {
             ExcuseResponseSheet(excuseSummary: lastExcuseResponse ?? "")
+        }
+        .sheet(isPresented: $showCommitTimePicker) {
+            CommitTimePickerSheet { date in
+                Task {
+                    await viewModel.commitTime(date: date)
+                    showCommitTimePicker = false
+                }
+            }
         }
         #if canImport(FoundationModels)
         .sheet(isPresented: $showChat) {
@@ -390,6 +412,43 @@ private struct ExcuseResponseSheet: View {
         .task {
             try? await Task.sleep(for: .seconds(10))
             dismiss()
+        }
+    }
+}
+
+private struct CommitTimePickerSheet: View {
+    let onCommit: (Date) -> Void
+    @State private var selectedDate = Date().addingTimeInterval(3600)
+    @Environment(\.dismiss) private var dismiss
+
+    var body: some View {
+        NavigationStack {
+            VStack(spacing: 16) {
+                DatePicker(
+                    "I'll do it by",
+                    selection: $selectedDate,
+                    in: Date()...,
+                    displayedComponents: [.date, .hourAndMinute]
+                )
+                .datePickerStyle(.graphical)
+                .padding()
+
+                Text("You won't be bothered until this time passes")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+
+                Spacer()
+            }
+            .navigationTitle("Commit Time")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button("Cancel") { dismiss() }
+                }
+                ToolbarItem(placement: .confirmationAction) {
+                    Button("Set") { onCommit(selectedDate) }
+                }
+            }
         }
     }
 }

@@ -18,6 +18,7 @@ struct NagResponse: Decodable, Identifiable, Sendable {
     let status: NagStatus
     let createdAt: Date
     let completedAt: Date?
+    let committedAt: Date?
 }
 
 struct NagCreate: Encodable {
@@ -68,10 +69,12 @@ struct NagUpdate: Encodable {
     let dueAt: Date?
     let category: NagCategory?
     let doneDefinition: DoneDefinition?
+    let committedAt: Date?
 
-    init(dueAt: Date? = nil, category: NagCategory? = nil, doneDefinition: DoneDefinition? = nil) {
+    init(dueAt: Date? = nil, category: NagCategory? = nil, doneDefinition: DoneDefinition? = nil, committedAt: Date? = nil) {
         self.dueAt = dueAt
         self.category = category
         self.doneDefinition = doneDefinition
+        self.committedAt = committedAt
     }
 }

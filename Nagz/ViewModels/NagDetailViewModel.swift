@@ -108,6 +108,23 @@ final class NagDetailViewModel {
         isUpdating = false
     }
 
+    func commitTime(date: Date) async {
+        isUpdating = true
+        errorMessage = nil
+        let update = NagUpdate(committedAt: date)
+        do {
+            let updated: NagResponse = try await apiClient.request(
+                .updateNag(nagId: nagId, update: update)
+            )
+            self.nag = updated
+        } catch let error as APIError {
+            errorMessage = error.errorDescription
+        } catch {
+            errorMessage = error.localizedDescription
+        }
+        isUpdating = false
+    }
+
     func recomputeEscalation() async {
         isRecomputing = true
         errorMessage = nil

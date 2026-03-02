@@ -43,10 +43,17 @@ struct NagListView: View {
         return viewModel.nags.filter { $0.recipientId == userId && $0.creatorId == userId }
     }
 
-    /// Group "For Me" nags by who sent them (counterpart = creator)
+    /// Group "For Me" nags by who sent them (counterpart = creator), sorted by committedAt ?? dueAt
     private var nagsForMeByCounterpart: [(name: String, nags: [NagResponse])] {
         let grouped = Dictionary(grouping: nagsForMe) { $0.creatorDisplayName ?? "Unknown" }
-        return grouped.sorted { $0.key < $1.key }.map { (name: $0.key, nags: $0.value) }
+        return grouped.sorted { $0.key < $1.key }.map { group in
+            let sorted = group.value.sorted { a, b in
+                let aTime = a.committedAt ?? a.dueAt
+                let bTime = b.committedAt ?? b.dueAt
+                return aTime < bTime
+            }
+            return (name: group.key, nags: sorted)
+        }
     }
 
     /// Group "Nagz to Others" by who they're for (counterpart = recipient)
