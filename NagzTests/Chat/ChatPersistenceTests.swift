@@ -174,13 +174,13 @@ final class ChatPersistenceTests: XCTestCase {
         XCTAssertEqual(fetched.count, 1)
 
         // Verify index exists by checking sqlite_master
-        let reader = await db.reader
-        let indexExists = try await reader.read { db -> Bool in
-            let row = try Row.fetchOne(
+        let writer = await db.writer
+        let indexExists = try await writer.read { db -> Bool in
+            let count = try Int.fetchOne(
                 db,
-                sql: "SELECT COUNT(*) AS cnt FROM sqlite_master WHERE type='index' AND name='idx_chat_messages_nag'"
+                sql: "SELECT COUNT(*) FROM sqlite_master WHERE type='index' AND name='idx_chat_messages_nag'"
             )
-            return (row?["cnt"] as? Int ?? 0) > 0
+            return (count ?? 0) > 0
         }
         XCTAssertTrue(indexExists)
     }
