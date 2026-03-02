@@ -109,53 +109,52 @@ private struct OnboardingPageView: View {
     let onGetStarted: () -> Void
 
     var body: some View {
-        VStack(spacing: 32) {
-            Spacer()
+        GeometryReader { geo in
+            ScrollView {
+                VStack(spacing: 32) {
+                    Image(systemName: page.symbol)
+                        .font(.system(size: 72))
+                        .foregroundStyle(page.color)
+                        .symbolRenderingMode(.hierarchical)
 
-            Image(systemName: page.symbol)
-                .font(.system(size: 72))
-                .foregroundStyle(page.color)
-                .symbolRenderingMode(.hierarchical)
+                    VStack(spacing: 12) {
+                        Text(page.title)
+                            .font(.title).bold()
 
-            VStack(spacing: 12) {
-                Text(page.title)
-                    .font(.title).bold()
-
-                Text(page.subtitle)
-                    .font(.body)
-                    .foregroundStyle(.secondary)
-                    .multilineTextAlignment(.center)
-                    .padding(.horizontal, 32)
-            }
-
-            HStack(spacing: 24) {
-                ForEach(page.supportingIcons, id: \.symbol) { icon in
-                    VStack(spacing: 4) {
-                        Image(systemName: icon.symbol)
-                            .font(.title3)
-                        Text(icon.label)
-                            .font(.caption2)
+                        Text(page.subtitle)
+                            .font(.body)
+                            .foregroundStyle(.secondary)
+                            .multilineTextAlignment(.center)
+                            .padding(.horizontal, 32)
                     }
-                    .foregroundStyle(.secondary)
-                }
-            }
 
-            Spacer()
+                    HStack(spacing: 24) {
+                        ForEach(page.supportingIcons, id: \.symbol) { icon in
+                            VStack(spacing: 4) {
+                                Image(systemName: icon.symbol)
+                                    .font(.title3)
+                                Text(icon.label)
+                                    .font(.caption2)
+                            }
+                            .foregroundStyle(.secondary)
+                        }
+                    }
 
-            if isLastPage {
-                Button(action: onGetStarted) {
-                    Text(buttonTitle)
-                        .font(.headline)
-                        .frame(maxWidth: .infinity)
-                        .padding()
-                        .background(page.color.gradient)
-                        .foregroundStyle(.white)
-                        .clipShape(RoundedRectangle(cornerRadius: 16))
+                    if isLastPage {
+                        Button(action: onGetStarted) {
+                            Text(buttonTitle)
+                                .font(.headline)
+                                .frame(maxWidth: .infinity)
+                                .padding()
+                                .background(page.color.gradient)
+                                .foregroundStyle(.white)
+                                .clipShape(RoundedRectangle(cornerRadius: 16))
+                        }
+                        .padding(.horizontal, 40)
+                    }
                 }
-                .padding(.horizontal, 40)
-                .padding(.bottom, 20)
-            } else {
-                Color.clear.frame(height: 70)
+                .padding(.vertical, 40)
+                .frame(minHeight: geo.size.height)
             }
         }
     }
