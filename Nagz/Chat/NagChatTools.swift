@@ -23,7 +23,7 @@ actor ToolResultCollector {
 /// Lets the AI reschedule a nag by a specified number of hours.
 struct RescheduleTool: Tool {
     let name = "rescheduleNag"
-    let description = "Reschedule this nag by delaying it a number of hours into the future. Only use when the user gives a convincing reason."
+    let description = "Postpone this task to a later time. Use when the user wants to delay, defer, or do it tomorrow/later. Example: 'Can I do this tomorrow' means reschedule by 24 hours."
 
     @Generable
     struct Arguments {
@@ -55,7 +55,7 @@ struct RescheduleTool: Tool {
 /// Lets the AI mark a nag as completed.
 struct CompleteTool: Tool {
     let name = "completeNag"
-    let description = "Mark this nag as completed. Use when the user says they did it or are doing it now."
+    let description = "Mark this task as FINISHED. ONLY use when the user confirms they ALREADY completed the task (past tense). Never use when the user asks to do it later or tomorrow — that is a reschedule."
 
     @Generable
     struct Arguments {
