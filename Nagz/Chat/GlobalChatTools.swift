@@ -21,7 +21,6 @@ struct ListNagsTool: Tool {
 
     nonisolated func call(arguments: Arguments) async throws -> String {
         guard let familyId else {
-            await collector.record("📋 No family set up")
             return "No family set up yet — create or join a family first."
         }
 
@@ -38,7 +37,6 @@ struct ListNagsTool: Tool {
         let allNags = page.items
 
         if allNags.isEmpty {
-            await collector.record("📋 No tasks found")
             return "No tasks found matching that criteria."
         }
 
@@ -79,7 +77,7 @@ struct ListNagsTool: Tool {
             }
         }
 
-        await collector.record("📋 Listed \(allNags.count) task\(allNags.count == 1 ? "" : "s")")
+        // Don't record a system message for list — the AI response will summarize
         return parts.joined(separator: "\n")
     }
 }
@@ -191,7 +189,8 @@ struct CreateNagTool: Tool {
         formatter.timeStyle = .short
         let dateStr = formatter.string(from: created.dueAt)
 
-        await collector.record("✓ Created: \(arguments.taskDescription) for \(recipientLabel) (due \(dateStr))")
+        let shortLabel = recipientLabel == "you" ? "you" : recipientLabel
+        await collector.record("✓ Nagged \(shortLabel): \(arguments.taskDescription)")
         return "Created task \"\(arguments.taskDescription)\" for \(recipientLabel), due \(dateStr)."
     }
 
@@ -383,7 +382,7 @@ struct NagStatusTool: Tool {
         }
 
         let summary = parts.joined(separator: " ")
-        await collector.record("📊 Status: \(allNags.count) open, \(allOverdue.count) overdue")
+        // Don't record a system message for status — the AI response will summarize
         return summary
     }
 }
