@@ -75,5 +75,16 @@ struct NagzShortcutsProvider: AppShortcutsProvider {
             shortTitle: "Family Status",
             systemImageName: "chart.bar"
         )
+
+        AppShortcut(
+            intent: QuickAddNagIntent(),
+            phrases: [
+                "Remind me in \(.applicationName)",
+                "Quick nag in \(.applicationName)",
+                "Remember to in \(.applicationName)"
+            ],
+            shortTitle: "Quick Remind",
+            systemImageName: "bolt.circle"
+        )
     }
 }

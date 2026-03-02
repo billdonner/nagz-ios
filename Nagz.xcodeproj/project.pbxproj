@@ -100,6 +100,7 @@
 		AB9FA232D246AB19B4EA262F /* ConsentModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA264D3B7744A48AB3904C2F /* ConsentModels.swift */; };
 		ABE7491D55FBA095F89BFD3A /* ManageMembersView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 615BFEFFC265637815DB1707 /* ManageMembersView.swift */; };
 		ACBE1FC8906E623F15349BAA /* CreateNagIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4570F057307070C0CF2C47D /* CreateNagIntent.swift */; };
+		AE7A54FCC2A27378F4A0B555 /* QuickAddNagIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = D709EC05459A3FF077C49105 /* QuickAddNagIntent.swift */; };
 		AEFCF8156E0CF766CC91D2B2 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2524FDBBE8F215CAB498AD90 /* Constants.swift */; };
 		B205AA3933880F504CFEC36F /* ChatToolTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6CFBEE956921FB17649BED8 /* ChatToolTests.swift */; };
 		B4181171676EAD0BACA7E4AA /* DeliveryModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C2745952F84266C12B43D6F /* DeliveryModels.swift */; };
@@ -276,6 +277,7 @@
 		D3BF64C56EBAEE04E21E7452 /* MemberRowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemberRowView.swift; sourceTree = "<group>"; };
 		D6518A68E624AD12C6521FA5 /* EditNagViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditNagViewModel.swift; sourceTree = "<group>"; };
 		D6CFBEE956921FB17649BED8 /* ChatToolTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatToolTests.swift; sourceTree = "<group>"; };
+		D709EC05459A3FF077C49105 /* QuickAddNagIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuickAddNagIntent.swift; sourceTree = "<group>"; };
 		D8046B20FB1D7A89FDFDDBD8 /* ChildTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChildTabView.swift; sourceTree = "<group>"; };
 		D917295C9B5550C0BE6F63EF /* VersionChecker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VersionChecker.swift; sourceTree = "<group>"; };
 		D9F6250F88777E53820A4F59 /* CompleteNagIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompleteNagIntent.swift; sourceTree = "<group>"; };
@@ -599,6 +601,7 @@
 				A4570F057307070C0CF2C47D /* CreateNagIntent.swift */,
 				8C70FE14961CC2F9E8593105 /* FamilyStatusIntent.swift */,
 				159F6509A2190F49906305DE /* ListNagsIntent.swift */,
+				D709EC05459A3FF077C49105 /* QuickAddNagIntent.swift */,
 				1A5F3F576C762EADB7633DEF /* SnoozeNagIntent.swift */,
 			);
 			path = Actions;
@@ -900,6 +903,7 @@
 				7D06F9B2EB4D57AB93B9628F /* PreferencesView.swift in Sources */,
 				96E14843B3D9DAFC0F5F5012 /* PreferencesViewModel.swift in Sources */,
 				4440085F3A155A314DC293BE /* PushNotificationService.swift in Sources */,
+				AE7A54FCC2A27378F4A0B555 /* QuickAddNagIntent.swift in Sources */,
 				886438D017AF431894B099E7 /* ReportModels.swift in Sources */,
 				EBFA84D9138F0B611957E4B0 /* ReportsView.swift in Sources */,
 				E55E674847582815348C56A8 /* ReportsViewModel.swift in Sources */,
@@ -1025,7 +1029,7 @@
 				CODE_SIGN_ENTITLEMENTS = Nagz/Nagz.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 53;
+				CURRENT_PROJECT_VERSION = 54;
 				DEVELOPMENT_TEAM = NEAY582ME4;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				INFOPLIST_FILE = Nagz/Info.plist;
@@ -1113,7 +1117,7 @@
 				CODE_SIGN_ENTITLEMENTS = Nagz/Nagz.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 53;
+				CURRENT_PROJECT_VERSION = 54;
 				DEVELOPMENT_TEAM = NEAY582ME4;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				INFOPLIST_FILE = Nagz/Info.plist;
