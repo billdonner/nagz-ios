@@ -207,8 +207,8 @@ struct NagListView: View {
     }
 
     private func generateSummary() async {
-        // Pass only the nags the user is currently viewing
-        let visibleNags = viewModel.nags
+        // Only summarize nags assigned to me — not ones I sent to others
+        let visibleNags = nagsForMe
         let items = visibleNags.map { nag in
             NagSummaryItem(
                 category: nag.category.rawValue,
