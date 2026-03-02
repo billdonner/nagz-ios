@@ -572,7 +572,7 @@ struct APIEndpoint {
     }
 
     static func exportAccountData() -> APIEndpoint {
-        APIEndpoint(path: "/accounts/export", method: .post)
+        APIEndpoint(path: "/accounts/export")
     }
 
     // MARK: - Legal

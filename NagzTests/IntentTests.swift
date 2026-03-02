@@ -84,6 +84,7 @@ struct IntentTests {
             description: "Math worksheet",
             strategyTemplate: .friendlyReminder,
             recurrence: nil,
+            parentNagId: nil,
             status: .open,
             createdAt: Date(),
             completedAt: nil

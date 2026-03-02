@@ -14,6 +14,7 @@ struct NagResponse: Decodable, Identifiable, Sendable {
     let description: String?
     let strategyTemplate: StrategyTemplate
     let recurrence: Recurrence?
+    let parentNagId: UUID?
     let status: NagStatus
     let createdAt: Date
     let completedAt: Date?
