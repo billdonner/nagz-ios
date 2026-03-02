@@ -11,6 +11,8 @@ struct NagDetailView: View {
     @State private var showCompletionCelebration = false
     @State private var showExcuseResponse = false
     @State private var lastExcuseResponse: String?
+    @State private var showChat = false
+    @AppStorage("nagz_ai_personality") private var personalityRaw: String = AIPersonality.standard.rawValue
     @Environment(\.dismiss) private var dismiss
     let apiClient: APIClient
     let currentUserId: UUID
@@ -178,6 +180,20 @@ struct NagDetailView: View {
         }
         .navigationTitle("Nag Detail")
         .toolbar {
+            #if canImport(FoundationModels)
+            if let nag = viewModel.nag,
+               NagzAI.Router.isAppleIntelligenceAvailable,
+               nag.status == .open,
+               nag.recipientId == currentUserId {
+                ToolbarItem(placement: .secondaryAction) {
+                    Button {
+                        showChat = true
+                    } label: {
+                        Label("Chat", systemImage: "bubble.left.and.bubble.right")
+                    }
+                }
+            }
+            #endif
             if isGuardian, let nag = viewModel.nag, nag.status == .open {
                 ToolbarItem(placement: .primaryAction) {
                     Button {
@@ -214,6 +230,20 @@ struct NagDetailView: View {
         .sheet(isPresented: $showExcuseResponse) {
             ExcuseResponseSheet(excuseSummary: lastExcuseResponse ?? "")
         }
+        #if canImport(FoundationModels)
+        .sheet(isPresented: $showChat) {
+            if let nag = viewModel.nag {
+                NagChatView(
+                    nag: nag,
+                    apiClient: apiClient,
+                    personality: AIPersonality(rawValue: personalityRaw) ?? .standard,
+                    onDismissReload: {
+                        Task { await viewModel.load() }
+                    }
+                )
+            }
+        }
+        #endif
         .onChange(of: showEditSheet) { _, isPresented in
             if !isPresented {
                 Task { await viewModel.load() }
