@@ -25,14 +25,22 @@ struct NagListView: View {
         self.webSocketService = webSocketService
     }
 
+    /// Nags sent to me by other people
     private var nagsForMe: [NagResponse] {
         guard let userId = currentUserId else { return viewModel.nags }
-        return viewModel.nags.filter { $0.recipientId == userId }
+        return viewModel.nags.filter { $0.recipientId == userId && $0.creatorId != userId }
     }
 
+    /// Nags I sent to other people
     private var nagsForOthers: [NagResponse] {
         guard let userId = currentUserId else { return [] }
         return viewModel.nags.filter { $0.recipientId != userId }
+    }
+
+    /// Self-nags: I created them for myself
+    private var selfNags: [NagResponse] {
+        guard let userId = currentUserId else { return [] }
+        return viewModel.nags.filter { $0.recipientId == userId && $0.creatorId == userId }
     }
 
     /// Group "For Me" nags by who sent them (counterpart = creator)
@@ -98,6 +106,18 @@ struct NagListView: View {
                                             NagRowView(nag: nag, currentUserId: currentUserId)
                                         }
                                     }
+                                }
+                            }
+
+                            if !selfNags.isEmpty {
+                                Section {
+                                    ForEach(selfNags) { nag in
+                                        NavigationLink(value: nag.id) {
+                                            NagRowView(nag: nag, currentUserId: currentUserId)
+                                        }
+                                    }
+                                } header: {
+                                    Label("My Reminders", systemImage: "pin.fill")
                                 }
                             }
 
