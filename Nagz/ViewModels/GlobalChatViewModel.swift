@@ -10,9 +10,20 @@ final class GlobalChatViewModel {
     var inputText = ""
     var isGenerating = false
     var errorMessage: String?
+    private(set) var hasFamily = false
 
     private var session: LanguageModelSession?
     private var collector: ToolResultCollector?
+
+    func reset() {
+        messages = []
+        inputText = ""
+        isGenerating = false
+        errorMessage = nil
+        hasFamily = false
+        session = nil
+        collector = nil
+    }
 
     func setupSession(
         apiClient: APIClient,
@@ -23,6 +34,7 @@ final class GlobalChatViewModel {
         memberNames: [String],
         personality: AIPersonality
     ) {
+        self.hasFamily = familyId != nil
         let toolCollector = ToolResultCollector()
         self.collector = toolCollector
 

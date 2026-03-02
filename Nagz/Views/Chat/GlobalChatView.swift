@@ -117,17 +117,28 @@ struct GlobalChatView: View {
             .scrollDismissesKeyboard(.interactively)
         }
         .onAppear {
-            if viewModel.messages.isEmpty {
-                viewModel.setupSession(
-                    apiClient: apiClient,
-                    currentUserId: currentUserId,
-                    familyId: familyId,
-                    userName: userName,
-                    familyName: familyName,
-                    memberNames: memberNames,
-                    personality: personality
-                )
+            setupIfNeeded()
+        }
+        .onChange(of: familyId) {
+            // Family data arrived after initial load — re-setup with valid familyId
+            if familyId != nil && !viewModel.hasFamily {
+                viewModel.reset()
+                setupIfNeeded()
             }
+        }
+    }
+
+    private func setupIfNeeded() {
+        if viewModel.messages.isEmpty {
+            viewModel.setupSession(
+                apiClient: apiClient,
+                currentUserId: currentUserId,
+                familyId: familyId,
+                userName: userName,
+                familyName: familyName,
+                memberNames: memberNames,
+                personality: personality
+            )
         }
     }
 
