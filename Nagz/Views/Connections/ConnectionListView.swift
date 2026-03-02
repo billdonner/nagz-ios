@@ -194,6 +194,9 @@ struct ConnectionListView: View {
                     statLabel(count: stats.received, label: "Received", icon: "arrow.down.circle.fill", color: .orange)
                     statLabel(count: stats.openCount, label: "Open", icon: "circle.fill", color: .yellow)
                     statLabel(count: stats.completedCount, label: "Done", icon: "checkmark.circle.fill", color: .green)
+                    if stats.overdueCount > 0 {
+                        statLabel(count: stats.overdueCount, label: "Overdue", icon: "exclamationmark.triangle.fill", color: .red)
+                    }
                 }
                 .font(.caption)
             }

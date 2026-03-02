@@ -23,6 +23,7 @@ final class ConnectionListViewModel {
         var received: Int = 0
         var openCount: Int = 0
         var completedCount: Int = 0
+        var overdueCount: Int = 0
     }
 
     init(apiClient: APIClient) {
@@ -67,13 +68,19 @@ final class ConnectionListViewModel {
                             .listNags(connectionId: conn.id, limit: 200)
                         )
                         var stats = ConnectionNagStats()
+                        let now = Date()
                         for nag in resp.items {
                             if nag.creatorId == conn.inviterId {
                                 stats.sent += 1
                             } else {
                                 stats.received += 1
                             }
-                            if nag.status == .open { stats.openCount += 1 }
+                            if nag.status == .open {
+                                stats.openCount += 1
+                                if nag.dueAt < now {
+                                    stats.overdueCount += 1
+                                }
+                            }
                             if nag.status == .completed { stats.completedCount += 1 }
                         }
                         return (conn.id, stats)
