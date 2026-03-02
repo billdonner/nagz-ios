@@ -137,7 +137,7 @@ struct AuthenticatedTabView: View {
             )
         }
         .tabItem {
-            Label("Chat", systemImage: "bubble.left.and.text.bubble.right.fill")
+            Label("Chat", systemImage: "ellipsis.message.fill")
         }
     }
     #endif
