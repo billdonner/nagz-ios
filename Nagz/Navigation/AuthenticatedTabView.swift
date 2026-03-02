@@ -127,9 +127,12 @@ struct AuthenticatedTabView: View {
                 familyId: familyViewModel.family?.familyId,
                 userName: authManager.currentUser?.displayName ?? authManager.currentUser?.email ?? "User",
                 familyName: familyViewModel.family?.name,
-                memberNames: familyViewModel.members
+                familyMembers: familyViewModel.members
                     .filter { $0.status != .removed }
-                    .compactMap(\.displayName)
+                    .compactMap { member in
+                        guard let name = member.displayName else { return nil }
+                        return (name: name, id: member.userId)
+                    }
             )
         }
         .tabItem {

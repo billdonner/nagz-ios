@@ -66,7 +66,7 @@ struct ListNagsTool: Tool {
 
 struct CreateNagTool: Tool {
     let name = "createNag"
-    let description = "Create a new nag/task/reminder. Use when the user says 'remind me to...', 'nag me about...', or 'add a task'. Parse natural language times into delayHours."
+    let description = "Create a new nag/task/reminder. Use when the user says 'remind me to...', 'nag me about...', or 'add a task'. If they mention someone by name (e.g. 'tell Bobby to...'), set recipientName to that person's name. Leave recipientName empty to assign to the current user."
 
     @Generable
     struct Arguments {
@@ -78,21 +78,46 @@ struct CreateNagTool: Tool {
 
         @Guide(description: "Hours from now until due. Examples: 'tomorrow' = 18, 'in an hour' = 1, 'next week' = 168, 'tonight' = 8.")
         let delayHours: Int
+
+        @Guide(description: "Name of the family member to assign this nag to. Leave empty to assign to the current user (self-nag).")
+        let recipientName: String
     }
 
     let apiClient: APIClient
     let familyId: UUID?
     let currentUserId: UUID
+    let familyMembers: [(name: String, id: UUID)]
     let collector: ToolResultCollector
 
     nonisolated func call(arguments: Arguments) async throws -> String {
+        // Resolve recipient
+        let recipientId: UUID
+        let recipientLabel: String
+
+        if !arguments.recipientName.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+            let query = arguments.recipientName.lowercased()
+            if let match = familyMembers.first(where: { $0.name.lowercased() == query })
+                ?? familyMembers.first(where: { $0.name.lowercased().contains(query) || query.contains($0.name.lowercased()) }) {
+                recipientId = match.id
+                recipientLabel = match.name
+            } else {
+                let available = familyMembers.map(\.name).joined(separator: ", ")
+                let hint = available.isEmpty ? "You don't have any family members yet." : "Family members: \(available)."
+                await collector.record("❌ Couldn't find \"\(arguments.recipientName)\"")
+                return "I couldn't find a family member named \"\(arguments.recipientName)\". \(hint)"
+            }
+        } else {
+            recipientId = currentUserId
+            recipientLabel = "you"
+        }
+
         let hours = max(1, min(720, arguments.delayHours))
         let dueAt = Date().addingTimeInterval(Double(hours) * 3600)
         let category = NagCategory(rawValue: arguments.category) ?? .other
 
         let nag = NagCreate(
             familyId: familyId,
-            recipientId: currentUserId,
+            recipientId: recipientId,
             dueAt: dueAt,
             category: category,
             doneDefinition: .binaryCheck,
@@ -106,8 +131,8 @@ struct CreateNagTool: Tool {
         formatter.timeStyle = .short
         let dateStr = formatter.string(from: created.dueAt)
 
-        await collector.record("✓ Created: \(arguments.taskDescription) (due \(dateStr))")
-        return "Created task \"\(arguments.taskDescription)\" due \(dateStr)."
+        await collector.record("✓ Created: \(arguments.taskDescription) for \(recipientLabel) (due \(dateStr))")
+        return "Created task \"\(arguments.taskDescription)\" for \(recipientLabel), due \(dateStr)."
     }
 }
 

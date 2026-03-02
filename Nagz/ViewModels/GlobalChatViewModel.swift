@@ -20,7 +20,7 @@ final class GlobalChatViewModel {
         familyId: UUID?,
         userName: String,
         familyName: String?,
-        memberNames: [String],
+        familyMembers: [(name: String, id: UUID)],
         personality: AIPersonality
     ) {
         let toolCollector = ToolResultCollector()
@@ -36,6 +36,7 @@ final class GlobalChatViewModel {
             apiClient: apiClient,
             familyId: familyId,
             currentUserId: currentUserId,
+            familyMembers: familyMembers,
             collector: toolCollector
         )
         let completeTool = GlobalCompleteTool(
@@ -60,7 +61,7 @@ final class GlobalChatViewModel {
         let instructions = GlobalChatPrompt.build(
             userName: userName,
             familyName: familyName,
-            memberNames: memberNames,
+            memberNames: familyMembers.map(\.name),
             personality: personality
         )
 
