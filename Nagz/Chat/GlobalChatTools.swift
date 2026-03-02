@@ -67,7 +67,7 @@ struct ListNagsTool: Tool {
 
 struct CreateNagTool: Tool {
     let name = "createNag"
-    let description = "Create a new nag/task/reminder. Use when the user says 'remind me to...', 'nag me about...', or 'add a task'. If they mention someone by name (e.g. 'tell Bobby to...'), set recipientName to that person's name. Leave recipientName empty to assign to the current user."
+    let description = "Create a new nag/task/reminder. Use when the user says 'remind me to...', 'nag me about...', or 'add a task'. If they mention someone by name (e.g. 'tell Bobby to...'), set recipientName to that person's name. Leave recipientName empty or set to 'me'/'self' to assign to the current user."
 
     @Generable
     struct Arguments {
@@ -80,36 +80,73 @@ struct CreateNagTool: Tool {
         @Guide(description: "Hours from now until due. Examples: 'tomorrow' = 18, 'in an hour' = 1, 'next week' = 168, 'tonight' = 8.")
         let delayHours: Int
 
-        @Guide(description: "Name of the family member to assign this nag to. Leave empty to assign to the current user (self-nag).")
+        @Guide(description: "Name of the person to assign this nag to. Leave empty or set to 'me'/'self' to assign to the current user.")
         let recipientName: String
     }
 
     let apiClient: APIClient
     let familyId: UUID?
     let currentUserId: UUID
-    let familyMembers: [(name: String, id: UUID)]
+    let userName: String
     let collector: ToolResultCollector
 
     nonisolated func call(arguments: Arguments) async throws -> String {
-        // Resolve recipient
+        let trimmed = arguments.recipientName.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
+        let selfKeywords = ["", "me", "self", "myself", userName.lowercased()]
+        let isSelfNag = selfKeywords.contains(trimmed)
+
         let recipientId: UUID
         let recipientLabel: String
+        var connectionId: UUID?
 
-        if !arguments.recipientName.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
-            let query = arguments.recipientName.lowercased()
-            if let match = familyMembers.first(where: { $0.name.lowercased() == query })
-                ?? familyMembers.first(where: { $0.name.lowercased().contains(query) || query.contains($0.name.lowercased()) }) {
-                recipientId = match.id
-                recipientLabel = match.name
-            } else {
-                let available = familyMembers.map(\.name).joined(separator: ", ")
-                let hint = available.isEmpty ? "You don't have any family members yet." : "Family members: \(available)."
-                await collector.record("❌ Couldn't find \"\(arguments.recipientName)\"")
-                return "I couldn't find a family member named \"\(arguments.recipientName)\". \(hint)"
-            }
-        } else {
+        if isSelfNag {
             recipientId = currentUserId
             recipientLabel = "you"
+        } else {
+            // Fetch family members dynamically
+            var people: [(name: String, id: UUID, connectionId: UUID?)] = []
+
+            if let familyId {
+                let memberPage: PaginatedResponse<MemberDetail> = try await apiClient.request(
+                    .listMembers(familyId: familyId)
+                )
+                for m in memberPage.items where m.userId != currentUserId {
+                    if let name = m.displayName {
+                        people.append((name: name, id: m.userId, connectionId: nil))
+                    }
+                }
+            }
+
+            // Fetch connections dynamically
+            let connPage: PaginatedResponse<ConnectionResponse> = try await apiClient.request(
+                .listConnections(status: .active)
+            )
+            for conn in connPage.items {
+                let otherId = conn.inviterId == currentUserId ? conn.inviteeId : conn.inviterId
+                if let otherId, let name = conn.otherPartyDisplayName {
+                    // Don't add duplicates (someone might be both family + connection)
+                    if !people.contains(where: { $0.id == otherId }) {
+                        people.append((name: name, id: otherId, connectionId: conn.id))
+                    }
+                }
+            }
+
+            // Fuzzy match
+            let query = trimmed
+            let match = people.first(where: { $0.name.lowercased() == query })
+                ?? people.first(where: { $0.name.lowercased().contains(query) || query.contains($0.name.lowercased()) })
+                ?? people.first(where: { fuzzyMatch(query: query, target: $0.name.lowercased()) })
+
+            guard let match else {
+                let available = people.map(\.name).joined(separator: ", ")
+                let hint = available.isEmpty ? "You don't have any people to nag yet. Add family members or connections first." : "Available people: \(available)."
+                await collector.record("❌ Couldn't find \"\(arguments.recipientName)\"")
+                return "I couldn't find anyone named \"\(arguments.recipientName)\". \(hint)"
+            }
+
+            recipientId = match.id
+            recipientLabel = match.name
+            connectionId = match.connectionId
         }
 
         let hours = max(1, min(720, arguments.delayHours))
@@ -117,7 +154,8 @@ struct CreateNagTool: Tool {
         let category = NagCategory(rawValue: arguments.category) ?? .other
 
         let nag = NagCreate(
-            familyId: familyId,
+            familyId: connectionId == nil ? familyId : nil,
+            connectionId: connectionId,
             recipientId: recipientId,
             dueAt: dueAt,
             category: category,
@@ -134,6 +172,12 @@ struct CreateNagTool: Tool {
 
         await collector.record("✓ Created: \(arguments.taskDescription) for \(recipientLabel) (due \(dateStr))")
         return "Created task \"\(arguments.taskDescription)\" for \(recipientLabel), due \(dateStr)."
+    }
+
+    private nonisolated func fuzzyMatch(query: String, target: String) -> Bool {
+        let queryWords = query.split(separator: " ")
+        let matchCount = queryWords.filter { target.contains($0) }.count
+        return matchCount >= max(1, queryWords.count / 2)
     }
 }
 

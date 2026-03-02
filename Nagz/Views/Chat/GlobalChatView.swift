@@ -8,7 +8,7 @@ struct GlobalChatView: View {
     let familyId: UUID?
     let userName: String
     let familyName: String?
-    let familyMembers: [(name: String, id: UUID)]
+    let memberNames: [String]
 
     @State private var viewModel = GlobalChatViewModel()
     @FocusState private var isInputFocused: Bool
@@ -124,7 +124,7 @@ struct GlobalChatView: View {
                     familyId: familyId,
                     userName: userName,
                     familyName: familyName,
-                    familyMembers: familyMembers,
+                    memberNames: memberNames,
                     personality: personality
                 )
             }
