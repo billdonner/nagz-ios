@@ -53,31 +53,29 @@ struct ListNagsTool: Tool {
         parts.append("Found \(allNags.count) total task\(allNags.count == 1 ? "" : "s"). \(allOverdue.count) overdue.")
 
         if !receivedFromOthers.isEmpty {
-            parts.append("\nAssigned to you (\(receivedFromOthers.count)):")
-            for nag in receivedFromOthers.prefix(8) {
+            let ro = receivedFromOthers.filter { $0.dueAt < now }
+            parts.append("For you: \(receivedFromOthers.count) (\(ro.count) overdue).")
+            for nag in receivedFromOthers.prefix(5) {
                 let desc = nag.description ?? nag.category.displayName
-                let from = nag.creatorDisplayName ?? "someone"
-                let due = nag.dueAt < now ? "OVERDUE" : "due \(nag.dueAt.formatted(date: .abbreviated, time: .shortened))"
-                parts.append("• \(desc) from \(from) (\(due))")
+                parts.append("• \(desc)\(nag.dueAt < now ? " OVERDUE" : "")")
             }
         }
 
         if !sentToOthers.isEmpty {
-            parts.append("\nSent to others (\(sentToOthers.count)):")
-            for nag in sentToOthers.prefix(8) {
+            let so = sentToOthers.filter { $0.dueAt < now }
+            parts.append("Sent to others: \(sentToOthers.count) (\(so.count) overdue).")
+            for nag in sentToOthers.prefix(5) {
                 let desc = nag.description ?? nag.category.displayName
-                let to = nag.recipientDisplayName ?? "someone"
-                let due = nag.dueAt < now ? "OVERDUE" : "due \(nag.dueAt.formatted(date: .abbreviated, time: .shortened))"
-                parts.append("• \(desc) → \(to) (\(due))")
+                let to = nag.recipientDisplayName ?? "?"
+                parts.append("• \(desc) → \(to)\(nag.dueAt < now ? " OVERDUE" : "")")
             }
         }
 
         if !selfNags.isEmpty {
-            parts.append("\nYour reminders (\(selfNags.count)):")
-            for nag in selfNags.prefix(5) {
+            parts.append("Self: \(selfNags.count).")
+            for nag in selfNags.prefix(3) {
                 let desc = nag.description ?? nag.category.displayName
-                let due = nag.dueAt < now ? "OVERDUE" : "due \(nag.dueAt.formatted(date: .abbreviated, time: .shortened))"
-                parts.append("• \(desc) (\(due))")
+                parts.append("• \(desc)\(nag.dueAt < now ? " OVERDUE" : "")")
             }
         }
 

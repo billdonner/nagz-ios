@@ -99,15 +99,26 @@ final class GlobalChatViewModel {
             if !content.isEmpty {
                 messages.append(ChatMessage(role: .assistant, content: content))
             }
+            // Show any tool actions even if the AI response was empty
+            if toolActions.isEmpty && content.isEmpty {
+                messages.append(ChatMessage(role: .assistant, content: "Done! Is there anything else I can help with?"))
+            }
         } catch let error as LanguageModelSession.GenerationError {
+            // Drain any tool actions that happened before the error
+            let toolActions = await collector.drain()
+            for action in toolActions {
+                messages.append(ChatMessage(role: .system, content: action))
+            }
+
             switch error {
             case .exceededContextWindowSize:
-                errorMessage = "Conversation too long — start a new one."
+                errorMessage = "Conversation too long — please switch tabs and come back to start fresh."
             default:
-                errorMessage = "AI unavailable: \(error.localizedDescription)"
+                // error -1 is often a content/guardrail issue on the on-device model
+                errorMessage = "Apple Intelligence couldn't process that. Try rephrasing your request."
             }
         } catch {
-            errorMessage = "Something went wrong: \(error.localizedDescription)"
+            errorMessage = "Something went wrong. Try again or rephrase your request."
         }
 
         isGenerating = false
