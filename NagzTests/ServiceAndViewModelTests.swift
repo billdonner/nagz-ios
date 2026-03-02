@@ -2,12 +2,12 @@ import XCTest
 import GRDB
 @testable import Nagz
 
-// MARK: - OnDeviceAIService: selectTone, patterns, predictCompletion
+// MARK: - NagzAIAdapter: selectTone, patterns, predictCompletion
 
-final class OnDeviceAIServiceAdvancedTests: XCTestCase {
+final class NagzAIAdapterTests: XCTestCase {
 
     private var db: DatabaseManager!
-    private var service: OnDeviceAIService!
+    private var service: NagzAIAdapter!
 
     private let userId = UUID().uuidString
     private let familyId = UUID().uuidString
@@ -18,7 +18,7 @@ final class OnDeviceAIServiceAdvancedTests: XCTestCase {
         let keychain = KeychainService()
         let apiClient = APIClient(keychainService: keychain)
         let serverAI = ServerAIService(apiClient: apiClient)
-        service = OnDeviceAIService(db: db, fallback: serverAI)
+        service = NagzAIAdapter(db: db, fallback: serverAI, preferHeuristic: true)
     }
 
     private func markCacheFresh() async throws {

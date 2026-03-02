@@ -364,7 +364,7 @@ final class ModelDecodingTests: XCTestCase {
         // Non-retryable errors
         XCTAssertFalse(APIError.unauthorized.isRetryable)
         XCTAssertFalse(APIError.notFound.isRetryable)
-        XCTAssertFalse(APIError.forbidden.isRetryable)
+        XCTAssertFalse(APIError.forbidden("denied").isRetryable)
         XCTAssertFalse(APIError.invalidURL.isRetryable)
         XCTAssertFalse(APIError.validationError("bad input").isRetryable)
         XCTAssertFalse(APIError.decodingError(URLError(.badURL)).isRetryable)
@@ -375,7 +375,7 @@ final class ModelDecodingTests: XCTestCase {
         let cases: [APIError] = [
             .invalidURL,
             .unauthorized,
-            .forbidden,
+            .forbidden("denied"),
             .notFound,
             .rateLimited,
             .validationError("field required"),
@@ -392,7 +392,7 @@ final class ModelDecodingTests: XCTestCase {
         // Verify specific descriptions
         XCTAssertEqual(APIError.invalidURL.errorDescription, "Invalid URL")
         XCTAssertEqual(APIError.unauthorized.errorDescription, "Session expired. Please log in again.")
-        XCTAssertEqual(APIError.forbidden.errorDescription, "You don't have permission for this action.")
+        XCTAssertEqual(APIError.forbidden("Not allowed").errorDescription, "Not allowed")
         XCTAssertEqual(APIError.notFound.errorDescription, "The requested resource was not found.")
         XCTAssertEqual(APIError.rateLimited.errorDescription, "Too many requests. Please wait a moment and try again.")
         XCTAssertEqual(APIError.validationError("field required").errorDescription, "field required")

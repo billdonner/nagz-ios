@@ -1,7 +1,7 @@
 # Nagz iOS App
 
 ## Stack
-- SwiftUI, MVVM, iOS 17+ (@Observable)
+- SwiftUI, MVVM, iOS 26+ (@Observable)
 - Swift 6 strict concurrency
 - Dependencies: KeychainAccess (SPM), GRDB (SPM)
 - Project generated with xcodegen from `project.yml`
@@ -57,6 +57,10 @@ All three Nagz repos (nagzerver, nagz-ios, nagz-web) use a shared API versioning
 - **Web**: `src/version.tsx` (VersionProvider wraps the app)
 
 ## Architecture
+- `AIService` injected via `@Environment(\.aiService)` — mirrors `\.apiClient` pattern
+  - `NagzAIAdapter` (local NagzAI package heuristics + Foundation Models) with `ServerAIService` fallback
+  - `AIInsightsSection` (NagDetailView) — tone, coaching, completion prediction
+  - `FamilyInsightsView` (Family tab, guardian-only) — weekly digest + user patterns
 - `APIClient` is an `actor` (thread-safe networking, not @Observable)
   - In-memory cache with configurable TTL per endpoint
   - `cachedRequest()` for reads, `invalidateCache(prefix:)` after mutations
@@ -77,7 +81,7 @@ All three Nagz repos (nagzerver, nagz-ios, nagz-web) use a shared API versioning
 - `NagzShortcutsProvider` — 6 shortcuts with 14 Siri phrases
 - User/family IDs persisted to UserDefaults for intent access (written by AuthManager/FamilyViewModel)
 - All intents run in-process (no extension target needed)
-- Interactive snippets deferred to iOS 26+
+- Interactive snippets available (iOS 26 baseline)
 
 ## Known Issues & Fixes
 - Use `127.0.0.1` not `localhost` in simulator (IPv6 timeout)

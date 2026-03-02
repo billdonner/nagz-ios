@@ -8,6 +8,7 @@ final class PreferencesViewModel {
     var quietHoursEnabled = false
     var quietHoursStart = "22:00"
     var quietHoursEnd = "07:00"
+    var notifySentOverdue = false
     var notificationFrequency = "always"
     var deliveryChannel = "push"
     var isLoading = false
@@ -48,6 +49,7 @@ final class PreferencesViewModel {
             prefs["quiet_hours_start"] = .string(quietHoursStart)
             prefs["quiet_hours_end"] = .string(quietHoursEnd)
         }
+        prefs["notify_sent_overdue"] = .bool(notifySentOverdue)
         prefs["notification_frequency"] = .string(notificationFrequency)
         prefs["delivery_channel"] = .string(deliveryChannel)
         do {
@@ -69,6 +71,7 @@ final class PreferencesViewModel {
         quietHoursEnabled = prefs["quiet_hours_enabled"]?.boolValue ?? false
         quietHoursStart = prefs["quiet_hours_start"]?.stringValue ?? "22:00"
         quietHoursEnd = prefs["quiet_hours_end"]?.stringValue ?? "07:00"
+        notifySentOverdue = prefs["notify_sent_overdue"]?.boolValue ?? false
         notificationFrequency = prefs["notification_frequency"]?.stringValue ?? "always"
         deliveryChannel = prefs["delivery_channel"]?.stringValue ?? "push"
     }

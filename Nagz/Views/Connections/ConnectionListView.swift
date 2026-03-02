@@ -3,9 +3,20 @@ import SwiftUI
 struct ConnectionListView: View {
     @State private var viewModel: ConnectionListViewModel
     @State private var showInvite = false
+    @State private var connectionToRemove: ConnectionResponse?
+    @State private var connectionToNag: ConnectionResponse?
+    @State private var wsTask: Task<Void, Never>?
+    let familyId: UUID?
+    let currentUserId: UUID?
+    let webSocketService: WebSocketService?
+    let userName: String?
 
-    init(apiClient: APIClient) {
+    init(apiClient: APIClient, familyId: UUID? = nil, currentUserId: UUID? = nil, webSocketService: WebSocketService? = nil, userName: String? = nil) {
         _viewModel = State(initialValue: ConnectionListViewModel(apiClient: apiClient))
+        self.familyId = familyId
+        self.userName = userName
+        self.currentUserId = currentUserId
+        self.webSocketService = webSocketService
     }
 
     var body: some View {
@@ -54,6 +65,7 @@ struct ConnectionListView: View {
                             } label: {
                                 Image(systemName: "xmark.circle")
                             }
+                            .buttonStyle(.borderless)
                         }
                     }
                 }
@@ -68,32 +80,15 @@ struct ConnectionListView: View {
                     }
                 } else {
                     ForEach(viewModel.connections) { connection in
-                        HStack {
-                            VStack(alignment: .leading) {
-                                Text(connection.otherPartyDisplayName ?? connection.otherPartyEmail ?? connection.inviteeEmail)
-                                    .font(.body)
-                                if let email = connection.otherPartyEmail, connection.otherPartyDisplayName != nil {
-                                    Text(email)
-                                        .font(.caption2)
-                                        .foregroundStyle(.tertiary)
-                                }
-                                Text("Connected \(connection.respondedAt ?? connection.createdAt, style: .relative) ago")
-                                    .font(.caption)
-                                    .foregroundStyle(.secondary)
-                            }
-                            Spacer()
-                            Toggle("Trusted", isOn: Binding(
-                                get: { connection.trusted },
-                                set: { _ in
-                                    Task { await viewModel.toggleTrust(id: connection.id, currentTrusted: connection.trusted) }
-                                }
-                            ))
-                            .labelsHidden()
-                            .help(connection.trusted ? "Trusted — can nag each other's kids" : "Not trusted")
-                            Button(role: .destructive) {
-                                Task { await viewModel.revoke(id: connection.id) }
-                            } label: {
-                                Image(systemName: "xmark.circle")
+                        Button {
+                            connectionToNag = connection
+                        } label: {
+                            connectionRow(connection)
+                        }
+                        .buttonStyle(.plain)
+                        .swipeActions(edge: .trailing, allowsFullSwipe: false) {
+                            Button("Remove", role: .destructive) {
+                                connectionToRemove = connection
                             }
                         }
                     }
@@ -107,7 +102,23 @@ struct ConnectionListView: View {
                 }
             }
         }
-        .navigationTitle("People")
+        .alert("Remove Connection?", isPresented: Binding(
+            get: { connectionToRemove != nil },
+            set: { if !$0 { connectionToRemove = nil } }
+        )) {
+            Button("Cancel", role: .cancel) { connectionToRemove = nil }
+            Button("Remove", role: .destructive) {
+                if let conn = connectionToRemove {
+                    Task { await viewModel.revoke(id: conn.id) }
+                    connectionToRemove = nil
+                }
+            }
+        } message: {
+            if let conn = connectionToRemove {
+                Text("This will disconnect you from \(conn.otherPartyDisplayName ?? conn.otherPartyEmail ?? conn.inviteeEmail). You'll need to re-invite them to reconnect.")
+            }
+        }
+        .navigationTitle(userName.map { "\($0)'s People" } ?? "People")
         .toolbar {
             ToolbarItem(placement: .primaryAction) {
                 Button {
@@ -122,7 +133,89 @@ struct ConnectionListView: View {
         } content: {
             InviteConnectionView(viewModel: viewModel)
         }
+        .sheet(item: $connectionToNag) { connection in
+            CreateNagView(
+                apiClient: viewModel.apiClient,
+                familyId: familyId,
+                currentUserId: currentUserId,
+                preselectedConnectionId: connection.id
+            )
+        }
         .task { await viewModel.loadConnections() }
+        .task { startWebSocket() }
+        .onDisappear { stopWebSocket() }
         .refreshable { await viewModel.loadConnections() }
+    }
+
+    private func startWebSocket() {
+        guard let familyId, let webSocketService, wsTask == nil else { return }
+        wsTask = Task {
+            let stream = await webSocketService.connect(familyId: familyId)
+            for await event in stream {
+                switch event.type {
+                case .connectionInvited, .connectionAccepted:
+                    await viewModel.loadConnections()
+                default:
+                    break
+                }
+            }
+        }
+    }
+
+    private func stopWebSocket() {
+        wsTask?.cancel()
+        wsTask = nil
+    }
+
+    private func connectionRow(_ connection: ConnectionResponse) -> some View {
+        VStack(alignment: .leading, spacing: 8) {
+            HStack {
+                Text(connection.otherPartyDisplayName ?? connection.otherPartyEmail ?? connection.inviteeEmail)
+                    .font(.body.weight(.medium))
+                Spacer()
+                if connection.trusted {
+                    Image(systemName: "checkmark.shield.fill")
+                        .foregroundStyle(.green)
+                        .font(.caption)
+                }
+                Toggle("Trusted", isOn: Binding(
+                    get: { connection.trusted },
+                    set: { _ in
+                        Task { await viewModel.toggleTrust(id: connection.id, currentTrusted: connection.trusted) }
+                    }
+                ))
+                .labelsHidden()
+                .buttonStyle(.borderless)
+            }
+
+            if let stats = viewModel.connectionStats[connection.id] {
+                HStack(spacing: 16) {
+                    statLabel(count: stats.sent, label: "Sent", icon: "arrow.up.circle.fill", color: .blue)
+                    statLabel(count: stats.received, label: "Received", icon: "arrow.down.circle.fill", color: .orange)
+                    statLabel(count: stats.openCount, label: "Open", icon: "circle.fill", color: .yellow)
+                    statLabel(count: stats.completedCount, label: "Done", icon: "checkmark.circle.fill", color: .green)
+                    if stats.overdueCount > 0 {
+                        statLabel(count: stats.overdueCount, label: "Overdue", icon: "exclamationmark.triangle.fill", color: .red)
+                    }
+                }
+                .font(.caption)
+            }
+
+            Text("Connected \(connection.respondedAt ?? connection.createdAt, style: .relative) ago")
+                .font(.caption2)
+                .foregroundStyle(.tertiary)
+        }
+        .padding(.vertical, 4)
+    }
+
+    private func statLabel(count: Int, label: String, icon: String, color: Color) -> some View {
+        HStack(spacing: 3) {
+            Image(systemName: icon)
+                .foregroundStyle(color)
+            Text("\(count)")
+                .fontWeight(.semibold)
+            Text(label)
+                .foregroundStyle(.secondary)
+        }
     }
 }

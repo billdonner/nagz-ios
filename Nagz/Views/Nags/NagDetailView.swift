@@ -1,4 +1,5 @@
 import SwiftUI
+import NagzAI
 
 struct NagDetailView: View {
     @State private var viewModel: NagDetailViewModel
@@ -10,7 +11,10 @@ struct NagDetailView: View {
     @State private var showCompletionCelebration = false
     @State private var showExcuseResponse = false
     @State private var lastExcuseResponse: String?
+    @State private var showChat = false
+    @AppStorage("nagz_ai_personality") private var personalityRaw: String = AIPersonality.standard.rawValue
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.databaseManager) private var databaseManager
     let apiClient: APIClient
     let currentUserId: UUID
     let isGuardian: Bool
@@ -50,28 +54,24 @@ struct NagDetailView: View {
                     }
 
                     Section("Details") {
-                        LabeledContent("Category") {
-                            Label(nag.category.displayName, systemImage: nag.category.iconName)
-                        }
-                        LabeledContent("Due") {
-                            Text(nag.dueAt.relativeDisplay)
-                        }
-                        LabeledContent("Completion") {
-                            Text(nag.doneDefinition.displayName)
-                        }
+                        LabeledContent("Category", value: nag.category.displayName)
+                        LabeledContent("Due", value: nag.dueAt.relativeDisplay)
+                        LabeledContent("Completion", value: nag.doneDefinition.displayName)
                         if let desc = nag.description {
                             Text(desc)
                         }
                         if let recurrence = nag.recurrence {
-                            LabeledContent("Repeats") {
-                                Text(recurrence.displayName)
-                            }
+                            LabeledContent("Repeats", value: recurrence.displayName)
                         }
                     }
 
-                    // Mark Complete section (recipient only, open nags)
+                    if NagzAI.Router.isAppleIntelligenceAvailable {
+                        AIInsightsSection(nagId: nag.id, nag: nag)
+                    }
+
+                    // Actions (recipient only, open nags)
                     if nag.status == .open && nag.recipientId == currentUserId {
-                        Section {
+                        Section("Actions") {
                             if nag.doneDefinition == .binaryWithNote {
                                 if showNoteField {
                                     TextField("Add a note...", text: $completionNote, axis: .vertical)
@@ -106,21 +106,14 @@ struct NagDetailView: View {
                                 }
                             }
                             .disabled(viewModel.isUpdating || showCompletionCelebration)
-                        }
-                    }
 
-                    // Submit Excuse section (recipient only, open nags)
-                    if nag.status == .open && nag.recipientId == currentUserId {
-                        Section {
                             Button {
                                 showExcuseSheet = true
                             } label: {
                                 Label("Submit Excuse", systemImage: "text.bubble")
                                     .frame(maxWidth: .infinity)
                             }
-                        }
 
-                        Section {
                             Button {
                                 Task { await viewModel.snooze(minutes: 15) }
                             } label: {
@@ -188,6 +181,20 @@ struct NagDetailView: View {
         }
         .navigationTitle("Nag Detail")
         .toolbar {
+            #if canImport(FoundationModels)
+            if let nag = viewModel.nag,
+               NagzAI.Router.isAppleIntelligenceAvailable,
+               nag.status == .open,
+               nag.recipientId == currentUserId {
+                ToolbarItem(placement: .secondaryAction) {
+                    Button {
+                        showChat = true
+                    } label: {
+                        Label("Chat", systemImage: "bubble.left.and.bubble.right")
+                    }
+                }
+            }
+            #endif
             if isGuardian, let nag = viewModel.nag, nag.status == .open {
                 ToolbarItem(placement: .primaryAction) {
                     Button {
@@ -207,6 +214,7 @@ struct NagDetailView: View {
             ExcuseSubmitSheet(
                 excuseText: $excuseText,
                 isSubmitting: viewModel.isUpdating,
+                errorMessage: viewModel.errorMessage,
                 onSubmit: {
                     Task {
                         await viewModel.submitExcuse(text: excuseText)
@@ -221,30 +229,23 @@ struct NagDetailView: View {
             )
         }
         .sheet(isPresented: $showExcuseResponse) {
-            ExcuseResponseSheet(
-                excuseSummary: lastExcuseResponse ?? "",
-                onSnooze: {
-                    showExcuseResponse = false
-                    Task { await viewModel.snooze(minutes: 15) }
-                },
-                onTryAgain: {
-                    showExcuseResponse = false
-                },
-                onDone: {
-                    showExcuseResponse = false
-                    Task {
-                        await viewModel.markComplete(note: "Completed after excuse")
-                        if viewModel.errorMessage == nil {
-                            withAnimation(.spring(duration: 0.4)) {
-                                showCompletionCelebration = true
-                            }
-                            try? await Task.sleep(for: .seconds(1.5))
-                            dismiss()
-                        }
-                    }
-                }
-            )
+            ExcuseResponseSheet(excuseSummary: lastExcuseResponse ?? "")
         }
+        #if canImport(FoundationModels)
+        .sheet(isPresented: $showChat) {
+            if let nag = viewModel.nag {
+                NagChatView(
+                    nag: nag,
+                    apiClient: apiClient,
+                    personality: AIPersonality(rawValue: personalityRaw) ?? .standard,
+                    databaseManager: databaseManager,
+                    onDismissReload: {
+                        Task { await viewModel.load() }
+                    }
+                )
+            }
+        }
+        #endif
         .onChange(of: showEditSheet) { _, isPresented in
             if !isPresented {
                 Task { await viewModel.load() }
@@ -307,6 +308,7 @@ private struct CompletionCelebrationView: View {
 private struct ExcuseSubmitSheet: View {
     @Binding var excuseText: String
     let isSubmitting: Bool
+    let errorMessage: String?
     let onSubmit: () -> Void
     @Environment(\.dismiss) private var dismiss
 
@@ -317,6 +319,14 @@ private struct ExcuseSubmitSheet: View {
                     TextField("Explain your reason...", text: $excuseText, axis: .vertical)
                         .lineLimit(3...8)
                 }
+
+                if let error = errorMessage {
+                    Section {
+                        Text(error)
+                            .foregroundStyle(.red)
+                            .font(.callout)
+                    }
+                }
             }
             .navigationTitle("Submit Excuse")
             .navigationBarTitleDisplayMode(.inline)
@@ -325,8 +335,12 @@ private struct ExcuseSubmitSheet: View {
                     Button("Cancel") { dismiss() }
                 }
                 ToolbarItem(placement: .confirmationAction) {
-                    Button("Submit") { onSubmit() }
-                        .disabled(excuseText.trimmingCharacters(in: .whitespaces).isEmpty || isSubmitting)
+                    if isSubmitting {
+                        ProgressView()
+                    } else {
+                        Button("Submit") { onSubmit() }
+                            .disabled(excuseText.trimmingCharacters(in: .whitespaces).isEmpty)
+                    }
                 }
             }
         }
@@ -335,75 +349,47 @@ private struct ExcuseSubmitSheet: View {
 
 private struct ExcuseResponseSheet: View {
     let excuseSummary: String
-    let onSnooze: () -> Void
-    let onTryAgain: () -> Void
-    let onDone: () -> Void
     @Environment(\.dismiss) private var dismiss
 
     var body: some View {
         NavigationStack {
             VStack(spacing: 24) {
-                Image(systemName: "text.bubble.fill")
-                    .font(.system(size: 48))
-                    .foregroundStyle(.blue)
-                    .padding(.top, 24)
+                Spacer()
 
-                Text("Excuse Received")
+                Image(systemName: "paperplane.circle.fill")
+                    .font(.system(size: 64))
+                    .foregroundStyle(.green)
+
+                Text("Excuse Sent")
                     .font(.title2.weight(.semibold))
 
-                Text(excuseSummary)
+                Text("\"\(excuseSummary)\"")
                     .font(.body)
                     .foregroundStyle(.secondary)
                     .multilineTextAlignment(.center)
                     .padding(.horizontal)
+                    .italic()
 
-                Divider()
-                    .padding(.horizontal)
-
-                Text("What would you like to do?")
+                Text("The person who nagged you will review your excuse and decide what happens next.")
                     .font(.subheadline)
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(.tertiary)
+                    .multilineTextAlignment(.center)
+                    .padding(.horizontal, 32)
 
-                VStack(spacing: 12) {
-                    Button {
-                        onSnooze()
-                    } label: {
-                        Label("Snooze 15 minutes", systemImage: "clock.badge.xmark")
-                            .frame(maxWidth: .infinity)
-                    }
-                    .buttonStyle(.bordered)
-                    .controlSize(.large)
-
-                    Button {
-                        onTryAgain()
-                    } label: {
-                        Label("I'll try to do it", systemImage: "arrow.clockwise")
-                            .frame(maxWidth: .infinity)
-                    }
-                    .buttonStyle(.bordered)
-                    .controlSize(.large)
-
-                    Button {
-                        onDone()
-                    } label: {
-                        Label("Actually, it's done!", systemImage: "checkmark.circle.fill")
-                            .frame(maxWidth: .infinity)
-                    }
-                    .buttonStyle(.borderedProminent)
-                    .tint(.green)
-                    .controlSize(.large)
-                }
-                .padding(.horizontal)
-
+                Spacer()
                 Spacer()
             }
             .navigationTitle("Excuse")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
-                ToolbarItem(placement: .cancellationAction) {
+                ToolbarItem(placement: .confirmationAction) {
                     Button("Close") { dismiss() }
                 }
             }
+        }
+        .task {
+            try? await Task.sleep(for: .seconds(10))
+            dismiss()
         }
     }
 }

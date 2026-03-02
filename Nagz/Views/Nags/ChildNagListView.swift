@@ -1,4 +1,5 @@
 import SwiftUI
+import NagzAI
 
 /// Simplified nag list for children — large colorful cards, swipe to complete.
 struct ChildNagListView: View {
@@ -11,6 +12,8 @@ struct ChildNagListView: View {
     @State private var isLoading = true
     @State private var errorMessage: String?
     @State private var wsTask: Task<Void, Never>?
+    @State private var aiSummary: String?
+    @State private var showAISummary = false
 
     var body: some View {
         Group {
@@ -43,6 +46,21 @@ struct ChildNagListView: View {
         .task { await loadNags() }
         .onAppear { startWebSocket() }
         .onDisappear { stopWebSocket() }
+        .toolbar {
+            if NagzAI.Router.isAppleIntelligenceAvailable {
+                ToolbarItem(placement: .automatic) {
+                    Button { Task { await generateSummary() } } label: {
+                        Image(systemName: "sparkles")
+                    }
+                    .disabled(nags.isEmpty)
+                }
+            }
+        }
+        .alert("How You're Doing", isPresented: $showAISummary) {
+            Button("OK", role: .cancel) {}
+        } message: {
+            Text(aiSummary ?? "")
+        }
     }
 
     private func loadNags() async {
@@ -79,7 +97,7 @@ struct ChildNagListView: View {
                 switch event.type {
                 case .nagCreated, .nagUpdated, .nagStatusChanged:
                     await loadNags()
-                case .excuseSubmitted, .memberAdded, .memberRemoved, .ping, .pong:
+                case .excuseSubmitted, .memberAdded, .memberRemoved, .connectionInvited, .connectionAccepted, .ping, .pong:
                     break
                 }
             }
@@ -90,5 +108,25 @@ struct ChildNagListView: View {
         wsTask?.cancel()
         wsTask = nil
         Task { await webSocketService.disconnect() }
+    }
+
+    private func generateSummary() async {
+        let items = nags.map { nag in
+            NagSummaryItem(
+                category: nag.category.rawValue,
+                status: nag.status.rawValue,
+                dueAt: nag.dueAt,
+                description: nag.description
+            )
+        }
+        let context = ListSummaryContext(nags: items, filterStatus: "open", isChild: true)
+        do {
+            let result = try await NagzAI.Router().listSummary(context: context)
+            aiSummary = result.summary
+            showAISummary = true
+        } catch {
+            aiSummary = "Couldn't figure out your summary."
+            showAISummary = true
+        }
     }
 }

@@ -1,10 +1,12 @@
 import SwiftUI
 import MessageUI
+import NagzAI
 
 struct AccountView: View {
     let apiClient: APIClient
     let authManager: AuthManager
     let currentUserId: UUID
+    @AppStorage("nagz_ai_personality") private var personalityRaw: String = AIPersonality.standard.rawValue
     @State private var showDeleteConfirmation = false
     @State private var isDeleting = false
     @State private var isExporting = false
@@ -16,6 +18,9 @@ struct AccountView: View {
     var body: some View {
         List {
             accountSection
+            if NagzAI.Router.isAppleIntelligenceAvailable {
+                personalitySection
+            }
             legalSection
             feedbackSection
             exportSection
@@ -67,6 +72,27 @@ struct AccountView: View {
                 Text(currentUserId.uuidString.prefix(8) + "...")
                     .font(.system(.body, design: .monospaced))
             }
+        }
+    }
+
+    private var personalitySection: some View {
+        Section {
+            Picker("AI Personality", selection: $personalityRaw) {
+                ForEach(AIPersonality.allCases, id: \.rawValue) { personality in
+                    VStack(alignment: .leading) {
+                        Text(personality.displayName)
+                        Text(personality.tagline)
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                    }
+                    .tag(personality.rawValue)
+                }
+            }
+            .pickerStyle(.navigationLink)
+        } header: {
+            Text("AI Personality")
+        } footer: {
+            Text("Choose the style of AI-generated coaching, nudges, and summaries.")
         }
     }
 

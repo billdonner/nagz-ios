@@ -8,14 +8,18 @@ struct CreateNagView: View {
     @State private var isLoadingRecipients = true
     @State private var recipientLoadError: String?
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.databaseManager) private var databaseManager
     private let apiClient: APIClient
     private let familyId: UUID?
     private let currentUserId: UUID?
 
-    init(apiClient: APIClient, familyId: UUID?, currentUserId: UUID? = nil) {
+    private let preselectedConnectionId: UUID?
+
+    init(apiClient: APIClient, familyId: UUID?, currentUserId: UUID? = nil, preselectedConnectionId: UUID? = nil) {
         self.apiClient = apiClient
         self.familyId = familyId
         self.currentUserId = currentUserId
+        self.preselectedConnectionId = preselectedConnectionId
         _viewModel = State(initialValue: CreateNagViewModel(apiClient: apiClient, familyId: familyId))
     }
 
@@ -74,6 +78,13 @@ struct CreateNagView: View {
                                 }) {
                                     viewModel.contextFamilyId = nil
                                     viewModel.contextConnectionId = conn.id
+                                }
+                                Task {
+                                    await viewModel.applySmartDefaults(
+                                        db: databaseManager,
+                                        creatorId: currentUserId,
+                                        recipientId: rid
+                                    )
                                 }
                             }
                         }
@@ -199,5 +210,14 @@ struct CreateNagView: View {
             recipientLoadError = "Failed to load recipients."
         }
         isLoadingRecipients = false
+
+        // Pre-select recipient if a connection was specified
+        if let preselectedConnectionId,
+           let conn = connections.first(where: { $0.id == preselectedConnectionId }),
+           let recipientId = otherPartyId(for: conn) {
+            viewModel.recipientId = recipientId
+            viewModel.contextFamilyId = nil
+            viewModel.contextConnectionId = conn.id
+        }
     }
 }

@@ -8,6 +8,8 @@ enum NagEventType: String, Sendable {
     case excuseSubmitted = "excuse_submitted"
     case memberAdded = "member_added"
     case memberRemoved = "member_removed"
+    case connectionInvited = "connection_invited"
+    case connectionAccepted = "connection_accepted"
     case ping
     case pong
 }
@@ -121,7 +123,6 @@ actor WebSocketService {
         self.webSocketTask = task
         task.resume()
         isConnected = true
-        reconnectDelay = 1
 
         DebugLogger.shared.log("WebSocket: connecting to \(url.host ?? "?")")
 
@@ -137,6 +138,7 @@ actor WebSocketService {
                 guard let task = await self.webSocketTask else { return }
                 do {
                     let message = try await task.receive()
+                    await self.resetReconnectDelay()
                     switch message {
                     case .string(let text):
                         await self.handleMessage(text)
@@ -148,8 +150,16 @@ actor WebSocketService {
                         break
                     }
                 } catch {
-                    DebugLogger.shared.log("WebSocket: receive error — \(error.localizedDescription)", level: .warning)
-                    await self.handleDisconnect()
+                    let closeCode = await self.webSocketTask?.closeCode ?? .invalid
+                    DebugLogger.shared.log("WebSocket: receive error (close code \(closeCode.rawValue)) — \(error.localizedDescription)", level: .warning)
+                    // Close code 4001 = auth failure, 4002 = server infra issue — don't retry
+                    let code = closeCode.rawValue
+                    if code == 4001 || code == 4002 {
+                        DebugLogger.shared.log("WebSocket: server rejected (\(code)), stopping reconnect", level: .warning)
+                        await self.handleAuthFailure()
+                    } else {
+                        await self.handleDisconnect()
+                    }
                     return
                 }
             }
@@ -210,6 +220,23 @@ actor WebSocketService {
         )
 
         continuation?.yield(event)
+    }
+
+    private func resetReconnectDelay() {
+        reconnectDelay = 1
+    }
+
+    private func handleAuthFailure() async {
+        isConnected = false
+        receiveTask?.cancel()
+        receiveTask = nil
+        pingTask?.cancel()
+        pingTask = nil
+        webSocketTask?.cancel(with: .goingAway, reason: nil)
+        webSocketTask = nil
+        // Don't reconnect — token is expired/invalid. The next app foreground
+        // cycle will refresh the token and call connect() again.
+        shouldReconnect = false
     }
 
     private func handleDisconnect() async {

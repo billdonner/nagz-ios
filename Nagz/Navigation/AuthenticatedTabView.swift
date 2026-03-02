@@ -1,5 +1,6 @@
 import SwiftUI
 import AppIntents
+import NagzAI
 
 struct AuthenticatedTabView: View {
     let authManager: AuthManager
@@ -46,12 +47,18 @@ struct AuthenticatedTabView: View {
 
     var body: some View {
         TabView(selection: $selectedTab) {
+            #if canImport(FoundationModels)
+            if NagzAI.Router.isAppleIntelligenceAvailable {
+                chatTab
+                    .tag(0)
+            }
+            #endif
             nagsTab
-                .tag(0)
-            peopleTab
                 .tag(1)
-            familyTab
+            peopleTab
                 .tag(2)
+            familyTab
+                .tag(3)
         }
         .task {
             pushService.requestPermissionAndRegister()
@@ -64,14 +71,14 @@ struct AuthenticatedTabView: View {
             NagzShortcutsProvider.updateAppShortcutParameters()
             pushService.restorePendingNag()
             if let nagId = pushService.pendingNagId {
-                selectedTab = 0
+                selectedTab = 1
                 nagNavigationPath.append(nagId)
                 pushService.clearPendingNag()
             }
         }
         .onChange(of: pushService.pendingNagId) { _, newValue in
             if let nagId = newValue {
-                selectedTab = 0
+                selectedTab = 1
                 nagNavigationPath.append(nagId)
                 pushService.clearPendingNag()
             }
@@ -98,12 +105,39 @@ struct AuthenticatedTabView: View {
 
     private var peopleTab: some View {
         NavigationStack {
-            ConnectionListView(apiClient: apiClient)
+            ConnectionListView(
+                apiClient: apiClient,
+                familyId: familyViewModel.family?.familyId,
+                currentUserId: authManager.currentUser?.id,
+                webSocketService: webSocketService,
+                userName: authManager.currentUser?.displayName
+            )
         }
         .tabItem {
             Label("People", systemImage: "person.2.fill")
         }
     }
+
+    #if canImport(FoundationModels)
+    @ViewBuilder
+    private var chatTab: some View {
+        NavigationStack {
+            GlobalChatView(
+                apiClient: apiClient,
+                currentUserId: currentUserId,
+                familyId: familyViewModel.family?.familyId,
+                userName: authManager.currentUser?.displayName ?? authManager.currentUser?.email ?? "User",
+                familyName: familyViewModel.family?.name,
+                memberNames: familyViewModel.members
+                    .filter { $0.status != .removed }
+                    .compactMap(\.displayName)
+            )
+        }
+        .tabItem {
+            Label("Chat", systemImage: "ellipsis.message.fill")
+        }
+    }
+    #endif
 
     private var familyTab: some View {
         NavigationStack {
@@ -127,6 +161,17 @@ private struct FamilyTabContent: View {
     let authManager: AuthManager
     let isAdmin: Bool
     let currentUserId: UUID
+    @Environment(\.aiService) private var aiService
+    @State private var digest: DigestResponse?
+    @State private var showOnboarding = false
+
+    private func memberColor(for role: FamilyRole) -> Color {
+        switch role {
+        case .guardian: .blue
+        case .participant: .orange
+        case .child: .green
+        }
+    }
 
     static var appVersion: String {
         Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "?"
@@ -141,15 +186,110 @@ private struct FamilyTabContent: View {
                 ProgressView()
             } else if let family = viewModel.family {
                 List {
-                    Section("Family") {
-                        LabeledContent("Name", value: family.name)
-                        if isAdmin {
-                            NavigationLink("Members") {
-                                ManageMembersView(apiClient: apiClient, familyId: family.familyId, childCode: family.childCode)
+                    // Inline AI digest at top when there's useful data
+                    if let digest, digest.totals.totalNags > 0 {
+                        Section {
+                            VStack(alignment: .leading, spacing: 8) {
+                                HStack {
+                                    Image(systemName: "sparkles")
+                                        .foregroundStyle(.purple)
+                                    Text("This Week")
+                                        .font(.subheadline.weight(.semibold))
+                                    Spacer()
+                                    NavigationLink {
+                                        FamilyInsightsView(familyId: family.familyId, currentUserId: currentUserId)
+                                    } label: {
+                                        Text("Details")
+                                            .font(.caption)
+                                    }
+                                }
+
+                                Text(digest.summaryText)
+                                    .font(.callout)
+                                    .foregroundStyle(.secondary)
+
+                                HStack(spacing: 0) {
+                                    digestStat(value: digest.totals.completed, label: "Done", color: .green)
+                                    Spacer()
+                                    digestStat(value: digest.totals.open, label: "Open", color: .blue)
+                                    Spacer()
+                                    digestStat(value: digest.totals.missed, label: "Missed", color: .red)
+                                    Spacer()
+                                    Text("\(Int(digest.totals.completionRate * 100))%")
+                                        .font(.title3.weight(.bold).monospacedDigit())
+                                        .foregroundStyle(digest.totals.completionRate >= 0.7 ? .green : .orange)
+                                }
                             }
-                        } else {
-                            NavigationLink("Members") {
-                                MemberListView(apiClient: apiClient, familyId: family.familyId)
+                        }
+                    }
+
+                    // Family members as horizontal scroll
+                    if !viewModel.members.isEmpty {
+                        Section {
+                            ScrollView(.horizontal, showsIndicators: false) {
+                                HStack(spacing: 16) {
+                                    ForEach(viewModel.members.filter { $0.status != .removed }) { member in
+                                        VStack(spacing: 6) {
+                                            ZStack(alignment: .bottomTrailing) {
+                                                Text(String((member.displayName ?? "?").prefix(1)).uppercased())
+                                                    .font(.title3.weight(.bold))
+                                                    .foregroundStyle(.white)
+                                                    .frame(width: 52, height: 52)
+                                                    .background(memberColor(for: member.role))
+                                                    .clipShape(Circle())
+
+                                                if member.userId == currentUserId {
+                                                    Circle()
+                                                        .fill(.blue)
+                                                        .frame(width: 16, height: 16)
+                                                        .overlay {
+                                                            Image(systemName: "star.fill")
+                                                                .font(.system(size: 8))
+                                                                .foregroundStyle(.white)
+                                                        }
+                                                }
+                                            }
+
+                                            Text(member.displayName ?? "?")
+                                                .font(.caption)
+                                                .lineLimit(1)
+                                                .frame(width: 64)
+
+                                            Text(member.role.rawValue.capitalized)
+                                                .font(.caption2)
+                                                .foregroundStyle(.secondary)
+                                        }
+                                    }
+                                }
+                                .padding(.vertical, 4)
+                            }
+
+                            if isAdmin {
+                                NavigationLink {
+                                    ManageMembersView(apiClient: apiClient, familyId: family.familyId, childCode: family.childCode)
+                                } label: {
+                                    Label("Manage Members", systemImage: "person.badge.plus")
+                                }
+                            } else {
+                                NavigationLink {
+                                    MemberListView(apiClient: apiClient, familyId: family.familyId)
+                                } label: {
+                                    Label("All Members", systemImage: "person.2")
+                                }
+                            }
+                        } header: {
+                            Text("\(viewModel.members.filter { $0.status != .removed }.count) Members")
+                        }
+                    } else {
+                        Section("Family") {
+                            if isAdmin {
+                                NavigationLink("Members") {
+                                    ManageMembersView(apiClient: apiClient, familyId: family.familyId, childCode: family.childCode)
+                                }
+                            } else {
+                                NavigationLink("Members") {
+                                    MemberListView(apiClient: apiClient, familyId: family.familyId)
+                                }
                             }
                         }
                     }
@@ -211,7 +351,7 @@ private struct FamilyTabContent: View {
                     Section("Invite Code") {
                         HStack {
                             Text(family.inviteCode)
-                                .font(.system(.body, design: .monospaced))
+                                .font(.system(.title3, design: .monospaced).weight(.semibold))
                             Spacer()
                             Button {
                                 UIPasteboard.general.string = family.inviteCode
@@ -219,11 +359,23 @@ private struct FamilyTabContent: View {
                                 Image(systemName: "doc.on.doc")
                             }
                         }
-                        Text("Share this code with family members so they can join.")
-                            .font(.caption)
-                            .foregroundStyle(.secondary)
+                        ShareLink(
+                            item: "Join our family \"\(family.name)\" on Nagz! Use invite code: \(family.inviteCode)",
+                            subject: Text("Join \(family.name) on Nagz"),
+                            message: Text("Use this code to join our family in the Nagz app.")
+                        ) {
+                            Label("Send Invite", systemImage: "square.and.arrow.up")
+                        }
                     }
 
+
+                    Section {
+                        Button {
+                            showOnboarding = true
+                        } label: {
+                            Label("What's New in Nagz", systemImage: "sparkles")
+                        }
+                    }
 
                     Section {
                         Button("Log Out", role: .destructive) {
@@ -240,6 +392,10 @@ private struct FamilyTabContent: View {
                     }
                 }
                 .navigationTitle(family.name)
+                .onAppear {
+                    Task { await viewModel.loadFamily(id: family.familyId) }
+                    Task { await loadDigest(familyId: family.familyId) }
+                }
             } else {
                 VStack(spacing: 20) {
                     Text("Welcome to Nagz!")
@@ -281,5 +437,32 @@ private struct FamilyTabContent: View {
         .sheet(isPresented: $viewModel.showJoinSheet) {
             JoinFamilyView(viewModel: viewModel)
         }
+        .sheet(isPresented: $showOnboarding) {
+            OnboardingView(isRerun: true)
+        }
+    }
+
+    private func loadDigest(familyId: UUID) async {
+        guard let aiService else { return }
+        do {
+            let d = try await aiService.digest(familyId: familyId)
+            if d.totals.totalNags > 0 {
+                digest = d
+            }
+        } catch {
+            // Non-critical — just don't show the card
+        }
+    }
+
+    private func digestStat(value: Int, label: String, color: Color) -> some View {
+        VStack(spacing: 2) {
+            Text("\(value)")
+                .font(.title3.weight(.bold).monospacedDigit())
+                .foregroundStyle(color)
+            Text(label)
+                .font(.caption2)
+                .foregroundStyle(.secondary)
+        }
+        .frame(maxWidth: .infinity)
     }
 }

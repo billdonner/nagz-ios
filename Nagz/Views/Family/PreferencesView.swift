@@ -49,7 +49,8 @@ struct PreferencesView: View {
                     Text("Both").tag("both")
                 }
 
-                Text("Controls how often and where nag notifications are delivered.")
+                Toggle("Notify when sent nags are overdue", isOn: $viewModel.notifySentOverdue)
+                Text("Get push notifications when nags you sent to others become overdue. Off by default.")
                     .font(.caption)
                     .foregroundStyle(.secondary)
             }

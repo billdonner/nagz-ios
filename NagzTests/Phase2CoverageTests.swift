@@ -549,17 +549,17 @@ final class DatabaseManagerTests: XCTestCase {
     }
 }
 
-// MARK: - OnDeviceAIService Heuristic Tests
+// MARK: - NagzAIAdapter Heuristic Tests
 
-final class OnDeviceAIHeuristicTests: XCTestCase {
+final class NagzAIAdapterHeuristicTests: XCTestCase {
 
-    private func makeService() throws -> (OnDeviceAIService, DatabaseManager) {
+    private func makeService() throws -> (NagzAIAdapter, DatabaseManager) {
         let db = try DatabaseManager.inMemory()
         let keychain = KeychainService()
         let apiClient = APIClient(keychainService: keychain)
         let serverAI = ServerAIService(apiClient: apiClient)
-        let onDevice = OnDeviceAIService(db: db, fallback: serverAI)
-        return (onDevice, db)
+        let adapter = NagzAIAdapter(db: db, fallback: serverAI, preferHeuristic: true)
+        return (adapter, db)
     }
 
     // MARK: - Excuse Summarization (runs entirely locally)
@@ -616,11 +616,29 @@ final class OnDeviceAIHeuristicTests: XCTestCase {
         XCTAssertEqual(response.nagId, nagId)
     }
 
-    // MARK: - Coaching (runs entirely locally)
+    // MARK: - Coaching (runs locally when cache is fresh)
 
     func testCoachingReturnsValidResponse() async throws {
-        let (service, _) = try makeService()
+        let (service, db) = try makeService()
         let nagId = UUID()
+        let writer = await db.writer
+        // Seed fresh cache + nag so adapter doesn't fall back to server
+        try await writer.write { db in
+            try SyncMetadata(entity: "all", lastSyncAt: Date()).insert(db)
+            try CachedNag(
+                id: nagId.uuidString,
+                familyId: UUID().uuidString,
+                creatorId: UUID().uuidString,
+                recipientId: UUID().uuidString,
+                dueAt: Date().addingTimeInterval(3600),
+                category: "chores",
+                doneDefinition: "ack_only",
+                description: "Test nag",
+                status: "open",
+                createdAt: Date(),
+                syncedAt: Date()
+            ).insert(db)
+        }
         let response = try await service.coaching(nagId: nagId)
         XCTAssertEqual(response.nagId, nagId)
         XCTAssertFalse(response.tip.isEmpty)

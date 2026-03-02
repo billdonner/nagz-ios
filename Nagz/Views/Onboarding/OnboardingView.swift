@@ -1,10 +1,16 @@
 import SwiftUI
 
 struct OnboardingView: View {
+    let isRerun: Bool
     @AppStorage("hasSeenOnboarding") private var hasSeenOnboarding = false
+    @Environment(\.dismiss) private var dismiss
     @State private var currentPage = 0
 
     private let pages = OnboardingPage.allPages
+
+    init(isRerun: Bool = false) {
+        self.isRerun = isRerun
+    }
 
     var body: some View {
         TabView(selection: $currentPage) {
@@ -12,7 +18,14 @@ struct OnboardingView: View {
                 OnboardingPageView(
                     page: page,
                     isLastPage: index == pages.count - 1,
-                    onGetStarted: { hasSeenOnboarding = true }
+                    buttonTitle: isRerun ? "Done" : "Get Started",
+                    onGetStarted: {
+                        if isRerun {
+                            dismiss()
+                        } else {
+                            hasSeenOnboarding = true
+                        }
+                    }
                 )
                 .tag(index)
             }
@@ -46,44 +59,44 @@ struct OnboardingPage {
             symbol: "person.3.fill",
             color: .purple,
             title: "Your Family Hub",
-            subtitle: "Set up your family, invite members, and assign roles. Guardians oversee, participants pitch in, kids stay accountable.",
+            subtitle: "Set up your family, invite members, and assign roles. See the weekly AI digest right on your Family page, with member avatars and easy invite sharing.",
             supportingIcons: [
                 ("person.badge.shield.checkmark", "Guardian"),
-                ("person.badge.clock", "Member"),
-                ("person.fill", "Child"),
+                ("sparkles", "Digest"),
+                ("square.and.arrow.up", "Invite"),
             ]
         ),
         OnboardingPage(
-            symbol: "arrow.up.arrow.down.circle.fill",
-            color: .orange,
-            title: "Smart Escalation",
-            subtitle: "Reminders start gentle and get louder. From a friendly nudge to guardian review — nothing slips through the cracks.",
+            symbol: "person.2.fill",
+            color: .teal,
+            title: "Connect & Nag Anyone",
+            subtitle: "Use the People tab to invite friends and family by email. Tap a connection to create a nag instantly, and track per-connection stats.",
             supportingIcons: [
-                ("circle.fill", "Created"),
-                ("exclamationmark.circle.fill", "Overdue"),
-                ("exclamationmark.triangle.fill", "Escalated"),
+                ("person.badge.plus", "Invite"),
+                ("bell.badge.fill", "Nag"),
+                ("chart.bar.fill", "Stats"),
             ]
         ),
         OnboardingPage(
-            symbol: "flame.fill",
-            color: .orange,
-            title: "Earn Points & Streaks",
-            subtitle: "Turn tasks into a game. Complete nags to earn points, build streaks, climb the family leaderboard, and unlock badges.",
+            symbol: "sparkles",
+            color: .indigo,
+            title: "AI-Powered Insights",
+            subtitle: "Get rich AI analysis with urgency scoring, coaching tips, and completion predictions. Choose from celebrity AI personalities for a unique experience.",
             supportingIcons: [
-                ("star.fill", "Points"),
-                ("trophy.fill", "Leaderboard"),
-                ("medal.fill", "Badges"),
+                ("chart.line.uptrend.xyaxis", "Analysis"),
+                ("theatermasks.fill", "Personality"),
+                ("lightbulb.fill", "Coaching"),
             ]
         ),
         OnboardingPage(
             symbol: "bell.and.waves.left.and.right",
             color: .green,
             title: "Stay in the Loop",
-            subtitle: "Get push notifications when nags are due, completed, or need attention. Your family, always connected.",
+            subtitle: "Get push notifications when nags are due, completed, or escalated. Build streaks, earn badges, and climb the family leaderboard.",
             supportingIcons: [
-                ("checkmark.circle.fill", "Done"),
-                ("clock.badge.xmark", "Snooze"),
-                ("text.bubble", "Excuse"),
+                ("bell.fill", "Notify"),
+                ("flame.fill", "Streaks"),
+                ("medal.fill", "Badges"),
             ]
         ),
     ]
@@ -92,6 +105,7 @@ struct OnboardingPage {
 private struct OnboardingPageView: View {
     let page: OnboardingPage
     let isLastPage: Bool
+    let buttonTitle: String
     let onGetStarted: () -> Void
 
     var body: some View {
@@ -130,7 +144,7 @@ private struct OnboardingPageView: View {
 
             if isLastPage {
                 Button(action: onGetStarted) {
-                    Text("Get Started")
+                    Text(buttonTitle)
                         .font(.headline)
                         .frame(maxWidth: .infinity)
                         .padding()

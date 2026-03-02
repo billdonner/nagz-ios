@@ -8,7 +8,10 @@ struct NagzShortcutsProvider: AppShortcutsProvider {
             phrases: [
                 "Create a nag in \(.applicationName)",
                 "Add a nag in \(.applicationName)",
-                "Nag someone in \(.applicationName)"
+                "Nag someone in \(.applicationName)",
+                "Add a task in \(.applicationName)",
+                "Nag me to in \(.applicationName)",
+                "Create a reminder in \(.applicationName)"
             ],
             shortTitle: "Create Nag",
             systemImageName: "plus.circle"
@@ -18,7 +21,10 @@ struct NagzShortcutsProvider: AppShortcutsProvider {
             intent: CompleteNagIntent(),
             phrases: [
                 "Complete a nag in \(.applicationName)",
-                "Mark nag done in \(.applicationName)"
+                "Mark nag done in \(.applicationName)",
+                "I finished in \(.applicationName)",
+                "Mark done in \(.applicationName)",
+                "Complete a task in \(.applicationName)"
             ],
             shortTitle: "Complete Nag",
             systemImageName: "checkmark.circle"
@@ -29,7 +35,9 @@ struct NagzShortcutsProvider: AppShortcutsProvider {
             phrases: [
                 "Show my nags in \(.applicationName)",
                 "List nags in \(.applicationName)",
-                "What are my nags in \(.applicationName)"
+                "What are my nags in \(.applicationName)",
+                "What's overdue in \(.applicationName)",
+                "Show my tasks in \(.applicationName)"
             ],
             shortTitle: "List Nags",
             systemImageName: "list.bullet"
@@ -39,7 +47,8 @@ struct NagzShortcutsProvider: AppShortcutsProvider {
             intent: CheckOverdueIntent(),
             phrases: [
                 "Check overdue nags in \(.applicationName)",
-                "Any overdue nags in \(.applicationName)"
+                "Any overdue nags in \(.applicationName)",
+                "What's late in \(.applicationName)"
             ],
             shortTitle: "Check Overdue",
             systemImageName: "exclamationmark.triangle"
@@ -49,7 +58,8 @@ struct NagzShortcutsProvider: AppShortcutsProvider {
             intent: SnoozeNagIntent(),
             phrases: [
                 "Snooze a nag in \(.applicationName)",
-                "Postpone a nag in \(.applicationName)"
+                "Postpone a nag in \(.applicationName)",
+                "Delay a task in \(.applicationName)"
             ],
             shortTitle: "Snooze Nag",
             systemImageName: "clock.arrow.circlepath"
@@ -59,10 +69,22 @@ struct NagzShortcutsProvider: AppShortcutsProvider {
             intent: FamilyStatusIntent(),
             phrases: [
                 "Family status in \(.applicationName)",
-                "How is my family doing in \(.applicationName)"
+                "How is my family doing in \(.applicationName)",
+                "Family update in \(.applicationName)"
             ],
             shortTitle: "Family Status",
             systemImageName: "chart.bar"
+        )
+
+        AppShortcut(
+            intent: QuickAddNagIntent(),
+            phrases: [
+                "Remind me in \(.applicationName)",
+                "Quick nag in \(.applicationName)",
+                "Remember to in \(.applicationName)"
+            ],
+            shortTitle: "Quick Remind",
+            systemImageName: "bolt.circle"
         )
     }
 }

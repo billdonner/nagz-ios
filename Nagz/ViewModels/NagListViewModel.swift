@@ -67,8 +67,8 @@ final class NagListViewModel {
                 total += connectionOnly.count
             }
 
-            // Sort by due date (soonest first)
-            allNags.sort { $0.dueAt < $1.dueAt }
+            // Sort by due date (newest first)
+            allNags.sort { $0.dueAt > $1.dueAt }
             nags = allNags
             offset = nags.count
         } catch let error as APIError {

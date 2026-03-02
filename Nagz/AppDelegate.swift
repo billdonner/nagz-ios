@@ -4,12 +4,15 @@ import UserNotifications
 @MainActor
 class AppDelegate: NSObject, UIApplicationDelegate {
     var pushService: PushNotificationService?
+    private var notificationDelegate: NotificationDelegate?
 
     func application(
         _ application: UIApplication,
         didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil
     ) -> Bool {
-        UNUserNotificationCenter.current().delegate = NotificationDelegate(appDelegate: self)
+        let delegate = NotificationDelegate(appDelegate: self)
+        notificationDelegate = delegate
+        UNUserNotificationCenter.current().delegate = delegate
         return true
     }
 
@@ -47,11 +50,11 @@ private final class NotificationDelegate: NSObject, UNUserNotificationCenterDele
         _ center: UNUserNotificationCenter,
         didReceive response: UNNotificationResponse
     ) async {
+        // Save to UserDefaults only — no MainActor dispatch during cold launch.
+        // The app picks this up via restorePendingNag() when the UI is ready.
         let nagIdString = response.notification.request.content.userInfo["nag_id"] as? String
-        await MainActor.run {
-            if let nagIdString, let nagId = UUID(uuidString: nagIdString) {
-                self.appDelegate?.pushService?.handleNotificationTap(userInfo: ["nag_id": nagId.uuidString])
-            }
+        if let nagIdString, let nagId = UUID(uuidString: nagIdString) {
+            UserDefaults.standard.set(nagId.uuidString, forKey: "nagz_pending_nag_id")
         }
     }
 }

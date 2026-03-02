@@ -31,7 +31,7 @@ struct AuthResponse: Decodable {
     let familyRole: String?
 }
 
-struct AccountResponse: Decodable, Identifiable, Sendable {
+struct AccountResponse: Codable, Identifiable, Sendable {
     let id: UUID
     let email: String?
     let displayName: String?
