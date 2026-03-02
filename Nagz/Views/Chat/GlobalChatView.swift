@@ -11,6 +11,7 @@ struct GlobalChatView: View {
     let memberNames: [String]
 
     @State private var viewModel = GlobalChatViewModel()
+    @FocusState private var isInputFocused: Bool
     @AppStorage("nagz_ai_personality") private var personalityRaw: String = AIPersonality.standard.rawValue
 
     private var personality: AIPersonality {
@@ -56,6 +57,9 @@ struct GlobalChatView: View {
                         }
                     }
                 }
+                .onTapGesture {
+                    isInputFocused = false
+                }
 
                 if let error = viewModel.errorMessage {
                     Text(error)
@@ -75,9 +79,12 @@ struct GlobalChatView: View {
                         .padding(.horizontal, 12)
                         .padding(.vertical, 8)
                         .background(.quaternary, in: RoundedRectangle(cornerRadius: 20))
+                        .focused($isInputFocused)
+                        .submitLabel(.send)
+                        .onSubmit { sendAndDismiss() }
 
                     Button {
-                        Task { await viewModel.send() }
+                        sendAndDismiss()
                     } label: {
                         Image(systemName: "arrow.up.circle.fill")
                             .font(.title2)
@@ -100,7 +107,14 @@ struct GlobalChatView: View {
                             .foregroundStyle(.secondary)
                     }
                 }
+                ToolbarItemGroup(placement: .keyboard) {
+                    Spacer()
+                    Button("Done") {
+                        isInputFocused = false
+                    }
+                }
             }
+            .scrollDismissesKeyboard(.interactively)
         }
         .onAppear {
             if viewModel.messages.isEmpty {
@@ -115,6 +129,12 @@ struct GlobalChatView: View {
                 )
             }
         }
+    }
+
+    private func sendAndDismiss() {
+        guard canSend else { return }
+        isInputFocused = false
+        Task { await viewModel.send() }
     }
 
     private var canSend: Bool {
