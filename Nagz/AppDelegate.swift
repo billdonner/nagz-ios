@@ -50,11 +50,11 @@ private final class NotificationDelegate: NSObject, UNUserNotificationCenterDele
         _ center: UNUserNotificationCenter,
         didReceive response: UNNotificationResponse
     ) async {
+        // Save to UserDefaults only — no MainActor dispatch during cold launch.
+        // The app picks this up via restorePendingNag() when the UI is ready.
         let nagIdString = response.notification.request.content.userInfo["nag_id"] as? String
-        await MainActor.run {
-            if let nagIdString, let nagId = UUID(uuidString: nagIdString) {
-                self.appDelegate?.pushService?.handleNotificationTap(userInfo: ["nag_id": nagId.uuidString])
-            }
+        if let nagIdString, let nagId = UUID(uuidString: nagIdString) {
+            UserDefaults.standard.set(nagId.uuidString, forKey: "nagz_pending_nag_id")
         }
     }
 }
