@@ -69,6 +69,12 @@ final class GlobalChatViewModel {
             currentUserId: currentUserId,
             collector: toolCollector
         )
+        let excuseTool = SubmitExcuseTool(
+            apiClient: apiClient,
+            familyId: familyId,
+            currentUserId: currentUserId,
+            collector: toolCollector
+        )
 
         let instructions = GlobalChatPrompt.build(
             userName: userName,
@@ -78,7 +84,7 @@ final class GlobalChatViewModel {
         )
 
         session = LanguageModelSession(
-            tools: [listTool, createTool, completeTool, rescheduleTool, statusTool]
+            tools: [listTool, createTool, completeTool, rescheduleTool, statusTool, excuseTool]
         ) {
             instructions
         }

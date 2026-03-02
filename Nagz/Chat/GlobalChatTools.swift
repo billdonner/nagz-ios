@@ -387,4 +387,69 @@ struct NagStatusTool: Tool {
     }
 }
 
+// MARK: - Submit Excuse Tool
+
+struct SubmitExcuseTool: Tool {
+    let name = "submitExcuse"
+    let description = "Submit an excuse on the user's overdue nags. Use when the user says 'send excuses', 'tell them I'm sick', 'explain why I'm late'. This submits excuses on EXISTING overdue nags — it does NOT create new nags."
+
+    @Generable
+    struct Arguments {
+        @Guide(description: "The excuse message to submit. Write it as a brief explanation from the user's perspective, e.g. 'I'm not feeling well, will get to it in a couple days.'")
+        let excuseText: String
+
+        @Guide(description: "Optional: specific task description to match. Leave empty to submit excuse on ALL overdue nags assigned to the user.")
+        let taskDescription: String
+    }
+
+    let apiClient: APIClient
+    let familyId: UUID?
+    let currentUserId: UUID
+    let collector: ToolResultCollector
+
+    nonisolated func call(arguments: Arguments) async throws -> String {
+        guard let familyId else {
+            return "No family set up yet."
+        }
+
+        let page: PaginatedResponse<NagResponse> = try await apiClient.request(
+            .listNags(familyId: familyId, status: .open)
+        )
+
+        // Find overdue nags assigned to current user
+        let now = Date()
+        let myOverdue = page.items.filter { $0.recipientId == currentUserId && $0.dueAt < now }
+
+        if myOverdue.isEmpty {
+            return "You don't have any overdue tasks to excuse."
+        }
+
+        // If a specific task is mentioned, filter to just that one
+        let targets: [NagResponse]
+        let specific = arguments.taskDescription.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
+        if !specific.isEmpty {
+            let matched = myOverdue.filter { nag in
+                let desc = (nag.description ?? nag.category.displayName).lowercased()
+                return desc.contains(specific) || specific.contains(desc)
+            }
+            targets = matched.isEmpty ? myOverdue : matched
+        } else {
+            targets = myOverdue
+        }
+
+        var submitted = 0
+        for nag in targets {
+            let _: ExcuseResponse = try await apiClient.request(
+                .submitExcuse(nagId: nag.id, text: arguments.excuseText)
+            )
+            submitted += 1
+        }
+
+        let nagNames = targets.prefix(3).map { $0.description ?? $0.category.displayName }
+        let nameList = nagNames.joined(separator: ", ")
+        await collector.record("✓ Excused \(submitted) nag\(submitted == 1 ? "" : "s"): \(nameList)")
+        return "Submitted excuse on \(submitted) overdue nag\(submitted == 1 ? "" : "s"): \(nameList). They'll see: \"\(arguments.excuseText)\""
+    }
+}
+
 #endif
