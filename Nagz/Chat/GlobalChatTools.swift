@@ -32,9 +32,10 @@ struct ListNagsTool: Tool {
         default: .open
         }
 
-        let allNags: [NagResponse] = try await apiClient.request(
+        let page: PaginatedResponse<NagResponse> = try await apiClient.request(
             .listNags(familyId: familyId, status: statusFilter)
         )
+        let allNags = page.items
 
         // Filter to nags assigned to current user
         let myNags = allNags.filter { $0.recipientId == currentUserId }
@@ -158,9 +159,10 @@ struct GlobalCompleteTool: Tool {
             return "Could not find that task — no family set up."
         }
 
-        let allNags: [NagResponse] = try await apiClient.request(
+        let page: PaginatedResponse<NagResponse> = try await apiClient.request(
             .listNags(familyId: familyId, status: .open)
         )
+        let allNags = page.items
         let nags = allNags.filter { $0.recipientId == currentUserId }
 
         let query = arguments.nagDescription.lowercased()
@@ -215,9 +217,10 @@ struct GlobalRescheduleTool: Tool {
             return "Could not find that task — no family set up."
         }
 
-        let allNags: [NagResponse] = try await apiClient.request(
+        let page: PaginatedResponse<NagResponse> = try await apiClient.request(
             .listNags(familyId: familyId, status: .open)
         )
+        let allNags = page.items
         let nags = allNags.filter { $0.recipientId == currentUserId }
 
         let query = arguments.nagDescription.lowercased()
@@ -272,9 +275,10 @@ struct NagStatusTool: Tool {
             return "No family set up yet."
         }
 
-        let allNags: [NagResponse] = try await apiClient.request(
+        let page: PaginatedResponse<NagResponse> = try await apiClient.request(
             .listNags(familyId: familyId, status: .open)
         )
+        let allNags = page.items
         let nags = allNags.filter { $0.recipientId == currentUserId }
 
         let now = Date()
