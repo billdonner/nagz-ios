@@ -58,9 +58,6 @@ struct NagDetailView: View {
                         LabeledContent("Category", value: nag.category.displayName)
                         LabeledContent("Due", value: nag.dueAt.relativeDisplay)
                         LabeledContent("Completion", value: nag.doneDefinition.displayName)
-                        if let desc = nag.description {
-                            Text(desc)
-                        }
                         if let recurrence = nag.recurrence {
                             LabeledContent("Repeats", value: recurrence.displayName)
                         }
@@ -193,7 +190,7 @@ struct NagDetailView: View {
                 }
             }
         }
-        .navigationTitle("Nag Detail")
+        .navigationTitle(viewModel.nag?.description ?? viewModel.nag?.category.displayName ?? "Nag Detail")
         .toolbar {
             #if canImport(FoundationModels)
             if let nag = viewModel.nag,
