@@ -6,7 +6,7 @@ import FoundationModels
 
 struct ListNagsTool: Tool {
     let name = "listNags"
-    let description = "List ALL nags the user can see — both nags assigned to them AND nags they sent to others. Use when they ask to see tasks, what's overdue, or what anyone needs to do."
+    let description = "List the user's nags. Separates tasks ASSIGNED TO the user (their to-do list) from tasks they SENT TO others (monitoring). Use when they ask to see tasks, what's overdue, or what anyone needs to do."
 
     @Generable
     struct Arguments {
@@ -46,34 +46,37 @@ struct ListNagsTool: Tool {
         let selfNags = allNags.filter { $0.creatorId == currentUserId && $0.recipientId == currentUserId }
 
         let now = Date()
-        let allOverdue = allNags.filter { $0.dueAt < now }
         var parts: [String] = []
-        parts.append("Found \(allNags.count) total task\(allNags.count == 1 ? "" : "s"). \(allOverdue.count) overdue.")
+
+        // Lead with YOUR tasks (what the user needs to do)
+        let myTasks = receivedFromOthers + selfNags
+        let myOverdue = myTasks.filter { $0.dueAt < now }
+        parts.append("YOUR TO-DO: \(myTasks.count) task\(myTasks.count == 1 ? "" : "s") assigned to you. \(myOverdue.count) overdue.")
 
         if !receivedFromOthers.isEmpty {
-            let ro = receivedFromOthers.filter { $0.dueAt < now }
-            parts.append("For you: \(receivedFromOthers.count) (\(ro.count) overdue).")
             for nag in receivedFromOthers.prefix(5) {
                 let desc = nag.description ?? nag.category.displayName
-                parts.append("• \(desc)\(nag.dueAt < now ? " OVERDUE" : "")")
-            }
-        }
-
-        if !sentToOthers.isEmpty {
-            let so = sentToOthers.filter { $0.dueAt < now }
-            parts.append("Sent to others: \(sentToOthers.count) (\(so.count) overdue).")
-            for nag in sentToOthers.prefix(5) {
-                let desc = nag.description ?? nag.category.displayName
-                let to = nag.recipientDisplayName ?? "?"
-                parts.append("• \(desc) → \(to)\(nag.dueAt < now ? " OVERDUE" : "")")
+                let from = nag.creatorDisplayName ?? "?"
+                parts.append("• \(desc) (from \(from))\(nag.dueAt < now ? " OVERDUE" : "")")
             }
         }
 
         if !selfNags.isEmpty {
-            parts.append("Self: \(selfNags.count).")
+            parts.append("Self-reminders:")
             for nag in selfNags.prefix(3) {
                 let desc = nag.description ?? nag.category.displayName
                 parts.append("• \(desc)\(nag.dueAt < now ? " OVERDUE" : "")")
+            }
+        }
+
+        // Then monitoring section
+        if !sentToOthers.isEmpty {
+            let so = sentToOthers.filter { $0.dueAt < now }
+            parts.append("MONITORING (sent to others): \(sentToOthers.count) (\(so.count) overdue).")
+            for nag in sentToOthers.prefix(5) {
+                let desc = nag.description ?? nag.category.displayName
+                let to = nag.recipientDisplayName ?? "?"
+                parts.append("• \(desc) → \(to)\(nag.dueAt < now ? " OVERDUE" : "")")
             }
         }
 
@@ -325,7 +328,7 @@ struct GlobalRescheduleTool: Tool {
 
 struct NagStatusTool: Tool {
     let name = "nagStatus"
-    let description = "Give a quick summary of ALL the user's tasks — received, sent to others, and self-reminders. Use for 'how am I doing?', 'status update', 'what's my workload?', 'who's overdue?'"
+    let description = "Give a quick summary of the user's tasks. Separates tasks ASSIGNED TO the user (their to-do list) from tasks they SENT TO others (monitoring). Use for 'how am I doing?', 'status update', 'what's my workload?', 'who's overdue?'"
 
     @Generable
     struct Arguments {}
@@ -349,40 +352,44 @@ struct NagStatusTool: Tool {
         let received = allNags.filter { $0.recipientId == currentUserId && $0.creatorId != currentUserId }
         let sent = allNags.filter { $0.creatorId == currentUserId && $0.recipientId != currentUserId }
         let selfNags = allNags.filter { $0.creatorId == currentUserId && $0.recipientId == currentUserId }
-        let allOverdue = allNags.filter { $0.dueAt < now }
+        let receivedOverdue = received.filter { $0.dueAt < now }
+        let selfOverdue = selfNags.filter { $0.dueAt < now }
         let sentOverdue = sent.filter { $0.dueAt < now }
 
         var parts: [String] = []
-        parts.append("\(allNags.count) open task\(allNags.count == 1 ? "" : "s") total. \(allOverdue.count) overdue.")
+
+        // Lead with YOUR tasks (what the user needs to do)
+        let myTaskCount = received.count + selfNags.count
+        let myOverdueCount = receivedOverdue.count + selfOverdue.count
+        parts.append("YOUR TO-DO: \(myTaskCount) task\(myTaskCount == 1 ? "" : "s") assigned to you. \(myOverdueCount) overdue.")
 
         if !received.isEmpty {
-            let receivedOverdue = received.filter { $0.dueAt < now }
-            parts.append("\(received.count) assigned to you (\(receivedOverdue.count) overdue).")
+            parts.append("  From others: \(received.count) (\(receivedOverdue.count) overdue).")
         }
+        if !selfNags.isEmpty {
+            parts.append("  Self-reminders: \(selfNags.count) (\(selfOverdue.count) overdue).")
+        }
+
+        // Then monitoring section (what the user sent to others)
         if !sent.isEmpty {
-            parts.append("\(sent.count) sent to others (\(sentOverdue.count) overdue).")
-            // Name who's overdue
+            parts.append("MONITORING (sent to others): \(sent.count) task\(sent.count == 1 ? "" : "s") (\(sentOverdue.count) overdue).")
             let overdueByPerson = Dictionary(grouping: sentOverdue) { $0.recipientDisplayName ?? "someone" }
             for (name, nags) in overdueByPerson.sorted(by: { $0.key < $1.key }) {
                 parts.append("  → \(name): \(nags.count) overdue")
             }
         }
-        if !selfNags.isEmpty {
-            let selfOverdue = selfNags.filter { $0.dueAt < now }
-            parts.append("\(selfNags.count) self-reminder\(selfNags.count == 1 ? "" : "s") (\(selfOverdue.count) overdue).")
-        }
 
-        let upcoming = allNags.filter { $0.dueAt >= now }.sorted { $0.dueAt < $1.dueAt }
-        if let next = upcoming.first {
+        // Next upcoming task for the user
+        let myUpcoming = (received + selfNags).filter { $0.dueAt >= now }.sorted { $0.dueAt < $1.dueAt }
+        if let next = myUpcoming.first {
             let desc = next.description ?? next.category.displayName
             let formatter = RelativeDateTimeFormatter()
             formatter.unitsStyle = .full
             let relative = formatter.localizedString(for: next.dueAt, relativeTo: now)
-            parts.append("Next up: \(desc) \(relative).")
+            parts.append("Next up for you: \(desc) \(relative).")
         }
 
-        let summary = parts.joined(separator: " ")
-        // Don't record a system message for status — the AI response will summarize
+        let summary = parts.joined(separator: "\n")
         return summary
     }
 }

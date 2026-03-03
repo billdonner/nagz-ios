@@ -170,7 +170,7 @@ struct GlobalChatView: View {
             HStack(spacing: 4) {
                 Image(systemName: "exclamationmark.triangle.fill")
                     .font(.caption2)
-                Text("**\(overdueSummary.overdueCount) overdue**")
+                Text("**\(overdueSummary.overdueCount) overdue** for you")
                 if let name = overdueSummary.mostUrgentName, let late = overdueSummary.mostUrgentLateDisplay {
                     Text("— \(name) is \(late) late")
                 }
@@ -184,7 +184,7 @@ struct GlobalChatView: View {
             HStack(spacing: 4) {
                 Image(systemName: "checkmark.circle")
                     .font(.caption2)
-                Text("**\(overdueSummary.totalOpen) open** — all on track")
+                Text("**\(overdueSummary.totalOpen) open** for you — all on track")
             }
             .font(.caption)
             .foregroundStyle(.white)
@@ -210,7 +210,9 @@ struct GlobalChatView: View {
             do {
                 let response: PaginatedResponse<NagResponse> = try await apiClient.request(.listNags(status: .open, limit: 200))
                 let now = Date()
-                let overdueNags = response.items.filter { $0.dueAt < now }
+                // Only count nags assigned TO me (received + self-nags), not ones I sent to others
+                let myNags = response.items.filter { $0.recipientId == currentUserId }
+                let overdueNags = myNags.filter { $0.dueAt < now }
                 let mostUrgent = overdueNags.min(by: { $0.dueAt < $1.dueAt })
 
                 var lateName: String?
@@ -227,7 +229,7 @@ struct GlobalChatView: View {
                     }
                 }
 
-                overdueSummary = (overdueNags.count, response.items.count, lateName, lateDisplay)
+                overdueSummary = (overdueNags.count, myNags.count, lateName, lateDisplay)
             } catch {
                 // Silently fail — banner just won't update
             }
