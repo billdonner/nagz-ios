@@ -386,13 +386,14 @@ private struct CollapsibleNagSection: View {
             }
         } header: {
             Button(action: onToggle) {
-                HStack {
+                HStack(spacing: 6) {
                     if let icon {
                         Image(systemName: icon)
                     }
                     Text(title)
                     Text("(\(count))")
                         .foregroundStyle(.secondary)
+                    UrgencySparkline(nags: nags)
                     Spacer()
                     Image(systemName: isCollapsed ? "chevron.right" : "chevron.down")
                         .font(.caption.weight(.semibold))
@@ -400,6 +401,52 @@ private struct CollapsibleNagSection: View {
                 }
             }
             .textCase(nil)
+        }
+    }
+}
+
+// MARK: - Urgency Sparkline
+
+private struct UrgencySparkline: View {
+    let nags: [NagResponse]
+
+    var body: some View {
+        HStack(spacing: 2) {
+            ForEach(Array(sortedPips.prefix(20).enumerated()), id: \.offset) { _, color in
+                RoundedRectangle(cornerRadius: 1)
+                    .fill(color)
+                    .frame(width: 3, height: 10)
+            }
+        }
+    }
+
+    private var sortedPips: [Color] {
+        nags.map { pipColor(for: $0) }
+            .sorted { $0.urgencyOrder < $1.urgencyOrder }
+    }
+
+    private func pipColor(for nag: NagResponse) -> Color {
+        if nag.status == .completed { return .green }
+        if nag.status == .missed { return .red }
+        guard nag.status == .open else { return .gray }
+        let interval = nag.dueAt.timeIntervalSince(Date())
+        if interval > 24 * 3600 { return .gray }
+        if interval > 2 * 3600 { return .blue }
+        if interval > 0 { return .yellow }
+        if interval > -3600 { return .orange }
+        return .red
+    }
+}
+
+private extension Color {
+    var urgencyOrder: Int {
+        switch self {
+        case .red: 0
+        case .orange: 1
+        case .yellow: 2
+        case .blue: 3
+        case .green: 4
+        default: 5
         }
     }
 }
