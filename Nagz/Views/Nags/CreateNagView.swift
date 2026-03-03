@@ -133,6 +133,14 @@ struct CreateNagView: View {
                     }
                 }
 
+                if isSelfNag {
+                    Section {
+                        Label("This will remind **you**, not someone else.", systemImage: "exclamationmark.triangle.fill")
+                            .foregroundStyle(.orange)
+                            .font(.callout)
+                    }
+                }
+
                 Section {
                     Button {
                         Task { await viewModel.createNag() }
@@ -141,7 +149,7 @@ struct CreateNagView: View {
                             ProgressView()
                                 .frame(maxWidth: .infinity)
                         } else {
-                            Text("Create Nag")
+                            Text(isSelfNag ? "Remind Myself" : "Create Nag")
                                 .frame(maxWidth: .infinity)
                         }
                     }
@@ -159,6 +167,11 @@ struct CreateNagView: View {
                 if viewModel.didCreate { dismiss() }
             }
         }
+    }
+
+    private var isSelfNag: Bool {
+        guard let rid = viewModel.recipientId, let uid = currentUserId else { return false }
+        return rid == uid
     }
 
     private var filteredMembers: [MemberDetail] {
