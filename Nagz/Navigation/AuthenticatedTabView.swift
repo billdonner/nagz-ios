@@ -1,5 +1,6 @@
 import SwiftUI
 import AppIntents
+import MessageUI
 import NagzAI
 
 struct AuthenticatedTabView: View {
@@ -57,7 +58,7 @@ struct AuthenticatedTabView: View {
                 .tag(1)
             peopleTab
                 .tag(2)
-            familyTab
+            settingsTab
                 .tag(3)
         }
         .task {
@@ -139,9 +140,9 @@ struct AuthenticatedTabView: View {
     }
     #endif
 
-    private var familyTab: some View {
+    private var settingsTab: some View {
         NavigationStack {
-            FamilyTabContent(
+            SettingsTabContent(
                 viewModel: familyViewModel,
                 apiClient: apiClient,
                 authManager: authManager,
@@ -150,20 +151,277 @@ struct AuthenticatedTabView: View {
             )
         }
         .tabItem {
-            Label("Family", systemImage: "person.3.fill")
+            Label("Settings", systemImage: "gearshape.fill")
         }
     }
 }
 
-private struct FamilyTabContent: View {
+// MARK: - Settings Tab
+
+private struct SettingsTabContent: View {
     @Bindable var viewModel: FamilyViewModel
     let apiClient: APIClient
     let authManager: AuthManager
     let isAdmin: Bool
     let currentUserId: UUID
+
+    @AppStorage("nagz_ai_personality") private var personalityRaw: String = AIPersonality.standard.rawValue
+    @State private var showDeleteConfirmation = false
+    @State private var isDeleting = false
+    @State private var isExporting = false
+    @State private var showExportSuccess = false
+    @State private var errorMessage: String?
+    @State private var showFeedbackMail = false
+    @State private var showMailUnavailableAlert = false
+    @State private var showOnboarding = false
+
+    static var appVersion: String {
+        Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "?"
+    }
+    static var appBuild: String {
+        Bundle.main.infoDictionary?["CFBundleVersion"] as? String ?? "?"
+    }
+
+    var body: some View {
+        List {
+            Section("Account") {
+                if let email = authManager.currentUser?.email {
+                    LabeledContent("Email", value: email)
+                }
+                LabeledContent("User ID") {
+                    Text(currentUserId.uuidString.prefix(8) + "...")
+                        .font(.system(.body, design: .monospaced))
+                }
+            }
+
+            if NagzAI.Router.isAppleIntelligenceAvailable {
+                Section {
+                    Picker("AI Personality", selection: $personalityRaw) {
+                        ForEach(AIPersonality.allCases, id: \.rawValue) { personality in
+                            VStack(alignment: .leading) {
+                                Text(personality.displayName)
+                                Text(personality.tagline)
+                                    .font(.caption)
+                                    .foregroundStyle(.secondary)
+                            }
+                            .tag(personality.rawValue)
+                        }
+                    }
+                    .pickerStyle(.navigationLink)
+                } header: {
+                    Text("AI Personality")
+                } footer: {
+                    Text("Choose the style of AI-generated coaching, nudges, and summaries.")
+                }
+            }
+
+            Section("Family") {
+                NavigationLink {
+                    FamilyTabContent(
+                        viewModel: viewModel,
+                        apiClient: apiClient,
+                        isAdmin: isAdmin,
+                        currentUserId: currentUserId
+                    )
+                } label: {
+                    Label {
+                        if let family = viewModel.family {
+                            Text(family.name)
+                        } else {
+                            Text("Create or Join Family")
+                        }
+                    } icon: {
+                        Image(systemName: "person.3.fill")
+                    }
+                }
+            }
+
+            if let family = viewModel.family {
+                Section("Gamification") {
+                    NavigationLink("Points & Streaks") {
+                        GamificationView(
+                            apiClient: apiClient,
+                            familyId: family.familyId,
+                            userId: currentUserId,
+                            members: viewModel.members
+                        )
+                    }
+                    if isAdmin {
+                        NavigationLink("Incentive Rules") {
+                            IncentiveRulesView(apiClient: apiClient, familyId: family.familyId)
+                        }
+                    }
+                }
+            }
+
+            Section("Safety") {
+                NavigationLink {
+                    SafetyView(
+                        apiClient: apiClient,
+                        members: viewModel.members,
+                        currentUserId: currentUserId,
+                        isGuardian: isAdmin
+                    )
+                } label: {
+                    Label("Safety", systemImage: "shield.fill")
+                }
+            }
+
+            Section("Legal") {
+                NavigationLink {
+                    LegalDocumentView(apiClient: apiClient, documentType: .privacyPolicy)
+                } label: {
+                    Label("Privacy Policy", systemImage: "hand.raised.fill")
+                }
+                NavigationLink {
+                    LegalDocumentView(apiClient: apiClient, documentType: .termsOfService)
+                } label: {
+                    Label("Terms of Service", systemImage: "doc.text.fill")
+                }
+            }
+
+            Section("Feedback") {
+                Button {
+                    if MFMailComposeViewController.canSendMail() {
+                        showFeedbackMail = true
+                    } else {
+                        showMailUnavailableAlert = true
+                    }
+                } label: {
+                    Label("Report an Issue", systemImage: "envelope.fill")
+                }
+            }
+
+            Section {
+                Button {
+                    Task { await exportData() }
+                } label: {
+                    HStack {
+                        Label("Export My Data", systemImage: "square.and.arrow.up")
+                        Spacer()
+                        if isExporting {
+                            ProgressView()
+                        }
+                    }
+                }
+                .disabled(isExporting)
+
+                Button("Delete My Account", role: .destructive) {
+                    showDeleteConfirmation = true
+                }
+                .disabled(isDeleting)
+            } header: {
+                Text("Your Data")
+            } footer: {
+                Text("Export downloads a copy of all your personal data (GDPR/CCPA). Deleting your account is permanent and cannot be undone.")
+            }
+
+            Section {
+                Button {
+                    showOnboarding = true
+                } label: {
+                    Label("What's New in Nagz", systemImage: "sparkles")
+                }
+            }
+
+            Section {
+                Button("Log Out", role: .destructive) {
+                    Task { await authManager.logout() }
+                }
+            }
+
+            Section {
+                Text("\(authManager.currentUser?.email ?? "\u{2014}") \u{2022} v\(Self.appVersion) (\(Self.appBuild))")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                    .frame(maxWidth: .infinity, alignment: .center)
+                    .listRowBackground(Color.clear)
+            }
+
+            if let error = errorMessage {
+                Section {
+                    Text(error).foregroundStyle(.red).font(.callout)
+                }
+            }
+        }
+        .navigationTitle("Settings")
+        .alert("Export Complete", isPresented: $showExportSuccess) {
+            Button("OK") {}
+        } message: {
+            Text("Your data export has been prepared. You will receive it shortly.")
+        }
+        .sheet(isPresented: $showFeedbackMail) {
+            MailComposeView(
+                recipient: Constants.Feedback.email,
+                subject: "Nagz Feedback \u{2014} \(Self.appVersion)",
+                body: "Please describe the issue:\n\n\n---\n\(DeviceDiagnostics.summary)",
+                attachmentData: DebugLogger.shared.logFileData(),
+                attachmentFilename: "nagz_debug.log"
+            )
+        }
+        .alert("Mail Unavailable", isPresented: $showMailUnavailableAlert) {
+            Button("Copy Info") {
+                UIPasteboard.general.string = DeviceDiagnostics.summary
+            }
+            Button("OK", role: .cancel) {}
+        } message: {
+            Text("Mail is not configured on this device. Tap 'Copy Info' to copy device diagnostics to the clipboard, then paste into your preferred email app and send to \(Constants.Feedback.email).")
+        }
+        .confirmationDialog(
+            "Delete Account",
+            isPresented: $showDeleteConfirmation
+        ) {
+            Button("Delete My Account", role: .destructive) {
+                Task { await deleteAccount() }
+            }
+        } message: {
+            Text("Are you sure? This permanently deletes your account and all associated data. This cannot be undone.")
+        }
+        .sheet(isPresented: $showOnboarding) {
+            OnboardingView(isRerun: true)
+        }
+    }
+
+    private func exportData() async {
+        isExporting = true
+        errorMessage = nil
+        do {
+            let _: [String: AnyCodableValue] = try await apiClient.request(.exportAccountData())
+            showExportSuccess = true
+        } catch let error as APIError {
+            errorMessage = error.errorDescription
+        } catch {
+            errorMessage = error.localizedDescription
+        }
+        isExporting = false
+    }
+
+    private func deleteAccount() async {
+        isDeleting = true
+        errorMessage = nil
+        do {
+            let _: AccountResponse = try await apiClient.request(
+                .deleteAccount(userId: currentUserId)
+            )
+            await authManager.logout()
+        } catch let error as APIError {
+            errorMessage = error.errorDescription
+        } catch {
+            errorMessage = error.localizedDescription
+        }
+        isDeleting = false
+    }
+}
+
+// MARK: - Family Management (push destination from Settings)
+
+private struct FamilyTabContent: View {
+    @Bindable var viewModel: FamilyViewModel
+    let apiClient: APIClient
+    let isAdmin: Bool
+    let currentUserId: UUID
     @Environment(\.aiService) private var aiService
     @State private var digest: DigestResponse?
-    @State private var showOnboarding = false
 
     private func memberColor(for role: FamilyRole) -> Color {
         switch role {
@@ -171,13 +429,6 @@ private struct FamilyTabContent: View {
         case .participant: .orange
         case .child: .green
         }
-    }
-
-    static var appVersion: String {
-        Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "?"
-    }
-    static var appBuild: String {
-        Bundle.main.infoDictionary?["CFBundleVersion"] as? String ?? "?"
     }
 
     var body: some View {
@@ -314,40 +565,6 @@ private struct FamilyTabContent: View {
                         }
                     }
 
-                    Section("Gamification") {
-                        NavigationLink("Points & Streaks") {
-                            GamificationView(
-                                apiClient: apiClient,
-                                familyId: family.familyId,
-                                userId: currentUserId,
-                                members: viewModel.members
-                            )
-                        }
-                        if isAdmin {
-                            NavigationLink("Incentive Rules") {
-                                IncentiveRulesView(apiClient: apiClient, familyId: family.familyId)
-                            }
-                        }
-                    }
-
-                    Section("Safety & Account") {
-                        NavigationLink("Safety") {
-                            SafetyView(
-                                apiClient: apiClient,
-                                members: viewModel.members,
-                                currentUserId: currentUserId,
-                                isGuardian: isAdmin
-                            )
-                        }
-                        NavigationLink("Account") {
-                            AccountView(
-                                apiClient: apiClient,
-                                authManager: authManager,
-                                currentUserId: currentUserId
-                            )
-                        }
-                    }
-
                     Section("Invite Code") {
                         HStack {
                             Text(family.inviteCode)
@@ -366,29 +583,6 @@ private struct FamilyTabContent: View {
                         ) {
                             Label("Send Invite", systemImage: "square.and.arrow.up")
                         }
-                    }
-
-
-                    Section {
-                        Button {
-                            showOnboarding = true
-                        } label: {
-                            Label("What's New in Nagz", systemImage: "sparkles")
-                        }
-                    }
-
-                    Section {
-                        Button("Log Out", role: .destructive) {
-                            Task { await authManager.logout() }
-                        }
-                    }
-
-                    Section {
-                        Text("\(authManager.currentUser?.email ?? "—") \u{2022} v\(Self.appVersion) (\(Self.appBuild))")
-                            .font(.caption)
-                            .foregroundStyle(.secondary)
-                            .frame(maxWidth: .infinity, alignment: .center)
-                            .listRowBackground(Color.clear)
                     }
                 }
                 .navigationTitle(family.name)
@@ -414,18 +608,6 @@ private struct FamilyTabContent: View {
                         viewModel.showJoinSheet = true
                     }
                     .buttonStyle(.bordered)
-
-                    Spacer()
-
-                    Button("Log Out", role: .destructive) {
-                        Task { await authManager.logout() }
-                    }
-
-                    Text("\(authManager.currentUser?.email ?? "—") \u{2022} v\(Self.appVersion) (\(Self.appBuild))")
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
-
-                    Spacer()
                 }
                 .padding()
                 .navigationTitle("Family")
@@ -436,9 +618,6 @@ private struct FamilyTabContent: View {
         }
         .sheet(isPresented: $viewModel.showJoinSheet) {
             JoinFamilyView(viewModel: viewModel)
-        }
-        .sheet(isPresented: $showOnboarding) {
-            OnboardingView(isRerun: true)
         }
     }
 
