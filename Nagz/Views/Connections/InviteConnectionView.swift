@@ -2,115 +2,91 @@ import SwiftUI
 
 struct InviteConnectionView: View {
     @Bindable var viewModel: ConnectionListViewModel
+    @State private var showShareSheet = false
     @Environment(\.dismiss) private var dismiss
 
     var body: some View {
         NavigationStack {
-            if viewModel.inviteSuccess {
-                inviteSuccessView
-            } else {
-                inviteFormView
-            }
-        }
-    }
+            Form {
+                Section("Invite by Email") {
+                    TextField("Email address", text: $viewModel.inviteEmail)
+                        .keyboardType(.emailAddress)
+                        .textContentType(.emailAddress)
+                        .autocorrectionDisabled()
+                        .textInputAutocapitalization(.never)
+                }
 
-    private var inviteFormView: some View {
-        Form {
-            Section("Invite by Email") {
-                TextField("Email address", text: $viewModel.inviteEmail)
-                    .keyboardType(.emailAddress)
-                    .textContentType(.emailAddress)
-                    .autocorrectionDisabled()
-                    .textInputAutocapitalization(.never)
-            }
-
-            if let error = viewModel.inviteError {
                 Section {
-                    Label {
-                        Text(error)
-                    } icon: {
-                        Image(systemName: "person.fill.questionmark")
-                            .foregroundStyle(.orange)
-                    }
-                    .foregroundStyle(.secondary)
+                    Text("This registers the invite on Nagz. You'll share the details with them next.")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
                 }
-            }
 
-            Section {
-                Button {
-                    Task { await viewModel.sendInvite() }
-                } label: {
-                    if viewModel.isInviting {
-                        ProgressView()
-                            .frame(maxWidth: .infinity)
-                    } else {
-                        Text("Send Invite")
-                            .frame(maxWidth: .infinity)
+                if let error = viewModel.inviteError {
+                    Section {
+                        Label {
+                            Text(error)
+                        } icon: {
+                            Image(systemName: "person.fill.questionmark")
+                                .foregroundStyle(.orange)
+                        }
+                        .foregroundStyle(.secondary)
                     }
                 }
-                .disabled(viewModel.inviteEmail.isEmpty || viewModel.isInviting)
+
+                Section {
+                    Button {
+                        Task {
+                            await viewModel.sendInvite()
+                            if viewModel.inviteSuccess {
+                                showShareSheet = true
+                            }
+                        }
+                    } label: {
+                        if viewModel.isInviting {
+                            ProgressView()
+                                .frame(maxWidth: .infinity)
+                        } else {
+                            Label("Create Invite & Share", systemImage: "square.and.arrow.up")
+                                .frame(maxWidth: .infinity)
+                        }
+                    }
+                    .disabled(viewModel.inviteEmail.isEmpty || viewModel.isInviting)
+                }
             }
-        }
-        .navigationTitle("Invite Connection")
-        .toolbar {
-            ToolbarItem(placement: .cancellationAction) {
-                Button("Cancel") { dismiss() }
+            .navigationTitle("Invite Someone")
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button("Cancel") { dismiss() }
+                }
             }
-        }
-    }
-
-    private var inviteSuccessView: some View {
-        VStack(spacing: 24) {
-            Spacer()
-
-            Image(systemName: "checkmark.circle.fill")
-                .font(.system(size: 64))
-                .foregroundStyle(.green)
-
-            Text("Invite Sent!")
-                .font(.title2.bold())
-
-            Text("Let them know to download Nagz and sign up.")
-                .font(.subheadline)
-                .foregroundStyle(.secondary)
-                .multilineTextAlignment(.center)
-                .padding(.horizontal)
-
-            ShareLink(item: shareMessage) {
-                Label("Share with \(viewModel.invitedEmail)", systemImage: "square.and.arrow.up")
-                    .frame(maxWidth: .infinity)
-                    .padding()
-                    .background(.blue)
-                    .foregroundStyle(.white)
-                    .clipShape(RoundedRectangle(cornerRadius: 12))
-            }
-            .padding(.horizontal, 40)
-
-            Button("Done") {
+            .sheet(isPresented: $showShareSheet, onDismiss: {
+                // Whether they shared or cancelled, dismiss back to People list
                 viewModel.inviteSuccess = false
                 viewModel.invitedEmail = ""
                 dismiss()
-            }
-            .foregroundStyle(.secondary)
-
-            Spacer()
-        }
-        .navigationTitle("Invite Sent")
-        .toolbar {
-            ToolbarItem(placement: .confirmationAction) {
-                Button("Done") {
-                    viewModel.inviteSuccess = false
-                    viewModel.invitedEmail = ""
-                    dismiss()
-                }
+            }) {
+                ActivitySheet(items: [shareMessage])
             }
         }
     }
 
     private var shareMessage: String {
-        if viewModel.invitedEmail.isEmpty {
+        let email = viewModel.invitedEmail
+        if email.isEmpty {
             return "I'm using Nagz to stay on top of family reminders! Download it and connect with me: https://nagz.online"
         }
-        return "I invited you to Nagz! Download the app and sign up with \(viewModel.invitedEmail) so we can stay connected. https://nagz.online"
+        return "I invited you to Nagz! Download the app and sign up with \(email) so we can stay connected. https://nagz.online"
     }
+}
+
+/// Wraps UIActivityViewController for programmatic share sheet presentation.
+private struct ActivitySheet: UIViewControllerRepresentable {
+    let items: [Any]
+
+    func makeUIViewController(context: Context) -> UIActivityViewController {
+        UIActivityViewController(activityItems: items, applicationActivities: nil)
+    }
+
+    func updateUIViewController(_ uiViewController: UIActivityViewController, context: Context) {}
 }

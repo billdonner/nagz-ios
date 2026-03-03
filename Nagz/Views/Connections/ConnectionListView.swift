@@ -49,15 +49,20 @@ struct ConnectionListView: View {
             }
 
             if !viewModel.sentInvites.isEmpty {
-                Section("Invites You Sent") {
+                Section {
                     ForEach(viewModel.sentInvites) { invite in
                         HStack {
-                            VStack(alignment: .leading) {
+                            VStack(alignment: .leading, spacing: 4) {
                                 Text(invite.otherPartyDisplayName ?? invite.otherPartyEmail ?? invite.inviteeEmail)
                                     .font(.body)
-                                Text("Waiting for response \u{2022} \(invite.createdAt, style: .relative) ago")
-                                    .font(.caption)
-                                    .foregroundStyle(.secondary)
+                                HStack(spacing: 6) {
+                                    Text(invite.createdAt, style: .relative)
+                                        .monospacedDigit()
+                                    Text("ago")
+                                    inviteAgeBadge(for: invite)
+                                }
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
                             }
                             Spacer()
                             Button(role: .destructive) {
@@ -67,6 +72,17 @@ struct ConnectionListView: View {
                             }
                             .buttonStyle(.borderless)
                         }
+                    }
+                } header: {
+                    Text("Invites You Sent")
+                } footer: {
+                    if let staleCount = staleInviteCount, staleCount > 0 {
+                        Label(
+                            staleCount == 1
+                                ? "1 invite has been waiting a while — consider resharing or removing it."
+                                : "\(staleCount) invites have been waiting a while — consider resharing or removing them.",
+                            systemImage: "lightbulb.fill"
+                        )
                     }
                 }
             }
@@ -205,6 +221,36 @@ struct ConnectionListView: View {
                 .foregroundStyle(.tertiary)
         }
         .padding(.vertical, 4)
+    }
+
+    /// Number of sent invites older than 5 days
+    private var staleInviteCount: Int? {
+        let stale = viewModel.sentInvites.filter { inviteAgeDays($0) >= 5 }
+        return stale.isEmpty ? nil : stale.count
+    }
+
+    private func inviteAgeDays(_ invite: ConnectionResponse) -> Int {
+        Int(Date().timeIntervalSince(invite.createdAt) / 86400)
+    }
+
+    @ViewBuilder
+    private func inviteAgeBadge(for invite: ConnectionResponse) -> some View {
+        let days = inviteAgeDays(invite)
+        if days >= 14 {
+            Text("Likely missed")
+                .font(.caption2.weight(.semibold))
+                .foregroundStyle(.white)
+                .padding(.horizontal, 6)
+                .padding(.vertical, 2)
+                .background(.red, in: Capsule())
+        } else if days >= 5 {
+            Text("Getting stale")
+                .font(.caption2.weight(.semibold))
+                .foregroundStyle(.white)
+                .padding(.horizontal, 6)
+                .padding(.vertical, 2)
+                .background(.orange, in: Capsule())
+        }
     }
 
     private func statPill(count: Int, label: String, icon: String, color: Color) -> some View {

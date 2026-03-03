@@ -389,6 +389,28 @@ struct NagStatusTool: Tool {
             parts.append("Next up for you: \(desc) \(relative).")
         }
 
+        // Check for stale pending invites
+        do {
+            let pendingPage: PaginatedResponse<ConnectionResponse> = try await apiClient.request(
+                .listConnections(status: .pending)
+            )
+            let staleInvites = pendingPage.items.filter {
+                $0.inviterId == currentUserId &&
+                Date().timeIntervalSince($0.createdAt) > 5 * 86400
+            }
+            if !staleInvites.isEmpty {
+                parts.append("STALE INVITES: \(staleInvites.count) pending invite\(staleInvites.count == 1 ? " has" : "s have") been waiting 5+ days with no response.")
+                for invite in staleInvites {
+                    let name = invite.otherPartyDisplayName ?? invite.otherPartyEmail ?? invite.inviteeEmail
+                    let days = Int(Date().timeIntervalSince(invite.createdAt) / 86400)
+                    parts.append("  → \(name): \(days) days, no response")
+                }
+                parts.append("Suggest resharing the invite or checking if the email is correct.")
+            }
+        } catch {
+            // Non-critical — skip stale invite check
+        }
+
         let summary = parts.joined(separator: "\n")
         return summary
     }

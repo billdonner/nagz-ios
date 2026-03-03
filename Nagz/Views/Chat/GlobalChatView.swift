@@ -11,7 +11,7 @@ struct GlobalChatView: View {
     let memberNames: [String]
 
     @State private var viewModel = GlobalChatViewModel()
-    @State private var overdueSummary: (overdueCount: Int, totalOpen: Int, mostUrgentName: String?, mostUrgentLateDisplay: String?) = (0, 0, nil, nil)
+    @State private var overdueSummary: (overdueCount: Int, totalOpen: Int, mostUrgentLateDisplay: String?) = (0, 0, nil)
     @FocusState private var isInputFocused: Bool
     @AppStorage("nagz_ai_personality") private var personalityRaw: String = AIPersonality.standard.rawValue
     @AppStorage("selectedTab") private var selectedTab = 0
@@ -171,25 +171,29 @@ struct GlobalChatView: View {
                 Image(systemName: "exclamationmark.triangle.fill")
                     .font(.caption2)
                 Text("**\(overdueSummary.overdueCount) overdue** for you")
-                if let name = overdueSummary.mostUrgentName, let late = overdueSummary.mostUrgentLateDisplay {
-                    Text("— \(name) is \(late) late")
+                if let late = overdueSummary.mostUrgentLateDisplay {
+                    Text("· worst \(late) late")
                 }
             }
+            .lineLimit(1)
             .font(.caption)
             .foregroundStyle(.white)
             .frame(maxWidth: .infinity)
-            .padding(.vertical, 8)
+            .padding(.vertical, 6)
+            .padding(.horizontal, 8)
             .background(Color.red.opacity(0.85))
         } else if overdueSummary.totalOpen > 0 {
             HStack(spacing: 4) {
                 Image(systemName: "checkmark.circle")
                     .font(.caption2)
-                Text("**\(overdueSummary.totalOpen) open** for you — all on track")
+                Text("**\(overdueSummary.totalOpen) open** for you · all on track")
             }
+            .lineLimit(1)
             .font(.caption)
             .foregroundStyle(.white)
             .frame(maxWidth: .infinity)
-            .padding(.vertical, 8)
+            .padding(.vertical, 6)
+            .padding(.horizontal, 8)
             .background(Color.blue.opacity(0.75))
         } else {
             HStack(spacing: 4) {
@@ -197,10 +201,12 @@ struct GlobalChatView: View {
                     .font(.caption2)
                 Text("All caught up!")
             }
+            .lineLimit(1)
             .font(.caption)
             .foregroundStyle(.white)
             .frame(maxWidth: .infinity)
-            .padding(.vertical, 8)
+            .padding(.vertical, 6)
+            .padding(.horizontal, 8)
             .background(Color.green.opacity(0.75))
         }
     }
@@ -215,10 +221,8 @@ struct GlobalChatView: View {
                 let overdueNags = myNags.filter { $0.dueAt < now }
                 let mostUrgent = overdueNags.min(by: { $0.dueAt < $1.dueAt })
 
-                var lateName: String?
                 var lateDisplay: String?
                 if let urgent = mostUrgent {
-                    lateName = urgent.description ?? urgent.category.displayName
                     let interval = now.timeIntervalSince(urgent.dueAt)
                     if interval < 3600 {
                         lateDisplay = "\(Int(interval / 60))m"
@@ -229,7 +233,7 @@ struct GlobalChatView: View {
                     }
                 }
 
-                overdueSummary = (overdueNags.count, myNags.count, lateName, lateDisplay)
+                overdueSummary = (overdueNags.count, myNags.count, lateDisplay)
             } catch {
                 // Silently fail — banner just won't update
             }
