@@ -22,9 +22,15 @@ struct NagRowView: View {
 
                 HStack(spacing: 4) {
                     if let directionText = directionLabel {
-                        Text(directionText)
-                            .font(.caption)
-                            .foregroundStyle(directionColor ?? .secondary)
+                        HStack(spacing: 2) {
+                            if let icon = directionIcon {
+                                Image(systemName: icon)
+                                    .font(.caption2.weight(.bold))
+                            }
+                            Text(directionText)
+                        }
+                        .font(.caption)
+                        .foregroundStyle(directionColor ?? .secondary)
                     }
                     if nag.recurrence != nil {
                         Image(systemName: "repeat")
@@ -63,7 +69,7 @@ struct NagRowView: View {
         }
         .padding(.vertical, 4)
         .padding(.horizontal, 4)
-        .background(urgency.backgroundColor)
+        .background(urgency.hasAccentBar ? urgency.backgroundColor : directionBackground)
         .clipShape(RoundedRectangle(cornerRadius: 8))
         .overlay(alignment: .leading) {
             if urgency.hasAccentBar {
@@ -85,6 +91,30 @@ struct NagRowView: View {
             let name = nag.creatorDisplayName ?? "someone"
             return "From: \(name) \u{2022}"
         }
+    }
+
+    private var directionIcon: String? {
+        guard let userId = currentUserId else { return nil }
+        if nag.creatorId == userId && nag.recipientId == userId {
+            return "arrow.uturn.backward" // self-nag
+        } else if nag.recipientId == userId {
+            return "arrow.down.left"       // received
+        } else if nag.creatorId == userId {
+            return "arrow.up.right"        // sent
+        }
+        return nil
+    }
+
+    private var directionBackground: Color {
+        guard let userId = currentUserId else { return .clear }
+        if nag.creatorId == userId && nag.recipientId == userId {
+            return .purple.opacity(0.06)
+        } else if nag.recipientId == userId {
+            return .blue.opacity(0.06)
+        } else if nag.creatorId == userId {
+            return .orange.opacity(0.06)
+        }
+        return .clear
     }
 
     private var directionColor: Color? {
