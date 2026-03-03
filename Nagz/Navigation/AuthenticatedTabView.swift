@@ -548,8 +548,8 @@ private struct FamilyTabContent: View {
                     }
 
                     if isAdmin {
-                        Section("Settings") {
-                            NavigationLink("Preferences") {
+                        Section("Family Settings") {
+                            NavigationLink("Family Preferences") {
                                 PreferencesView(apiClient: apiClient, familyId: family.familyId)
                             }
                             NavigationLink("Consents") {
