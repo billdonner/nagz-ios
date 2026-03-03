@@ -20,6 +20,8 @@ struct NagListView: View {
     @State private var generatingSummary = false
     @State private var scheduleNagId: UUID?
     @State private var showSchedulePicker = false
+    @State private var collapsedSections: Set<String> = []
+    @State private var hasSetDefaults = false
     @AppStorage("nagz_ai_personality") private var personalityRaw: String = AIPersonality.standard.rawValue
     @Environment(\.scenePhase) private var scenePhase
 
@@ -71,137 +73,11 @@ struct NagListView: View {
 
     var body: some View {
         VStack(spacing: 0) {
-            Picker("Filter", selection: $viewModel.filter) {
-                ForEach(NagFilter.allCases, id: \.self) { filter in
-                    Text(filter.rawValue).tag(filter)
-                }
-            }
-            .pickerStyle(.segmented)
-            .padding()
-
-            Group {
-                if viewModel.isLoading && viewModel.nags.isEmpty {
-                    ProgressView()
-                        .frame(maxWidth: .infinity, maxHeight: .infinity)
-                } else if let error = viewModel.errorMessage, viewModel.nags.isEmpty {
-                    ContentUnavailableView {
-                        Label("Error", systemImage: "exclamationmark.triangle")
-                    } description: {
-                        Text(error)
-                    } actions: {
-                        Button("Retry") { Task { await viewModel.loadNags() } }
-                    }
-                } else if viewModel.nags.isEmpty {
-                    ContentUnavailableView {
-                        Label("No Nagz", systemImage: "checkmark.circle")
-                    } description: {
-                        VStack(spacing: 12) {
-                            Text(viewModel.filter == .open ? "All caught up!" : "No nagz to show.")
-                            SiriTipView(intent: CreateNagIntent(), isVisible: .constant(true))
-                        }
-                    }
-                } else if viewMode == .list {
-                    TimelineView(.periodic(from: .now, by: 60)) { _ in
-                        List {
-                            ForEach(nagsForMeByCounterpart, id: \.name) { group in
-                                Section("From \(group.name)") {
-                                    ForEach(group.nags) { nag in
-                                        NavigationLink(value: nag.id) {
-                                            NagRowView(nag: nag, currentUserId: currentUserId)
-                                        }
-                                    }
-                                }
-                            }
-
-                            ForEach(nagsForOthersByCounterpart, id: \.name) { group in
-                                Section("To \(group.name)") {
-                                    ForEach(group.nags) { nag in
-                                        NavigationLink(value: nag.id) {
-                                            NagRowView(nag: nag, currentUserId: currentUserId)
-                                        }
-                                    }
-                                }
-                            }
-
-                            if !selfNags.isEmpty {
-                                Section {
-                                    ForEach(selfNags) { nag in
-                                        NavigationLink(value: nag.id) {
-                                            NagRowView(nag: nag, currentUserId: currentUserId)
-                                        }
-                                    }
-                                } header: {
-                                    Label("My Reminders", systemImage: "pin.fill")
-                                }
-                            }
-
-                            if viewModel.isLoadingMore {
-                                ProgressView()
-                                    .frame(maxWidth: .infinity)
-                            }
-                        }
-                        .listStyle(.insetGrouped)
-                    }
-                } else {
-                    TimelineView(.periodic(from: .now, by: 60)) { _ in
-                        ScheduleNagListView(
-                            nagsForMe: nagsForMe,
-                            nagsForOthers: nagsForOthers,
-                            selfNags: selfNags,
-                            currentUserId: currentUserId,
-                            onSchedule: { nagId in
-                                scheduleNagId = nagId
-                                showSchedulePicker = true
-                            }
-                        )
-                    }
-                }
-            }
+            filterPicker
+            contentArea
         }
         .navigationTitle("Nagz")
-        .toolbar {
-            ToolbarItem(placement: .bottomBar) {
-                Text("v\(Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "?") (\(Bundle.main.infoDictionary?["CFBundleVersion"] as? String ?? "?"))")
-                    .font(.caption2)
-                    .foregroundStyle(.tertiary)
-            }
-            if NagzAI.Router.isAppleIntelligenceAvailable {
-                ToolbarItem(placement: .topBarLeading) {
-                    Button {
-                        generatingSummary = true
-                        Task {
-                            await generateSummary()
-                            generatingSummary = false
-                        }
-                    } label: {
-                        if generatingSummary {
-                            ProgressView()
-                        } else {
-                            Image(systemName: "sparkles")
-                        }
-                    }
-                    .disabled(viewModel.nags.isEmpty || generatingSummary)
-                }
-            }
-            ToolbarItem(placement: .topBarTrailing) {
-                Button {
-                    withAnimation {
-                        viewMode = viewMode == .list ? .schedule : .list
-                    }
-                } label: {
-                    Image(systemName: viewMode == .list ? "calendar" : "list.bullet")
-                }
-            }
-            if canCreateNags {
-                ToolbarItem(placement: .primaryAction) {
-                    Button {
-                        showCreateNag = true
-                    } label: {
-                        Image(systemName: "plus")
-                    }
-                }
-            }
-        }
+        .toolbar { nagToolbar }
         .sheet(isPresented: $showAISummary) {
             AISummarySheet(
                 nags: viewModel.nags,
@@ -253,8 +129,191 @@ struct NagListView: View {
         }
         .refreshable { await viewModel.refresh() }
         .onChange(of: viewModel.filter) {
-            Task { await viewModel.loadNags() }
+            Task {
+                await viewModel.loadNags()
+                applyDefaultCollapse()
+            }
         }
+        .onChange(of: viewModel.nags.count) {
+            if !hasSetDefaults && !viewModel.nags.isEmpty {
+                hasSetDefaults = true
+                applyDefaultCollapse()
+            }
+        }
+    }
+
+    private var filterPicker: some View {
+        Picker("Filter", selection: $viewModel.filter) {
+            ForEach(NagFilter.allCases, id: \.self) { filter in
+                Text(filter.rawValue).tag(filter)
+            }
+        }
+        .pickerStyle(.segmented)
+        .padding()
+    }
+
+    @ViewBuilder
+    private var contentArea: some View {
+        if viewModel.isLoading && viewModel.nags.isEmpty {
+            ProgressView()
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+        } else if let error = viewModel.errorMessage, viewModel.nags.isEmpty {
+            ContentUnavailableView {
+                Label("Error", systemImage: "exclamationmark.triangle")
+            } description: {
+                Text(error)
+            } actions: {
+                Button("Retry") { Task { await viewModel.loadNags() } }
+            }
+        } else if viewModel.nags.isEmpty {
+            ContentUnavailableView {
+                Label("No Nagz", systemImage: "checkmark.circle")
+            } description: {
+                VStack(spacing: 12) {
+                    Text(viewModel.filter == .open ? "All caught up!" : "No nagz to show.")
+                    SiriTipView(intent: CreateNagIntent(), isVisible: .constant(true))
+                }
+            }
+        } else if viewMode == .list {
+            TimelineView(.periodic(from: .now, by: 60)) { _ in
+                nagList
+            }
+        } else {
+            TimelineView(.periodic(from: .now, by: 60)) { _ in
+                ScheduleNagListView(
+                    nagsForMe: nagsForMe,
+                    nagsForOthers: nagsForOthers,
+                    selfNags: selfNags,
+                    currentUserId: currentUserId,
+                    onSchedule: { nagId in
+                        scheduleNagId = nagId
+                        showSchedulePicker = true
+                    }
+                )
+            }
+        }
+    }
+
+    @ToolbarContentBuilder
+    private var nagToolbar: some ToolbarContent {
+        ToolbarItem(placement: .bottomBar) {
+            Text("v\(Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "?") (\(Bundle.main.infoDictionary?["CFBundleVersion"] as? String ?? "?"))")
+                .font(.caption2)
+                .foregroundStyle(.tertiary)
+        }
+        if NagzAI.Router.isAppleIntelligenceAvailable {
+            ToolbarItem(placement: .topBarLeading) {
+                Button {
+                    generatingSummary = true
+                    Task {
+                        await generateSummary()
+                        generatingSummary = false
+                    }
+                } label: {
+                    if generatingSummary {
+                        ProgressView()
+                    } else {
+                        Image(systemName: "sparkles")
+                    }
+                }
+                .disabled(viewModel.nags.isEmpty || generatingSummary)
+            }
+        }
+        ToolbarItem(placement: .topBarTrailing) {
+            Button {
+                withAnimation {
+                    viewMode = viewMode == .list ? .schedule : .list
+                }
+            } label: {
+                Image(systemName: viewMode == .list ? "calendar" : "list.bullet")
+            }
+        }
+        if canCreateNags {
+            ToolbarItem(placement: .primaryAction) {
+                Button {
+                    showCreateNag = true
+                } label: {
+                    Image(systemName: "plus")
+                }
+            }
+        }
+    }
+
+    private var nagList: some View {
+        List {
+            ForEach(nagsForMeByCounterpart, id: \.name) { group in
+                CollapsibleNagSection(
+                    title: "From \(group.name)",
+                    count: group.nags.count,
+                    nags: group.nags,
+                    currentUserId: currentUserId,
+                    isCollapsed: collapsedSections.contains("from:\(group.name)"),
+                    onToggle: { toggleSection("from:\(group.name)") }
+                )
+            }
+
+            ForEach(nagsForOthersByCounterpart, id: \.name) { group in
+                CollapsibleNagSection(
+                    title: "To \(group.name)",
+                    count: group.nags.count,
+                    nags: group.nags,
+                    currentUserId: currentUserId,
+                    isCollapsed: collapsedSections.contains("to:\(group.name)"),
+                    onToggle: { toggleSection("to:\(group.name)") }
+                )
+            }
+
+            if !selfNags.isEmpty {
+                CollapsibleNagSection(
+                    title: "My Reminders",
+                    count: selfNags.count,
+                    nags: selfNags,
+                    currentUserId: currentUserId,
+                    isCollapsed: collapsedSections.contains("self"),
+                    onToggle: { toggleSection("self") },
+                    icon: "pin.fill"
+                )
+            }
+
+            if viewModel.isLoadingMore {
+                ProgressView()
+                    .frame(maxWidth: .infinity)
+            }
+        }
+        .listStyle(.insetGrouped)
+    }
+
+    private func toggleSection(_ key: String) {
+        withAnimation {
+            if collapsedSections.contains(key) {
+                collapsedSections.remove(key)
+            } else {
+                collapsedSections.insert(key)
+            }
+        }
+    }
+
+    /// Set default collapsed state based on filter tab
+    private func applyDefaultCollapse() {
+        var collapsed = Set<String>()
+        switch viewModel.filter {
+        case .open:
+            // Collapse "To" and "Self" sections, expand "From"
+            for group in nagsForOthersByCounterpart {
+                collapsed.insert("to:\(group.name)")
+            }
+            collapsed.insert("self")
+        case .completed, .missed, .all:
+            // Collapse everything
+            for group in nagsForMeByCounterpart {
+                collapsed.insert("from:\(group.name)")
+            }
+            for group in nagsForOthersByCounterpart {
+                collapsed.insert("to:\(group.name)")
+            }
+            collapsed.insert("self")
+        }
+        collapsedSections = collapsed
     }
 
     private func startWebSocket() {
@@ -301,6 +360,46 @@ struct NagListView: View {
         } catch {
             aiSummary = "Couldn't generate summary."
             showAISummary = true
+        }
+    }
+}
+
+// MARK: - Collapsible Section
+
+private struct CollapsibleNagSection: View {
+    let title: String
+    let count: Int
+    let nags: [NagResponse]
+    let currentUserId: UUID?
+    let isCollapsed: Bool
+    let onToggle: () -> Void
+    var icon: String? = nil
+
+    var body: some View {
+        Section {
+            if !isCollapsed {
+                ForEach(nags) { nag in
+                    NavigationLink(value: nag.id) {
+                        NagRowView(nag: nag, currentUserId: currentUserId)
+                    }
+                }
+            }
+        } header: {
+            Button(action: onToggle) {
+                HStack {
+                    if let icon {
+                        Image(systemName: icon)
+                    }
+                    Text(title)
+                    Text("(\(count))")
+                        .foregroundStyle(.secondary)
+                    Spacer()
+                    Image(systemName: isCollapsed ? "chevron.right" : "chevron.down")
+                        .font(.caption.weight(.semibold))
+                        .foregroundStyle(.secondary)
+                }
+            }
+            .textCase(nil)
         }
     }
 }
