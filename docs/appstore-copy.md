@@ -49,11 +49,14 @@ Block and report family members. Guardian consent required for child accounts. A
 - Family management with guardian, participant, and child roles
 - Five-phase smart escalation with quiet hours and daily caps
 - AI-mediated excuse summaries and follow-ups
+- AI chat with 6 personalities — create, complete, and manage tasks conversationally
 - Gamification with points, streaks, and family leaderboards
 - Siri Shortcuts for hands-free nag creation and completion
 - Push notifications and optional SMS reminders
+- Smart task views with collapsible sections, urgency sparklines, and direction indicators
 - Categories: chores, homework, meds, errands, and custom
 - Weekly family reports for guardians
+- Connections — nag friends and family outside your household
 - COPPA-compliant child accounts
 - Account data export and deletion
 - Works on iPhone and iPad
