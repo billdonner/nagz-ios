@@ -99,6 +99,17 @@ struct CreateNagView: View {
                         }
                     }
 
+                    // Quick-time presets
+                    ScrollView(.horizontal, showsIndicators: false) {
+                        HStack(spacing: 8) {
+                            quickTimeButton("1h", icon: "clock", interval: 3600)
+                            quickTimeButton("3h", icon: "clock.fill", interval: 3 * 3600)
+                            quickTimeButton("Tonight", icon: "moon.fill", hours: 20)
+                            quickTimeButton("Tomorrow", icon: "sunrise.fill", tomorrowHour: 9)
+                            quickTimeButton("Weekend", icon: "figure.walk", nextWeekend: true)
+                        }
+                    }
+
                     DatePicker("Due", selection: $viewModel.dueAt, in: Date()..., displayedComponents: [.date, .hourAndMinute])
 
                     Picker("Completion Type", selection: $viewModel.doneDefinition) {
@@ -184,6 +195,36 @@ struct CreateNagView: View {
         } else {
             return conn.inviterId
         }
+    }
+
+    // MARK: - Quick Time Helpers
+
+    private func quickTimeButton(_ label: String, icon: String, interval: TimeInterval? = nil, hours: Int? = nil, tomorrowHour: Int? = nil, nextWeekend: Bool = false) -> some View {
+        Button {
+            let cal = Calendar.current
+            if let interval {
+                viewModel.dueAt = Date().addingTimeInterval(interval)
+            } else if let hours {
+                let today = cal.startOfDay(for: Date())
+                let target = cal.date(bySettingHour: hours, minute: 0, second: 0, of: today)!
+                viewModel.dueAt = target > Date() ? target : target.addingTimeInterval(86400)
+            } else if let tomorrowHour {
+                let tomorrow = cal.date(byAdding: .day, value: 1, to: cal.startOfDay(for: Date()))!
+                viewModel.dueAt = cal.date(bySettingHour: tomorrowHour, minute: 0, second: 0, of: tomorrow)!
+            } else if nextWeekend {
+                let weekday = cal.component(.weekday, from: Date())
+                let daysUntilSat = (7 - weekday + 7) % 7
+                let sat = cal.date(byAdding: .day, value: daysUntilSat == 0 ? 7 : daysUntilSat, to: cal.startOfDay(for: Date()))!
+                viewModel.dueAt = cal.date(bySettingHour: 10, minute: 0, second: 0, of: sat)!
+            }
+        } label: {
+            Label(label, systemImage: icon)
+                .font(.caption)
+                .padding(.horizontal, 10)
+                .padding(.vertical, 6)
+                .background(Color(.systemGray6), in: Capsule())
+        }
+        .buttonStyle(.plain)
     }
 
     private func loadRecipients() async {

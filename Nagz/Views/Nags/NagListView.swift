@@ -180,14 +180,17 @@ struct NagListView: View {
             }
         } else {
             TimelineView(.periodic(from: .now, by: 60)) { _ in
-                ScheduleNagListView(
-                    nagsForMe: nagsForMe,
-                    nagsForOthers: nagsForOthers,
-                    selfNags: selfNags,
+                DayPlannerView(
+                    nags: viewModel.nags,
                     currentUserId: currentUserId,
-                    onSchedule: { nagId in
-                        scheduleNagId = nagId
-                        showSchedulePicker = true
+                    onCommit: { nagId, date in
+                        Task {
+                            let update = NagUpdate(committedAt: date)
+                            let _: NagResponse = try await viewModel.apiClient.request(
+                                .updateNag(nagId: nagId, update: update)
+                            )
+                            await viewModel.loadNags()
+                        }
                     }
                 )
             }

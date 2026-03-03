@@ -24,6 +24,40 @@ final class ConnectionListViewModel {
         var openCount: Int = 0
         var completedCount: Int = 0
         var overdueCount: Int = 0
+        var missedCount: Int = 0
+        var onTimeCount: Int = 0       // completed before or at dueAt
+        var totalNags: Int = 0
+
+        /// Completion rate as a percentage (completed / (completed + missed))
+        var completionRate: Int? {
+            let total = completedCount + missedCount
+            guard total > 0 else { return nil }
+            return Int(Double(completedCount) / Double(total) * 100)
+        }
+
+        /// On-time rate as a percentage (onTime / completed)
+        var onTimeRate: Int? {
+            guard completedCount > 0 else { return nil }
+            return Int(Double(onTimeCount) / Double(completedCount) * 100)
+        }
+
+        /// Reliability label based on completion + on-time rates
+        var reliabilityLabel: String? {
+            guard let cr = completionRate else { return nil }
+            if cr >= 90 { return "Reliable" }
+            if cr >= 70 { return "Usually Reliable" }
+            if cr >= 50 { return "Sometimes Late" }
+            return "Needs Work"
+        }
+
+        /// Color for the reliability badge
+        var reliabilityColor: String {
+            guard let cr = completionRate else { return "gray" }
+            if cr >= 90 { return "green" }
+            if cr >= 70 { return "blue" }
+            if cr >= 50 { return "orange" }
+            return "red"
+        }
     }
 
     init(apiClient: APIClient) {
@@ -69,6 +103,7 @@ final class ConnectionListViewModel {
                         )
                         var stats = ConnectionNagStats()
                         let now = Date()
+                        stats.totalNags = resp.items.count
                         for nag in resp.items {
                             if nag.creatorId == conn.inviterId {
                                 stats.sent += 1
@@ -81,7 +116,13 @@ final class ConnectionListViewModel {
                                     stats.overdueCount += 1
                                 }
                             }
-                            if nag.status == .completed { stats.completedCount += 1 }
+                            if nag.status == .completed {
+                                stats.completedCount += 1
+                                if let completedAt = nag.completedAt, completedAt <= nag.dueAt {
+                                    stats.onTimeCount += 1
+                                }
+                            }
+                            if nag.status == .missed { stats.missedCount += 1 }
                         }
                         return (conn.id, stats)
                     } catch {

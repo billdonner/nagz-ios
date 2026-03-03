@@ -214,6 +214,33 @@ struct ConnectionListView: View {
                         statPill(count: stats.overdueCount, label: "Late", icon: "exclamationmark.triangle.fill", color: .red)
                     }
                 }
+
+                // Analytics: completion rate, on-time rate, reliability badge
+                if stats.totalNags >= 3 {
+                    HStack(spacing: 12) {
+                        if let cr = stats.completionRate {
+                            analyticsChip(value: "\(cr)%", caption: "Done", color: cr >= 70 ? .green : .orange)
+                        }
+                        if let otr = stats.onTimeRate {
+                            analyticsChip(value: "\(otr)%", caption: "On Time", color: otr >= 70 ? .blue : .orange)
+                        }
+                        if let reliability = stats.reliabilityLabel {
+                            let badgeColor: Color = switch stats.reliabilityColor {
+                            case "green": .green
+                            case "blue": .blue
+                            case "orange": .orange
+                            default: .red
+                            }
+                            Text(reliability)
+                                .font(.caption2.weight(.semibold))
+                                .foregroundStyle(.white)
+                                .padding(.horizontal, 6)
+                                .padding(.vertical, 2)
+                                .background(badgeColor, in: Capsule())
+                        }
+                        Spacer()
+                    }
+                }
             }
 
             Text("Connected \(connection.respondedAt ?? connection.createdAt, style: .relative) ago")
@@ -250,6 +277,17 @@ struct ConnectionListView: View {
                 .padding(.horizontal, 6)
                 .padding(.vertical, 2)
                 .background(.orange, in: Capsule())
+        }
+    }
+
+    private func analyticsChip(value: String, caption: String, color: Color) -> some View {
+        VStack(spacing: 1) {
+            Text(value)
+                .font(.caption.weight(.bold))
+                .foregroundStyle(color)
+            Text(caption)
+                .font(.caption2)
+                .foregroundStyle(.secondary)
         }
     }
 

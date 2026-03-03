@@ -9,7 +9,7 @@ struct ChatBubble: View {
         switch message.role {
         case .assistant:
             HStack {
-                Text(message.content)
+                markdownText(message.content)
                     .padding(12)
                     .background(Color(.systemGray5))
                     .clipShape(RoundedRectangle(cornerRadius: 16))
@@ -27,7 +27,7 @@ struct ChatBubble: View {
             }
 
         case .system:
-            Text(message.content)
+            markdownText(message.content)
                 .font(.caption)
                 .foregroundStyle(.secondary)
                 .padding(.horizontal, 12)
@@ -35,6 +35,17 @@ struct ChatBubble: View {
                 .background(Color(.systemGray6))
                 .clipShape(Capsule())
         }
+    }
+
+    /// Render markdown (bold, italic) in dynamic strings.
+    private func markdownText(_ string: String) -> Text {
+        if let attributed = try? AttributedString(
+            markdown: string,
+            options: .init(interpretedSyntax: .inlineOnlyPreservingWhitespace)
+        ) {
+            return Text(attributed)
+        }
+        return Text(string)
     }
 }
 
