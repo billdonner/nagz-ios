@@ -189,16 +189,15 @@ struct ConnectionListView: View {
             }
 
             if let stats = viewModel.connectionStats[connection.id] {
-                HStack(spacing: 16) {
-                    statLabel(count: stats.sent, label: "Sent", icon: "arrow.up.circle.fill", color: .blue)
-                    statLabel(count: stats.received, label: "Received", icon: "arrow.down.circle.fill", color: .orange)
-                    statLabel(count: stats.openCount, label: "Open", icon: "circle.fill", color: .yellow)
-                    statLabel(count: stats.completedCount, label: "Done", icon: "checkmark.circle.fill", color: .green)
+                HStack(spacing: 0) {
+                    statPill(count: stats.sent, label: "Snt", icon: "arrow.up.circle.fill", color: .blue)
+                    statPill(count: stats.received, label: "Rcvd", icon: "arrow.down.circle.fill", color: .orange)
+                    statPill(count: stats.openCount, label: "Open", icon: "circle.fill", color: .yellow)
+                    statPill(count: stats.completedCount, label: "Done", icon: "checkmark.circle.fill", color: .green)
                     if stats.overdueCount > 0 {
-                        statLabel(count: stats.overdueCount, label: "Overdue", icon: "exclamationmark.triangle.fill", color: .red)
+                        statPill(count: stats.overdueCount, label: "Late", icon: "exclamationmark.triangle.fill", color: .red)
                     }
                 }
-                .font(.caption)
             }
 
             Text("Connected \(connection.respondedAt ?? connection.createdAt, style: .relative) ago")
@@ -208,14 +207,19 @@ struct ConnectionListView: View {
         .padding(.vertical, 4)
     }
 
-    private func statLabel(count: Int, label: String, icon: String, color: Color) -> some View {
-        HStack(spacing: 3) {
-            Image(systemName: icon)
-                .foregroundStyle(color)
-            Text("\(count)")
-                .fontWeight(.semibold)
+    private func statPill(count: Int, label: String, icon: String, color: Color) -> some View {
+        VStack(spacing: 2) {
+            HStack(spacing: 2) {
+                Image(systemName: icon)
+                    .foregroundStyle(color)
+                Text("\(count)")
+                    .fontWeight(.semibold)
+            }
+            .font(.caption)
             Text(label)
+                .font(.caption2)
                 .foregroundStyle(.secondary)
         }
+        .frame(maxWidth: .infinity)
     }
 }
