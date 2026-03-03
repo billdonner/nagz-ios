@@ -12,6 +12,7 @@ final class GamificationViewModel {
     var nudges: [GamificationNudgeItem] = []
     var isLoading = false
     var errorMessage: String?
+    var isNotEnabled = false
 
     private let apiClient: APIClient
     private let familyId: UUID
@@ -26,12 +27,16 @@ final class GamificationViewModel {
     func load() async {
         isLoading = true
         errorMessage = nil
+        isNotEnabled = false
         do {
             let loadedSummary: GamificationSummary = try await apiClient.request(
                 .gamificationSummary(familyId: familyId)
             )
             summary = loadedSummary
         } catch let error as APIError {
+            if case .forbidden = error {
+                isNotEnabled = true
+            }
             errorMessage = error.errorDescription
             isLoading = false
             return

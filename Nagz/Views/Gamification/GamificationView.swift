@@ -11,9 +11,16 @@ struct GamificationView: View {
     }
 
     var body: some View {
-        List {
+        Group {
             if viewModel.isLoading && viewModel.summary == nil {
-                ProgressView().frame(maxWidth: .infinity)
+                ProgressView()
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+            } else if viewModel.isNotEnabled {
+                ContentUnavailableView {
+                    Label("Gamification Off", systemImage: "trophy")
+                } description: {
+                    Text("Gamification is not enabled for this family. A guardian can turn it on in Family \u{2192} Preferences.")
+                }
             } else if let error = viewModel.errorMessage, viewModel.summary == nil {
                 ContentUnavailableView {
                     Label("Error", systemImage: "exclamationmark.triangle")
@@ -21,29 +28,31 @@ struct GamificationView: View {
                     Text(error)
                 }
             } else {
-                if !viewModel.nudges.isEmpty {
-                    nudgesSection
-                }
+                List {
+                    if !viewModel.nudges.isEmpty {
+                        nudgesSection
+                    }
 
-                if let summary = viewModel.summary {
-                    summarySection(summary)
-                }
+                    if let summary = viewModel.summary {
+                        summarySection(summary)
+                    }
 
-                if let board = viewModel.leaderboard, !board.leaderboard.isEmpty {
-                    leaderboardSection(board)
-                }
+                    if let board = viewModel.leaderboard, !board.leaderboard.isEmpty {
+                        leaderboardSection(board)
+                    }
 
-                if !viewModel.badges.isEmpty {
-                    badgesSection
-                }
+                    if !viewModel.badges.isEmpty {
+                        badgesSection
+                    }
 
-                if !viewModel.events.isEmpty {
-                    recentEventsSection
+                    if !viewModel.events.isEmpty {
+                        recentEventsSection
+                    }
                 }
+                .refreshable { await viewModel.load() }
             }
         }
         .navigationTitle("Gamification")
-        .refreshable { await viewModel.load() }
         .task { await viewModel.load() }
     }
 
