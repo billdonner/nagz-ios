@@ -69,15 +69,18 @@ struct NagRowView: View {
         }
         .padding(.vertical, 4)
         .padding(.horizontal, 4)
-        .background(urgency.hasAccentBar ? urgency.backgroundColor : directionBackground)
+        .background {
+            // Layer: direction tint underneath, urgency on top
+            directionBackground
+                .overlay(urgency.backgroundColor)
+        }
         .clipShape(RoundedRectangle(cornerRadius: 8))
         .overlay(alignment: .leading) {
-            if urgency.hasAccentBar {
-                urgency.accentBar
-            } else if let color = directionColor {
+            // Sidebar always shows direction color (blue/orange/purple)
+            if let color = directionColor {
                 RoundedRectangle(cornerRadius: 1.5)
                     .fill(color)
-                    .frame(width: 3)
+                    .frame(width: 4)
             }
         }
     }
