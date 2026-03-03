@@ -7,7 +7,9 @@ struct NagEntityQuery: EntityStringQuery {
         var results: [NagEntity] = []
         for id in identifiers {
             guard let uuid = UUID(uuidString: id) else { continue }
-            let nag: NagResponse = try await api.request(.getNag(id: uuid))
+            let nag: NagResponse = try await NagzIntentError.wrapAPI {
+                try await api.request(.getNag(id: uuid))
+            }
             let memberName = await Self.resolveMemberName(nag.recipientId, api: api)
             results.append(NagEntity(from: nag, recipientName: memberName))
         }
@@ -17,9 +19,9 @@ struct NagEntityQuery: EntityStringQuery {
     func entities(matching string: String) async throws -> [NagEntity] {
         let api = try await IntentServiceContainer.requireAuth()
         let familyId = try IntentServiceContainer.currentFamilyId()
-        let response: PaginatedResponse<NagResponse> = try await api.request(
-            .listNags(familyId: familyId, status: .open)
-        )
+        let response: PaginatedResponse<NagResponse> = try await NagzIntentError.wrapAPI {
+            try await api.request(.listNags(familyId: familyId, status: .open))
+        }
         let members = try await Self.fetchMembers(familyId: familyId, api: api)
         let query = string.lowercased()
         return response.items
@@ -36,9 +38,9 @@ struct NagEntityQuery: EntityStringQuery {
     func suggestedEntities() async throws -> [NagEntity] {
         let api = try await IntentServiceContainer.requireAuth()
         let familyId = try IntentServiceContainer.currentFamilyId()
-        let response: PaginatedResponse<NagResponse> = try await api.request(
-            .listNags(familyId: familyId, status: .open, limit: 10)
-        )
+        let response: PaginatedResponse<NagResponse> = try await NagzIntentError.wrapAPI {
+            try await api.request(.listNags(familyId: familyId, status: .open, limit: 10))
+        }
         let members = try await Self.fetchMembers(familyId: familyId, api: api)
         return response.items.map { nag in
             let name = members[nag.recipientId] ?? String(nag.recipientId.uuidString.prefix(8))
@@ -47,9 +49,9 @@ struct NagEntityQuery: EntityStringQuery {
     }
 
     private static func fetchMembers(familyId: UUID, api: APIClient) async throws -> [UUID: String] {
-        let response: PaginatedResponse<MemberDetail> = try await api.request(
-            .listMembers(familyId: familyId)
-        )
+        let response: PaginatedResponse<MemberDetail> = try await NagzIntentError.wrapAPI {
+            try await api.request(.listMembers(familyId: familyId))
+        }
         var map: [UUID: String] = [:]
         for member in response.items {
             map[member.userId] = member.displayName ?? String(member.userId.uuidString.prefix(8))

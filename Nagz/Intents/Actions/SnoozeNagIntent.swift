@@ -20,7 +20,9 @@ struct SnoozeNagIntent: AppIntent {
         let base = max(nag.dueAt, Date())
         let newDue = base.addingTimeInterval(TimeInterval(minutes * 60))
         let update = NagUpdate(dueAt: newDue)
-        let _: NagResponse = try await api.request(.updateNag(nagId: nagId, update: update))
+        let _: NagResponse = try await NagzIntentError.wrapAPI {
+            try await api.request(.updateNag(nagId: nagId, update: update))
+        }
 
         return .result(dialog: "Snoozed for \(minutes) minutes.")
     }

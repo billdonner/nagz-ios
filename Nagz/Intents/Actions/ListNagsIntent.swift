@@ -12,18 +12,18 @@ struct ListNagsIntent: AppIntent {
         let api = try await IntentServiceContainer.requireAuth()
         let familyId = try IntentServiceContainer.currentFamilyId()
 
-        let response: PaginatedResponse<NagResponse> = try await api.request(
-            .listNags(familyId: familyId, status: .open)
-        )
+        let response: PaginatedResponse<NagResponse> = try await NagzIntentError.wrapAPI {
+            try await api.request(.listNags(familyId: familyId, status: .open))
+        }
 
         var nags = response.items
         if let category {
             nags = nags.filter { $0.category == category.nagCategory }
         }
 
-        let membersResponse: PaginatedResponse<MemberDetail> = try await api.request(
-            .listMembers(familyId: familyId)
-        )
+        let membersResponse: PaginatedResponse<MemberDetail> = try await NagzIntentError.wrapAPI {
+            try await api.request(.listMembers(familyId: familyId))
+        }
         var memberNames: [UUID: String] = [:]
         for member in membersResponse.items {
             memberNames[member.userId] = member.displayName ?? String(member.userId.uuidString.prefix(8))

@@ -33,7 +33,9 @@ struct CreateNagIntent: AppIntent {
             description: nagDescription
         )
 
-        let _: NagResponse = try await api.request(.createNag(nag))
+        let _: NagResponse = try await NagzIntentError.wrapAPI {
+            try await api.request(.createNag(nag))
+        }
 
         let dueDateString = dueAt.formatted(date: .abbreviated, time: .shortened)
         return .result(dialog: "Created \(category.rawValue) nag for \(recipient.displayName), due \(dueDateString).")

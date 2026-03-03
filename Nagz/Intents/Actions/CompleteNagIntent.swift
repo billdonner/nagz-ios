@@ -17,7 +17,9 @@ struct CompleteNagIntent: AppIntent {
             throw NagzIntentError.invalidNagId
         }
 
-        try await api.requestVoid(.updateNagStatus(nagId: nagId, status: .completed, note: note))
+        try await NagzIntentError.wrapAPI {
+            try await api.requestVoid(.updateNagStatus(nagId: nagId, status: .completed, note: note))
+        }
 
         return .result(dialog: "Done! Marked \(nag.category) nag as completed.")
     }

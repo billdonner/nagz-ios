@@ -9,9 +9,9 @@ struct CheckOverdueIntent: AppIntent {
         let api = try await IntentServiceContainer.requireAuth()
         let familyId = try IntentServiceContainer.currentFamilyId()
 
-        let response: PaginatedResponse<NagResponse> = try await api.request(
-            .listNags(familyId: familyId, status: .open)
-        )
+        let response: PaginatedResponse<NagResponse> = try await NagzIntentError.wrapAPI {
+            try await api.request(.listNags(familyId: familyId, status: .open))
+        }
 
         let now = Date()
         let overdue = response.items.filter { $0.dueAt < now }
