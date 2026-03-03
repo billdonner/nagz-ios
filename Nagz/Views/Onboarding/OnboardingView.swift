@@ -56,14 +56,14 @@ struct OnboardingPage {
             ]
         ),
         OnboardingPage(
-            symbol: "person.3.fill",
+            symbol: "gearshape.fill",
             color: .purple,
-            title: "Your Family Hub",
-            subtitle: "Set up your family, invite members, and assign roles. See the weekly AI digest right on your Family page, with member avatars and easy invite sharing.",
+            title: "Your Settings Hub",
+            subtitle: "Find everything in the Settings tab — your account, family management, safety tools, and app preferences. Create or join a family, manage members, and view AI-powered insights all from one place.",
             supportingIcons: [
-                ("person.badge.shield.checkmark", "Guardian"),
-                ("sparkles", "Digest"),
-                ("square.and.arrow.up", "Invite"),
+                ("person.3.fill", "Family"),
+                ("shield.fill", "Safety"),
+                ("gearshape.2.fill", "Prefs"),
             ]
         ),
         OnboardingPage(
@@ -102,7 +102,7 @@ struct OnboardingPage {
     ]
 }
 
-private struct OnboardingPageView: View {
+struct OnboardingPageView: View {
     let page: OnboardingPage
     let isLastPage: Bool
     let buttonTitle: String

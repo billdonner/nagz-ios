@@ -422,6 +422,8 @@ private struct FamilyTabContent: View {
     let currentUserId: UUID
     @Environment(\.aiService) private var aiService
     @State private var digest: DigestResponse?
+    @AppStorage("hasSeenFamilyIntro") private var hasSeenFamilyIntro = false
+    @State private var showFamilyIntro = false
 
     private func memberColor(for role: FamilyRole) -> Color {
         switch role {
@@ -612,6 +614,44 @@ private struct FamilyTabContent: View {
                 .padding()
                 .navigationTitle("Family")
             }
+        }
+        .onAppear {
+            if viewModel.family != nil && !hasSeenFamilyIntro {
+                showFamilyIntro = true
+            }
+        }
+        .sheet(isPresented: $showFamilyIntro) {
+            NavigationStack {
+                OnboardingPageView(
+                    page: OnboardingPage(
+                        symbol: "person.3.fill",
+                        color: .purple,
+                        title: "Your Family Hub",
+                        subtitle: "Manage your family members, share invite codes, view the weekly AI digest, configure preferences, and access the guardian dashboard — all right here.",
+                        supportingIcons: [
+                            ("person.badge.plus", "Members"),
+                            ("sparkles", "Digest"),
+                            ("shield.fill", "Guardian"),
+                            ("square.and.arrow.up", "Invite"),
+                        ]
+                    ),
+                    isLastPage: true,
+                    buttonTitle: "Got It",
+                    onGetStarted: {
+                        hasSeenFamilyIntro = true
+                        showFamilyIntro = false
+                    }
+                )
+                .toolbar {
+                    ToolbarItem(placement: .cancellationAction) {
+                        Button("Skip") {
+                            hasSeenFamilyIntro = true
+                            showFamilyIntro = false
+                        }
+                    }
+                }
+            }
+            .presentationDetents([.medium, .large])
         }
         .sheet(isPresented: $viewModel.showCreateSheet) {
             CreateFamilyView(viewModel: viewModel)
