@@ -11,8 +11,10 @@ struct GlobalChatView: View {
     let memberNames: [String]
 
     @State private var viewModel = GlobalChatViewModel()
+    @State private var overdueSummary: (overdueCount: Int, totalOpen: Int, mostUrgentName: String?, mostUrgentLateDisplay: String?) = (0, 0, nil, nil)
     @FocusState private var isInputFocused: Bool
     @AppStorage("nagz_ai_personality") private var personalityRaw: String = AIPersonality.standard.rawValue
+    @AppStorage("selectedTab") private var selectedTab = 0
 
     private var personality: AIPersonality {
         AIPersonality(rawValue: personalityRaw) ?? .standard
@@ -21,6 +23,14 @@ struct GlobalChatView: View {
     var body: some View {
         NavigationStack {
             VStack(spacing: 0) {
+                // Overdue summary banner
+                Button {
+                    selectedTab = 1
+                } label: {
+                    overdueBanner
+                }
+                .buttonStyle(.plain)
+
                 // Messages
                 ScrollViewReader { proxy in
                     ScrollView {
@@ -118,6 +128,7 @@ struct GlobalChatView: View {
         }
         .onAppear {
             setupIfNeeded()
+            loadOverdueSummary()
         }
         .onChange(of: familyId) {
             // Family data arrived after initial load — re-setup with valid familyId
@@ -125,6 +136,7 @@ struct GlobalChatView: View {
                 viewModel.reset()
                 setupIfNeeded()
             }
+            loadOverdueSummary()
         }
     }
 
@@ -150,6 +162,76 @@ struct GlobalChatView: View {
 
     private var canSend: Bool {
         !viewModel.isGenerating && !viewModel.inputText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+    }
+
+    @ViewBuilder
+    private var overdueBanner: some View {
+        if overdueSummary.overdueCount > 0 {
+            HStack(spacing: 4) {
+                Image(systemName: "exclamationmark.triangle.fill")
+                    .font(.caption2)
+                Text("**\(overdueSummary.overdueCount) overdue**")
+                if let name = overdueSummary.mostUrgentName, let late = overdueSummary.mostUrgentLateDisplay {
+                    Text("— \(name) is \(late) late")
+                }
+            }
+            .font(.caption)
+            .foregroundStyle(.white)
+            .frame(maxWidth: .infinity)
+            .padding(.vertical, 8)
+            .background(Color.red.opacity(0.85))
+        } else if overdueSummary.totalOpen > 0 {
+            HStack(spacing: 4) {
+                Image(systemName: "checkmark.circle")
+                    .font(.caption2)
+                Text("**\(overdueSummary.totalOpen) open** — all on track")
+            }
+            .font(.caption)
+            .foregroundStyle(.white)
+            .frame(maxWidth: .infinity)
+            .padding(.vertical, 8)
+            .background(Color.blue.opacity(0.75))
+        } else {
+            HStack(spacing: 4) {
+                Image(systemName: "party.popper")
+                    .font(.caption2)
+                Text("All caught up!")
+            }
+            .font(.caption)
+            .foregroundStyle(.white)
+            .frame(maxWidth: .infinity)
+            .padding(.vertical, 8)
+            .background(Color.green.opacity(0.75))
+        }
+    }
+
+    private func loadOverdueSummary() {
+        Task {
+            do {
+                let response: PaginatedResponse<NagResponse> = try await apiClient.request(.listNags(status: .open, limit: 200))
+                let now = Date()
+                let overdueNags = response.items.filter { $0.dueAt < now }
+                let mostUrgent = overdueNags.min(by: { $0.dueAt < $1.dueAt })
+
+                var lateName: String?
+                var lateDisplay: String?
+                if let urgent = mostUrgent {
+                    lateName = urgent.description ?? urgent.category.displayName
+                    let interval = now.timeIntervalSince(urgent.dueAt)
+                    if interval < 3600 {
+                        lateDisplay = "\(Int(interval / 60))m"
+                    } else if interval < 86400 {
+                        lateDisplay = "\(Int(interval / 3600))h"
+                    } else {
+                        lateDisplay = "\(Int(interval / 86400))d"
+                    }
+                }
+
+                overdueSummary = (overdueNags.count, response.items.count, lateName, lateDisplay)
+            } catch {
+                // Silently fail — banner just won't update
+            }
+        }
     }
 }
 

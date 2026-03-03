@@ -24,7 +24,7 @@ struct NagRowView: View {
                     if let directionText = directionLabel {
                         Text(directionText)
                             .font(.caption)
-                            .foregroundStyle(.orange)
+                            .foregroundStyle(directionColor ?? .secondary)
                     }
                     if nag.recurrence != nil {
                         Image(systemName: "repeat")
@@ -66,7 +66,13 @@ struct NagRowView: View {
         .background(urgency.backgroundColor)
         .clipShape(RoundedRectangle(cornerRadius: 8))
         .overlay(alignment: .leading) {
-            urgency.accentBar
+            if urgency.hasAccentBar {
+                urgency.accentBar
+            } else if let color = directionColor {
+                RoundedRectangle(cornerRadius: 1.5)
+                    .fill(color)
+                    .frame(width: 3)
+            }
         }
     }
 
@@ -79,6 +85,18 @@ struct NagRowView: View {
             let name = nag.creatorDisplayName ?? "someone"
             return "From: \(name) \u{2022}"
         }
+    }
+
+    private var directionColor: Color? {
+        guard let userId = currentUserId else { return nil }
+        if nag.creatorId == userId && nag.recipientId == userId {
+            return .purple  // self-nag
+        } else if nag.recipientId == userId {
+            return .blue    // received
+        } else if nag.creatorId == userId {
+            return .orange  // sent
+        }
+        return nil
     }
 
     private var categoryColor: Color {
@@ -145,6 +163,13 @@ private enum Urgency {
         case .dueSoon:     .orange
         case .overdue:     .orange
         case .critical:    .red
+        }
+    }
+
+    var hasAccentBar: Bool {
+        switch self {
+        case .calm, .approaching: false
+        case .dueSoon, .overdue, .critical: true
         }
     }
 
