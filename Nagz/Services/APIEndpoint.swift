@@ -178,7 +178,7 @@ struct APIEndpoint {
         APIEndpoint(path: "/nags", method: .post, body: nag)
     }
 
-    static func listNags(familyId: UUID? = nil, connectionId: UUID? = nil, status: NagStatus? = nil, limit: Int = Constants.Pagination.defaultLimit, offset: Int = 0) -> APIEndpoint {
+    static func listNags(familyId: UUID? = nil, connectionId: UUID? = nil, status: NagStatus? = nil, excludeDismissed: Bool = false, limit: Int = Constants.Pagination.defaultLimit, offset: Int = 0) -> APIEndpoint {
         var items = [
             URLQueryItem(name: "limit", value: "\(limit)"),
             URLQueryItem(name: "offset", value: "\(offset)")
@@ -191,6 +191,9 @@ struct APIEndpoint {
         }
         if let status {
             items.append(URLQueryItem(name: "state", value: status.rawValue))
+        }
+        if excludeDismissed {
+            items.append(URLQueryItem(name: "exclude_dismissed", value: "true"))
         }
         return APIEndpoint(path: "/nags", queryItems: items)
     }
@@ -213,6 +216,18 @@ struct APIEndpoint {
             method: .patch,
             body: update
         )
+    }
+
+    static func withdrawNag(nagId: UUID) -> APIEndpoint {
+        APIEndpoint(path: "/nags/\(nagId)/withdraw", method: .post)
+    }
+
+    static func dismissNag(nagId: UUID) -> APIEndpoint {
+        APIEndpoint(path: "/nags/\(nagId)/dismiss", method: .post)
+    }
+
+    static func undismissNag(nagId: UUID) -> APIEndpoint {
+        APIEndpoint(path: "/nags/\(nagId)/undismiss", method: .post)
     }
 
     // MARK: - Excuses

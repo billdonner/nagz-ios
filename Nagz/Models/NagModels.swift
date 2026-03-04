@@ -19,6 +19,7 @@ struct NagResponse: Decodable, Identifiable, Sendable {
     let createdAt: Date
     let completedAt: Date?
     let committedAt: Date?
+    let recipientDismissedAt: Date?
 }
 
 struct NagCreate: Encodable {

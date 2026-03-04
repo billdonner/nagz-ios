@@ -63,6 +63,9 @@ struct NagRowView: View {
             if nag.status == .completed {
                 Image(systemName: "checkmark.circle.fill")
                     .foregroundStyle(.green)
+            } else if nag.recipientDismissedAt != nil {
+                Image(systemName: "eye.slash")
+                    .foregroundStyle(.secondary)
             } else {
                 StatusDot(status: nag.status)
             }
@@ -75,6 +78,7 @@ struct NagRowView: View {
                 .overlay(urgency.backgroundColor)
         }
         .clipShape(RoundedRectangle(cornerRadius: 8))
+        .opacity(nag.status == .withdrawn ? 0.5 : 1.0)
         .overlay(alignment: .leading) {
             // Sidebar always shows direction color (blue/orange/purple)
             if let color = directionColor {
@@ -157,7 +161,7 @@ private struct StatusDot: View {
         case .open: .blue
         case .completed: .green
         case .missed: .orange
-        case .cancelledRelationshipChange: .gray
+        case .cancelledRelationshipChange, .withdrawn: .gray
         }
     }
 }

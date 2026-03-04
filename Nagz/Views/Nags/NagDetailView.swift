@@ -147,6 +147,56 @@ struct NagDetailView: View {
                         }
                     }
 
+                    // Creator: Withdraw button (open nags only)
+                    if nag.status == .open && nag.creatorId == currentUserId && nag.creatorId != nag.recipientId {
+                        Section {
+                            Button(role: .destructive) {
+                                Task {
+                                    await viewModel.withdraw()
+                                    if viewModel.errorMessage == nil {
+                                        dismiss()
+                                    }
+                                }
+                            } label: {
+                                if viewModel.isUpdating {
+                                    ProgressView().frame(maxWidth: .infinity)
+                                } else {
+                                    Label("Withdraw Nag", systemImage: "arrow.uturn.backward")
+                                        .frame(maxWidth: .infinity)
+                                }
+                            }
+                            .disabled(viewModel.isUpdating)
+                        }
+                    }
+
+                    // Recipient: Dismiss / Undismiss button (open nags only)
+                    if nag.status == .open && nag.recipientId == currentUserId && nag.creatorId != nag.recipientId {
+                        Section {
+                            if nag.recipientDismissedAt != nil {
+                                Button {
+                                    Task { await viewModel.undismiss() }
+                                } label: {
+                                    Label("Undo Dismiss", systemImage: "eye")
+                                        .frame(maxWidth: .infinity)
+                                }
+                                .disabled(viewModel.isUpdating)
+                            } else {
+                                Button {
+                                    Task {
+                                        await viewModel.dismiss()
+                                        if viewModel.errorMessage == nil {
+                                            dismiss()
+                                        }
+                                    }
+                                } label: {
+                                    Label("Dismiss", systemImage: "eye.slash")
+                                        .frame(maxWidth: .infinity)
+                                }
+                                .disabled(viewModel.isUpdating)
+                            }
+                        }
+                    }
+
                     // Excuses list
                     if !viewModel.excuses.isEmpty {
                         Section("Excuses") {
@@ -438,7 +488,7 @@ private struct StatusPill: View {
         case .open: .blue.opacity(0.15)
         case .completed: .green.opacity(0.15)
         case .missed: .orange.opacity(0.15)
-        case .cancelledRelationshipChange: .gray.opacity(0.15)
+        case .cancelledRelationshipChange, .withdrawn: .gray.opacity(0.15)
         }
     }
 
@@ -447,7 +497,7 @@ private struct StatusPill: View {
         case .open: .blue
         case .completed: .green
         case .missed: .orange
-        case .cancelledRelationshipChange: .gray
+        case .cancelledRelationshipChange, .withdrawn: .gray
         }
     }
 }

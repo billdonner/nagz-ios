@@ -95,7 +95,7 @@ struct ChildNagListView: View {
             let stream = await webSocketService.connect(familyId: familyId)
             for await event in stream {
                 switch event.type {
-                case .nagCreated, .nagUpdated, .nagStatusChanged:
+                case .nagCreated, .nagUpdated, .nagStatusChanged, .nagWithdrawn:
                     await loadNags()
                 case .excuseSubmitted, .memberAdded, .memberRemoved, .connectionInvited, .connectionAccepted, .ping, .pong:
                     break

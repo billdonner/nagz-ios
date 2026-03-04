@@ -263,7 +263,9 @@ struct NagListView: View {
                     nags: group.nags,
                     currentUserId: currentUserId,
                     isCollapsed: collapsedSections.contains("from:\(group.name)"),
-                    onToggle: { toggleSection("from:\(group.name)") }
+                    onToggle: { toggleSection("from:\(group.name)") },
+                    onWithdraw: { nag in swipeWithdraw(nag) },
+                    onDismiss: { nag in swipeDismiss(nag) }
                 )
             }
 
@@ -274,7 +276,9 @@ struct NagListView: View {
                     nags: group.nags,
                     currentUserId: currentUserId,
                     isCollapsed: collapsedSections.contains("to:\(group.name)"),
-                    onToggle: { toggleSection("to:\(group.name)") }
+                    onToggle: { toggleSection("to:\(group.name)") },
+                    onWithdraw: { nag in swipeWithdraw(nag) },
+                    onDismiss: { nag in swipeDismiss(nag) }
                 )
             }
 
@@ -331,13 +335,27 @@ struct NagListView: View {
         collapsedSections = collapsed
     }
 
+    private func swipeWithdraw(_ nag: NagResponse) {
+        Task {
+            let _: NagResponse = try await viewModel.apiClient.request(.withdrawNag(nagId: nag.id))
+            await viewModel.loadNags()
+        }
+    }
+
+    private func swipeDismiss(_ nag: NagResponse) {
+        Task {
+            let _: NagResponse = try await viewModel.apiClient.request(.dismissNag(nagId: nag.id))
+            await viewModel.loadNags()
+        }
+    }
+
     private func startWebSocket() {
         guard let familyId, wsTask == nil else { return }
         wsTask = Task {
             let stream = await webSocketService.connect(familyId: familyId)
             for await event in stream {
                 switch event.type {
-                case .nagCreated, .nagUpdated, .nagStatusChanged, .excuseSubmitted:
+                case .nagCreated, .nagUpdated, .nagStatusChanged, .nagWithdrawn, .excuseSubmitted:
                     await viewModel.loadNags()
                 case .memberAdded, .memberRemoved, .connectionInvited, .connectionAccepted:
                     break
@@ -389,6 +407,8 @@ private struct CollapsibleNagSection: View {
     let isCollapsed: Bool
     let onToggle: () -> Void
     var icon: String? = nil
+    var onWithdraw: ((NagResponse) -> Void)? = nil
+    var onDismiss: ((NagResponse) -> Void)? = nil
 
     var body: some View {
         Section {
@@ -396,6 +416,24 @@ private struct CollapsibleNagSection: View {
                 ForEach(nags) { nag in
                     NavigationLink(value: nag.id) {
                         NagRowView(nag: nag, currentUserId: currentUserId)
+                    }
+                    .swipeActions(edge: .trailing, allowsFullSwipe: false) {
+                        if nag.status == .open, let userId = currentUserId {
+                            if nag.creatorId == userId && nag.recipientId != userId {
+                                Button(role: .destructive) {
+                                    onWithdraw?(nag)
+                                } label: {
+                                    Label("Withdraw", systemImage: "arrow.uturn.backward")
+                                }
+                            } else if nag.recipientId == userId && nag.creatorId != userId {
+                                Button {
+                                    onDismiss?(nag)
+                                } label: {
+                                    Label("Dismiss", systemImage: "eye.slash")
+                                }
+                                .tint(.gray)
+                            }
+                        }
                     }
                 }
             }
@@ -443,6 +481,7 @@ private struct UrgencySparkline: View {
     private func pipColor(for nag: NagResponse) -> Color {
         if nag.status == .completed { return .green }
         if nag.status == .missed { return .orange }
+        if nag.status == .withdrawn { return .gray }
         guard nag.status == .open else { return .gray }
         let interval = nag.dueAt.timeIntervalSince(Date())
         if interval > 24 * 3600 { return .gray }

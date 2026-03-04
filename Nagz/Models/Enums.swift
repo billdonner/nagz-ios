@@ -67,6 +67,7 @@ enum NagStatus: String, Codable {
     case completed
     case missed
     case cancelledRelationshipChange = "cancelled_relationship_change"
+    case withdrawn
 }
 
 enum EscalationPhase: String, Codable, Comparable {

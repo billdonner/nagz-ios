@@ -125,6 +125,48 @@ final class NagDetailViewModel {
         isUpdating = false
     }
 
+    func withdraw() async {
+        isUpdating = true
+        errorMessage = nil
+        do {
+            let updated: NagResponse = try await apiClient.request(.withdrawNag(nagId: nagId))
+            nag = updated
+        } catch let error as APIError {
+            errorMessage = error.errorDescription
+        } catch {
+            errorMessage = error.localizedDescription
+        }
+        isUpdating = false
+    }
+
+    func dismiss() async {
+        isUpdating = true
+        errorMessage = nil
+        do {
+            let updated: NagResponse = try await apiClient.request(.dismissNag(nagId: nagId))
+            nag = updated
+        } catch let error as APIError {
+            errorMessage = error.errorDescription
+        } catch {
+            errorMessage = error.localizedDescription
+        }
+        isUpdating = false
+    }
+
+    func undismiss() async {
+        isUpdating = true
+        errorMessage = nil
+        do {
+            let updated: NagResponse = try await apiClient.request(.undismissNag(nagId: nagId))
+            nag = updated
+        } catch let error as APIError {
+            errorMessage = error.errorDescription
+        } catch {
+            errorMessage = error.localizedDescription
+        }
+        isUpdating = false
+    }
+
     func recomputeEscalation() async {
         isRecomputing = true
         errorMessage = nil

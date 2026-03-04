@@ -5,6 +5,7 @@ enum NagEventType: String, Sendable {
     case nagCreated = "nag_created"
     case nagUpdated = "nag_updated"
     case nagStatusChanged = "nag_status_changed"
+    case nagWithdrawn = "nag_withdrawn"
     case excuseSubmitted = "excuse_submitted"
     case memberAdded = "member_added"
     case memberRemoved = "member_removed"

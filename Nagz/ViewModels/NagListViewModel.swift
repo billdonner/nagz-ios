@@ -47,8 +47,9 @@ final class NagListViewModel {
         offset = 0
         do {
             // Fetch family-scoped nags
+            let shouldExcludeDismissed = filter == .open
             let familyResponse: PaginatedResponse<NagResponse> = try await apiClient.request(
-                .listNags(familyId: familyId, status: filter.nagStatus, offset: 0)
+                .listNags(familyId: familyId, status: filter.nagStatus, excludeDismissed: shouldExcludeDismissed, offset: 0)
             )
             var allNags = familyResponse.items
             total = familyResponse.total
@@ -56,7 +57,7 @@ final class NagListViewModel {
             // Also fetch connection nags (where user is creator/recipient via connections)
             if familyId != nil {
                 let connectionResponse: PaginatedResponse<NagResponse> = try await apiClient.request(
-                    .listNags(status: filter.nagStatus, offset: 0)
+                    .listNags(status: filter.nagStatus, excludeDismissed: shouldExcludeDismissed, offset: 0)
                 )
                 // Merge: add connection nags not already in the family list
                 let familyIds = Set(allNags.map(\.id))
