@@ -3,16 +3,14 @@ import Observation
 
 enum NagFilter: String, CaseIterable {
     case open = "Open"
-    case completed = "Completed"
-    case missed = "Missed"
+    case completed = "Done"
     case all = "All"
 
     var nagStatus: NagStatus? {
         switch self {
         case .open: .open
         case .completed: .completed
-        case .missed: .missed
-        case .all: nil
+        case .all: nil   // All includes missed nags
         }
     }
 }

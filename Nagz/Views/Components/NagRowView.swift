@@ -111,11 +111,11 @@ struct NagRowView: View {
     private var directionBackground: Color {
         guard let userId = currentUserId else { return .clear }
         if nag.creatorId == userId && nag.recipientId == userId {
-            return .purple.opacity(0.06)
+            return .purple.opacity(0.03)
         } else if nag.recipientId == userId {
-            return .blue.opacity(0.06)
+            return .blue.opacity(0.03)
         } else if nag.creatorId == userId {
-            return .orange.opacity(0.06)
+            return .orange.opacity(0.03)
         }
         return .clear
     }
@@ -134,8 +134,8 @@ struct NagRowView: View {
 
     private var categoryColor: Color {
         switch nag.category {
-        case .chores: .orange
-        case .meds: .red
+        case .chores: .brown
+        case .meds: .pink
         case .homework: .blue
         case .appointments: .purple
         case .other: .gray
@@ -156,7 +156,7 @@ private struct StatusDot: View {
         switch status {
         case .open: .blue
         case .completed: .green
-        case .missed: .red
+        case .missed: .orange
         case .cancelledRelationshipChange: .gray
         }
     }
@@ -182,17 +182,17 @@ private enum Urgency {
     var backgroundColor: Color {
         switch self {
         case .calm:        Color.clear
-        case .approaching: Color.blue.opacity(0.04)
-        case .dueSoon:     Color.yellow.opacity(0.08)
-        case .overdue:     Color.orange.opacity(0.10)
-        case .critical:    Color.red.opacity(0.10)
+        case .approaching: Color.clear
+        case .dueSoon:     Color.yellow.opacity(0.04)
+        case .overdue:     Color.orange.opacity(0.04)
+        case .critical:    Color.orange.opacity(0.06)
         }
     }
 
     var textColor: Color {
         switch self {
         case .calm:        .secondary
-        case .approaching: .blue
+        case .approaching: .secondary
         case .dueSoon:     .orange
         case .overdue:     .orange
         case .critical:    .red
@@ -209,19 +209,15 @@ private enum Urgency {
     @ViewBuilder
     var accentBar: some View {
         switch self {
-        case .calm, .approaching:
+        case .calm, .approaching, .dueSoon:
             EmptyView()
-        case .dueSoon:
-            RoundedRectangle(cornerRadius: 1.5)
-                .fill(Color.yellow)
-                .frame(width: 3)
         case .overdue:
             RoundedRectangle(cornerRadius: 1.5)
-                .fill(Color.orange)
+                .fill(Color.orange.opacity(0.6))
                 .frame(width: 3)
         case .critical:
             RoundedRectangle(cornerRadius: 1.5)
-                .fill(Color.red)
+                .fill(Color.orange)
                 .frame(width: 3)
         }
     }

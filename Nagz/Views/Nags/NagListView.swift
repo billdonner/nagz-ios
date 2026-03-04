@@ -306,7 +306,7 @@ struct NagListView: View {
                 collapsed.insert("to:\(group.name)")
             }
             collapsed.insert("self")
-        case .completed, .missed, .all:
+        case .completed, .all:
             // Collapse everything
             for group in nagsForMeByCounterpart {
                 collapsed.insert("from:\(group.name)")
@@ -430,14 +430,13 @@ private struct UrgencySparkline: View {
 
     private func pipColor(for nag: NagResponse) -> Color {
         if nag.status == .completed { return .green }
-        if nag.status == .missed { return .red }
+        if nag.status == .missed { return .orange }
         guard nag.status == .open else { return .gray }
         let interval = nag.dueAt.timeIntervalSince(Date())
         if interval > 24 * 3600 { return .gray }
         if interval > 2 * 3600 { return .blue }
         if interval > 0 { return .yellow }
-        if interval > -3600 { return .orange }
-        return .red
+        return .orange
     }
 }
 

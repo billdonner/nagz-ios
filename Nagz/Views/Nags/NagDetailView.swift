@@ -430,7 +430,7 @@ private struct StatusPill: View {
         switch status {
         case .open: .blue.opacity(0.15)
         case .completed: .green.opacity(0.15)
-        case .missed: .red.opacity(0.15)
+        case .missed: .orange.opacity(0.15)
         case .cancelledRelationshipChange: .gray.opacity(0.15)
         }
     }
@@ -439,7 +439,7 @@ private struct StatusPill: View {
         switch status {
         case .open: .blue
         case .completed: .green
-        case .missed: .red
+        case .missed: .orange
         case .cancelledRelationshipChange: .gray
         }
     }
