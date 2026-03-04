@@ -481,4 +481,34 @@ struct SubmitExcuseTool: Tool {
     }
 }
 
+// MARK: - Invite Connection Tool
+
+struct InviteConnectionTool: Tool {
+    let name = "inviteConnection"
+    let description = "Send a connection invite to someone by email address. Use when user says 'connect to...', 'invite...', 'add [email]'. This sends an invite that the other person can accept in their Nagz app."
+
+    @Generable
+    struct Arguments {
+        @Guide(description: "Email address of the person to invite.")
+        let email: String
+    }
+
+    let apiClient: APIClient
+    let collector: ToolResultCollector
+
+    nonisolated func call(arguments: Arguments) async throws -> String {
+        let email = arguments.email.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
+        guard email.contains("@") else {
+            return "That doesn't look like a valid email address. Try again with a full email."
+        }
+
+        let _: ConnectionResponse = try await apiClient.request(
+            .inviteConnection(email: email)
+        )
+
+        await collector.record("✓ Invited \(email)")
+        return "Invite sent to \(email)! They'll see it when they open Nagz. Once they accept, you can start nagging each other."
+    }
+}
+
 #endif
