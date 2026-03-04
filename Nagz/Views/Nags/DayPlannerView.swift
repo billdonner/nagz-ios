@@ -6,6 +6,8 @@ struct DayPlannerView: View {
     let nags: [NagResponse]
     let currentUserId: UUID?
     let onCommit: (UUID, Date) -> Void
+    var onUncommit: ((UUID) -> Void)?
+    var onCreateAtTime: ((Date) -> Void)?
 
     @State private var selectedDate = Calendar.current.startOfDay(for: Date())
     @State private var schedulingNag: NagResponse?
@@ -162,7 +164,7 @@ struct DayPlannerView: View {
         VStack(alignment: .leading, spacing: 4) {
             Image(systemName: nag.category.iconName)
                 .font(.caption)
-                .foregroundStyle(nag.dueAt < Date() ? .red : .secondary)
+                .foregroundStyle(nag.dueAt < Date() ? .orange : .secondary)
             Text(nag.description ?? nag.category.displayName)
                 .font(.caption)
                 .lineLimit(2)
@@ -170,7 +172,7 @@ struct DayPlannerView: View {
             if nag.dueAt < Date() {
                 Text("OVERDUE")
                     .font(.caption2.weight(.bold))
-                    .foregroundStyle(.red)
+                    .foregroundStyle(.orange)
             } else {
                 Text("Due \(nag.dueAt, style: .relative)")
                     .font(.caption2)
@@ -223,13 +225,26 @@ struct DayPlannerView: View {
             // Nags in this slot
             VStack(alignment: .leading, spacing: 4) {
                 if nagsInSlot.isEmpty {
-                    Color.clear.frame(height: 1)
+                    Button {
+                        let slotDate = calendar.date(bySettingHour: hour, minute: 0, second: 0, of: selectedDate)!
+                        onCreateAtTime?(slotDate)
+                    } label: {
+                        Color.clear.frame(height: 1)
+                    }
+                    .buttonStyle(.plain)
                 } else {
                     ForEach(nagsInSlot) { nag in
                         Button { schedulingNag = nag } label: {
                             timelineNagRow(nag)
                         }
                         .buttonStyle(.plain)
+                        .contextMenu {
+                            if nag.committedAt != nil {
+                                Button("Remove from Schedule", role: .destructive) {
+                                    onUncommit?(nag.id)
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -288,8 +303,8 @@ struct DayPlannerView: View {
 
     private func categoryColor(_ cat: NagCategory) -> Color {
         switch cat {
-        case .chores: .orange
-        case .meds: .red
+        case .chores: .brown
+        case .meds: .pink
         case .homework: .blue
         case .appointments: .purple
         case .other: .gray

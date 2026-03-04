@@ -17,6 +17,7 @@ final class ConnectionListViewModel {
     var invitedEmail = ""
 
     let apiClient: APIClient
+    var currentUserId: UUID?
 
     struct ConnectionNagStats {
         var sent: Int = 0
@@ -64,8 +65,9 @@ final class ConnectionListViewModel {
         }
     }
 
-    init(apiClient: APIClient) {
+    init(apiClient: APIClient, currentUserId: UUID? = nil) {
         self.apiClient = apiClient
+        self.currentUserId = currentUserId
     }
 
     func loadConnections() async {
@@ -98,6 +100,7 @@ final class ConnectionListViewModel {
     }
 
     private func loadConnectionStats(connections: [ConnectionResponse]) async {
+        let myUserId = self.currentUserId
         await withTaskGroup(of: (UUID, ConnectionNagStats).self) { group in
             for conn in connections {
                 group.addTask {
@@ -109,7 +112,7 @@ final class ConnectionListViewModel {
                         let now = Date()
                         stats.totalNags = resp.items.count
                         for nag in resp.items {
-                            if nag.creatorId == conn.inviterId {
+                            if nag.creatorId == myUserId {
                                 stats.sent += 1
                             } else {
                                 stats.received += 1

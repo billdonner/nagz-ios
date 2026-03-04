@@ -12,7 +12,8 @@ struct ConnectionListView: View {
     let userName: String?
 
     init(apiClient: APIClient, familyId: UUID? = nil, currentUserId: UUID? = nil, webSocketService: WebSocketService? = nil, userName: String? = nil) {
-        _viewModel = State(initialValue: ConnectionListViewModel(apiClient: apiClient))
+        let vm = ConnectionListViewModel(apiClient: apiClient, currentUserId: currentUserId)
+        _viewModel = State(initialValue: vm)
         self.familyId = familyId
         self.userName = userName
         self.currentUserId = currentUserId

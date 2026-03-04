@@ -188,10 +188,6 @@ private struct SettingsTabContent: View {
                 if let email = authManager.currentUser?.email {
                     LabeledContent("Email", value: email)
                 }
-                LabeledContent("User ID") {
-                    Text(currentUserId.uuidString.prefix(8) + "...")
-                        .font(.system(.body, design: .monospaced))
-                }
             }
 
             if NagzAI.Router.isAppleIntelligenceAvailable {
@@ -331,11 +327,16 @@ private struct SettingsTabContent: View {
             }
 
             Section {
-                Text("\(authManager.currentUser?.email ?? "\u{2014}") \u{2022} v\(Self.appVersion) (\(Self.appBuild))")
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
-                    .frame(maxWidth: .infinity, alignment: .center)
-                    .listRowBackground(Color.clear)
+                VStack(spacing: 4) {
+                    Text("v\(Self.appVersion) (\(Self.appBuild))")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                    Text(currentUserId.uuidString.prefix(8) + "...")
+                        .font(.caption2.monospaced())
+                        .foregroundStyle(.tertiary)
+                }
+                .frame(maxWidth: .infinity, alignment: .center)
+                .listRowBackground(Color.clear)
             }
 
             if let error = errorMessage {

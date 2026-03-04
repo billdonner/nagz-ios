@@ -70,11 +70,29 @@ struct NagUpdate: Encodable {
     let category: NagCategory?
     let doneDefinition: DoneDefinition?
     let committedAt: Date?
+    let clearCommittedAt: Bool
 
-    init(dueAt: Date? = nil, category: NagCategory? = nil, doneDefinition: DoneDefinition? = nil, committedAt: Date? = nil) {
+    init(dueAt: Date? = nil, category: NagCategory? = nil, doneDefinition: DoneDefinition? = nil, committedAt: Date? = nil, clearCommittedAt: Bool = false) {
         self.dueAt = dueAt
         self.category = category
         self.doneDefinition = doneDefinition
         self.committedAt = committedAt
+        self.clearCommittedAt = clearCommittedAt
+    }
+
+    private enum CodingKeys: String, CodingKey {
+        case dueAt, category, doneDefinition, committedAt
+    }
+
+    func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encodeIfPresent(dueAt, forKey: .dueAt)
+        try container.encodeIfPresent(category, forKey: .category)
+        try container.encodeIfPresent(doneDefinition, forKey: .doneDefinition)
+        if clearCommittedAt {
+            try container.encodeNil(forKey: .committedAt)
+        } else {
+            try container.encodeIfPresent(committedAt, forKey: .committedAt)
+        }
     }
 }

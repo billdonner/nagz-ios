@@ -191,6 +191,18 @@ struct NagListView: View {
                             )
                             await viewModel.loadNags()
                         }
+                    },
+                    onUncommit: { nagId in
+                        Task {
+                            let update = NagUpdate(clearCommittedAt: true)
+                            let _: NagResponse = try await viewModel.apiClient.request(
+                                .updateNag(nagId: nagId, update: update)
+                            )
+                            await viewModel.loadNags()
+                        }
+                    },
+                    onCreateAtTime: { date in
+                        showCreateNag = true
                     }
                 )
             }

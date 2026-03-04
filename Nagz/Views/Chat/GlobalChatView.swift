@@ -74,7 +74,7 @@ struct GlobalChatView: View {
                 if let error = viewModel.errorMessage {
                     Text(error)
                         .font(.caption)
-                        .foregroundStyle(.red)
+                        .foregroundStyle(.purple)
                         .padding(.horizontal)
                         .padding(.vertical, 4)
                 }
@@ -167,8 +167,9 @@ struct GlobalChatView: View {
     @ViewBuilder
     private var overdueBanner: some View {
         if overdueSummary.overdueCount > 0 {
+            let urgencyRatio = min(1.0, Double(overdueSummary.overdueCount) / max(1.0, Double(overdueSummary.totalOpen)))
             HStack(spacing: 4) {
-                Image(systemName: "exclamationmark.triangle.fill")
+                Image(systemName: "exclamationmark.circle.fill")
                     .font(.caption2)
                 Text("**\(overdueSummary.overdueCount) overdue** for you")
                 if let late = overdueSummary.mostUrgentLateDisplay {
@@ -181,7 +182,13 @@ struct GlobalChatView: View {
             .frame(maxWidth: .infinity)
             .padding(.vertical, 6)
             .padding(.horizontal, 8)
-            .background(Color.red.opacity(0.85))
+            .background(
+                LinearGradient(
+                    colors: [.blue, .purple.opacity(0.6 + urgencyRatio * 0.4)],
+                    startPoint: .leading,
+                    endPoint: .trailing
+                )
+            )
         } else if overdueSummary.totalOpen > 0 {
             HStack(spacing: 4) {
                 Image(systemName: "checkmark.circle")
@@ -194,7 +201,13 @@ struct GlobalChatView: View {
             .frame(maxWidth: .infinity)
             .padding(.vertical, 6)
             .padding(.horizontal, 8)
-            .background(Color.blue.opacity(0.75))
+            .background(
+                LinearGradient(
+                    colors: [.blue, .blue.opacity(0.7)],
+                    startPoint: .leading,
+                    endPoint: .trailing
+                )
+            )
         } else {
             HStack(spacing: 4) {
                 Image(systemName: "party.popper")
@@ -207,7 +220,13 @@ struct GlobalChatView: View {
             .frame(maxWidth: .infinity)
             .padding(.vertical, 6)
             .padding(.horizontal, 8)
-            .background(Color.green.opacity(0.75))
+            .background(
+                LinearGradient(
+                    colors: [.blue.opacity(0.6), .blue.opacity(0.4)],
+                    startPoint: .leading,
+                    endPoint: .trailing
+                )
+            )
         }
     }
 
