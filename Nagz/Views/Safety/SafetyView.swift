@@ -49,18 +49,37 @@ struct SafetyView: View {
         }
     }
 
+    private func isBlocked(_ userId: UUID) -> Bool {
+        viewModel.blocks.contains { $0.targetId == userId }
+    }
+
     private var blockSection: some View {
         Section("Block a Member") {
             ForEach(otherMembers, id: \.userId) { member in
-                Button {
-                    selectedTargetId = member.userId
-                    showBlockConfirmation = true
-                } label: {
+                if isBlocked(member.userId) {
                     HStack {
                         Text(member.displayName ?? "Unknown")
                         Spacer()
-                        Image(systemName: "hand.raised.fill")
-                            .foregroundStyle(.red)
+                        Label("Blocked", systemImage: "hand.raised.fill")
+                            .font(.caption.weight(.semibold))
+                            .foregroundStyle(.white)
+                            .padding(.horizontal, 8)
+                            .padding(.vertical, 4)
+                            .background(.red.opacity(0.8))
+                            .clipShape(Capsule())
+                    }
+                    .foregroundStyle(.secondary)
+                } else {
+                    Button {
+                        selectedTargetId = member.userId
+                        showBlockConfirmation = true
+                    } label: {
+                        HStack {
+                            Text(member.displayName ?? "Unknown")
+                            Spacer()
+                            Image(systemName: "hand.raised.fill")
+                                .foregroundStyle(.red)
+                        }
                     }
                 }
             }
