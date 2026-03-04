@@ -485,11 +485,11 @@ struct SubmitExcuseTool: Tool {
 
 struct InviteConnectionTool: Tool {
     let name = "inviteConnection"
-    let description = "Send a connection invite to someone by email address. Use when user says 'connect to...', 'invite...', 'add [email]'. This sends an invite that the other person can accept in their Nagz app."
+    let description = "Send a connection invite to someone by email address. This creates a PEER CONNECTION (not a family member). Use when user says 'connect to...', 'invite...', 'add [email]'. The person can accept in their Nagz app."
 
     @Generable
     struct Arguments {
-        @Guide(description: "Email address of the person to invite.")
+        @Guide(description: "Email address of the person to invite. Must be a valid email like user@example.com with no spaces.")
         let email: String
     }
 
@@ -497,9 +497,19 @@ struct InviteConnectionTool: Tool {
     let collector: ToolResultCollector
 
     nonisolated func call(arguments: Arguments) async throws -> String {
-        let email = arguments.email.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
-        guard email.contains("@") else {
-            return "That doesn't look like a valid email address. Try again with a full email."
+        // Strip all whitespace (handles "bill donner@gmail.com" → "billdonner@gmail.com")
+        let email = arguments.email
+            .components(separatedBy: .whitespaces).joined()
+            .trimmingCharacters(in: .whitespacesAndNewlines)
+            .lowercased()
+
+        // Validate email format
+        let parts = email.split(separator: "@")
+        guard parts.count == 2,
+              !parts[0].isEmpty,
+              parts[1].contains("."),
+              !email.contains(" ") else {
+            return "'\(arguments.email)' doesn't look like a valid email address. Please provide a full email like name@example.com."
         }
 
         let _: ConnectionResponse = try await apiClient.request(
@@ -507,7 +517,7 @@ struct InviteConnectionTool: Tool {
         )
 
         await collector.record("✓ Invited \(email)")
-        return "Invite sent to \(email)! They'll see it when they open Nagz. Once they accept, you can start nagging each other."
+        return "Connection invite sent to \(email). They'll see it when they open Nagz. Once they accept, you'll be connected as friends. If they should be a trusted connection (like a tutor or nanny who can nag your children), you can change that in the People tab after they accept."
     }
 }
 
