@@ -88,7 +88,8 @@ struct IntentTests {
             status: .open,
             createdAt: Date(),
             completedAt: nil,
-            committedAt: nil
+            committedAt: nil,
+            recipientDismissedAt: nil
         )
 
         let entity = NagEntity(from: nag, recipientName: "Alice")

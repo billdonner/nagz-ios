@@ -19,12 +19,12 @@ final class NagFilterTests: XCTestCase {
 
     func testNagFilterRawValues() {
         XCTAssertEqual(NagFilter.open.rawValue, "Open")
-        XCTAssertEqual(NagFilter.completed.rawValue, "Completed")
+        XCTAssertEqual(NagFilter.completed.rawValue, "Done")
         XCTAssertEqual(NagFilter.all.rawValue, "All")
     }
 
-    func testNagFilterCaseIterableHasFourCases() {
-        XCTAssertEqual(NagFilter.allCases.count, 4)
+    func testNagFilterCaseIterableHasThreeCases() {
+        XCTAssertEqual(NagFilter.allCases.count, 3)
     }
 }
 
