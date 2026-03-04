@@ -42,6 +42,7 @@ final class NagListViewModel {
     }
 
     func loadNags() async {
+        guard !isLoading else { return }
         isLoading = true
         errorMessage = nil
         offset = 0
