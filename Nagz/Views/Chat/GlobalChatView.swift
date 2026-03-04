@@ -117,12 +117,6 @@ struct GlobalChatView: View {
                             .foregroundStyle(.secondary)
                     }
                 }
-                ToolbarItemGroup(placement: .keyboard) {
-                    Spacer()
-                    Button("Done") {
-                        isInputFocused = false
-                    }
-                }
             }
             .scrollDismissesKeyboard(.interactively)
         }
