@@ -43,6 +43,13 @@ struct ChildSettingsView: View {
                         }
                     }
                 }
+
+                Section("Server") {
+                    Text(AppEnvironment.current.baseURL.absoluteString)
+                        .font(.caption2)
+                        .foregroundStyle(.tertiary)
+                        .frame(maxWidth: .infinity, alignment: .center)
+                }
             }
             .navigationTitle("Settings")
             .navigationBarTitleDisplayMode(.inline)

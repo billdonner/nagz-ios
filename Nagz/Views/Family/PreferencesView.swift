@@ -78,6 +78,15 @@ struct PreferencesView: View {
                 }
                 .disabled(viewModel.isSaving)
             }
+
+            Section {
+                Text(AppEnvironment.current.baseURL.absoluteString)
+                    .font(.caption2)
+                    .foregroundStyle(.tertiary)
+                    .frame(maxWidth: .infinity, alignment: .center)
+            } header: {
+                Text("Server")
+            }
         }
         .navigationTitle("Preferences")
         .task { await viewModel.load() }
