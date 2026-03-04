@@ -337,6 +337,9 @@ private struct SettingsTabContent: View {
                     Text(currentUserId.uuidString.prefix(8) + "...")
                         .font(.caption2.monospaced())
                         .foregroundStyle(.tertiary)
+                    Text(AppEnvironment.current.baseURL.absoluteString)
+                        .font(.caption2.monospaced())
+                        .foregroundStyle(.tertiary)
                 }
                 .frame(maxWidth: .infinity, alignment: .center)
                 .listRowBackground(Color.clear)
