@@ -6,7 +6,7 @@ struct ConnectionResponse: Decodable, Identifiable, Sendable {
     let inviteeId: UUID?
     let inviteeEmail: String
     let status: ConnectionStatus
-    let trusted: Bool
+    let caregiver: Bool
     let createdAt: Date
     let respondedAt: Date?
     let otherPartyEmail: String?
@@ -15,13 +15,19 @@ struct ConnectionResponse: Decodable, Identifiable, Sendable {
 
 struct ConnectionInvite: Encodable {
     let inviteeEmail: String
+    let caregiver: Bool
+
+    init(inviteeEmail: String, caregiver: Bool = false) {
+        self.inviteeEmail = inviteeEmail
+        self.caregiver = caregiver
+    }
 }
 
-struct ConnectionTrustUpdate: Encodable {
-    let trusted: Bool
+struct ConnectionTypeUpdate: Encodable {
+    let caregiver: Bool
 }
 
-struct TrustedConnectionChild: Decodable, Identifiable, Sendable {
+struct CaregiverConnectionChild: Decodable, Identifiable, Sendable {
     let userId: UUID
     let displayName: String?
     let familyId: UUID

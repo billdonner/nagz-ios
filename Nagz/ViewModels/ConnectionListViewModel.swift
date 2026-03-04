@@ -197,10 +197,10 @@ final class ConnectionListViewModel {
         }
     }
 
-    func toggleTrust(id: UUID, currentTrusted: Bool) async {
+    func toggleType(id: UUID, currentCaregiver: Bool) async {
         do {
             let _: ConnectionResponse = try await apiClient.request(
-                .updateConnectionTrust(id: id, trusted: !currentTrusted)
+                .updateConnectionType(id: id, caregiver: !currentCaregiver)
             )
             await loadConnections()
         } catch let error as APIError {

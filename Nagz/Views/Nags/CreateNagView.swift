@@ -4,7 +4,7 @@ struct CreateNagView: View {
     @State private var viewModel: CreateNagViewModel
     @State private var members: [MemberDetail] = []
     @State private var connections: [ConnectionResponse] = []
-    @State private var trustedChildren: [TrustedConnectionChild] = []
+    @State private var caregiverChildren: [CaregiverConnectionChild] = []
     @State private var isLoadingRecipients = true
     @State private var recipientLoadError: String?
     @Environment(\.dismiss) private var dismiss
@@ -55,9 +55,9 @@ struct CreateNagView: View {
                                 }
                             }
 
-                            if !trustedChildren.isEmpty {
-                                Section("Trusted Connections' Kids") {
-                                    ForEach(trustedChildren) { child in
+                            if !caregiverChildren.isEmpty {
+                                Section("Caregivers' Kids") {
+                                    ForEach(caregiverChildren) { child in
                                         Text("\(child.displayName ?? "Unknown") (\(child.familyName))")
                                             .tag(child.userId as UUID?)
                                     }
@@ -65,14 +65,14 @@ struct CreateNagView: View {
                             }
                         }
                         .onChange(of: viewModel.recipientId) {
-                            // Determine if this is a family, connection, or trusted child recipient
+                            // Determine if this is a family, connection, or caregiver child recipient
                             if let rid = viewModel.recipientId {
                                 if filteredMembers.contains(where: { $0.userId == rid }) {
                                     viewModel.contextFamilyId = familyId
                                     viewModel.contextConnectionId = nil
-                                } else if let trustedChild = trustedChildren.first(where: { $0.userId == rid }) {
+                                } else if let caregiverChild = caregiverChildren.first(where: { $0.userId == rid }) {
                                     viewModel.contextFamilyId = nil
-                                    viewModel.contextConnectionId = trustedChild.connectionId
+                                    viewModel.contextConnectionId = caregiverChild.connectionId
                                 } else if let conn = connections.first(where: {
                                     otherPartyId(for: $0) == rid
                                 }) {
@@ -245,19 +245,19 @@ struct CreateNagView: View {
             )
             connections = connResponse.items
 
-            // Load trusted children from trusted connections
-            var allTrustedChildren: [TrustedConnectionChild] = []
-            for conn in connResponse.items where conn.trusted {
+            // Load children from caregiver connections
+            var allCaregiverChildren: [CaregiverConnectionChild] = []
+            for conn in connResponse.items where conn.caregiver {
                 do {
-                    let children: [TrustedConnectionChild] = try await apiClient.request(
-                        .listTrustedChildren(connectionId: conn.id)
+                    let children: [CaregiverConnectionChild] = try await apiClient.request(
+                        .listCaregiverChildren(connectionId: conn.id)
                     )
-                    allTrustedChildren.append(contentsOf: children)
+                    allCaregiverChildren.append(contentsOf: children)
                 } catch {
                     // Non-critical — skip this connection's children
                 }
             }
-            trustedChildren = allTrustedChildren
+            caregiverChildren = allCaregiverChildren
         } catch let error as APIError {
             recipientLoadError = error.errorDescription
         } catch {

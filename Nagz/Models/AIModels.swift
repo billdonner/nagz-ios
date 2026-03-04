@@ -145,7 +145,7 @@ struct SyncedConnection: Decodable, Sendable {
     let inviteeId: UUID?
     let inviteeEmail: String
     let status: String
-    let trusted: Bool
+    let caregiver: Bool
     let createdAt: Date
     let respondedAt: Date?
 }

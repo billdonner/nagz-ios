@@ -729,9 +729,9 @@ final class ModelDecodingTests: XCTestCase {
         XCTAssertNotEqual(endpoint1.cacheKey, endpoint2.cacheKey)
     }
 
-    // MARK: - Connection trusted field tests
+    // MARK: - Connection caregiver field tests
 
-    func testConnectionResponseDecodingWithTrusted() throws {
+    func testConnectionResponseDecodingWithCaregiver() throws {
         let json = """
         {
             "id": "550e8400-e29b-41d4-a716-446655440000",
@@ -739,7 +739,7 @@ final class ModelDecodingTests: XCTestCase {
             "invitee_id": "550e8400-e29b-41d4-a716-446655440002",
             "invitee_email": "bob@example.com",
             "status": "active",
-            "trusted": true,
+            "caregiver": true,
             "created_at": "2026-02-25T12:00:00+00:00",
             "responded_at": "2026-02-25T12:30:00+00:00"
         }
@@ -748,11 +748,11 @@ final class ModelDecodingTests: XCTestCase {
         let response = try decoder.decode(ConnectionResponse.self, from: json)
         XCTAssertEqual(response.inviteeEmail, "bob@example.com")
         XCTAssertEqual(response.status, .active)
-        XCTAssertTrue(response.trusted)
+        XCTAssertTrue(response.caregiver)
         XCTAssertNotNil(response.inviteeId)
     }
 
-    func testConnectionResponseDecodingUntrusted() throws {
+    func testConnectionResponseDecodingFriend() throws {
         let json = """
         {
             "id": "550e8400-e29b-41d4-a716-446655440000",
@@ -760,19 +760,19 @@ final class ModelDecodingTests: XCTestCase {
             "invitee_id": null,
             "invitee_email": "bob@example.com",
             "status": "pending",
-            "trusted": false,
+            "caregiver": false,
             "created_at": "2026-02-25T12:00:00+00:00",
             "responded_at": null
         }
         """.data(using: .utf8)!
 
         let response = try decoder.decode(ConnectionResponse.self, from: json)
-        XCTAssertFalse(response.trusted)
+        XCTAssertFalse(response.caregiver)
         XCTAssertNil(response.inviteeId)
         XCTAssertEqual(response.status, .pending)
     }
 
-    func testTrustedConnectionChildDecoding() throws {
+    func testCaregiverConnectionChildDecoding() throws {
         let json = """
         {
             "user_id": "550e8400-e29b-41d4-a716-446655440010",
@@ -783,35 +783,35 @@ final class ModelDecodingTests: XCTestCase {
         }
         """.data(using: .utf8)!
 
-        let child = try decoder.decode(TrustedConnectionChild.self, from: json)
+        let child = try decoder.decode(CaregiverConnectionChild.self, from: json)
         XCTAssertEqual(child.displayName, "Kid One")
         XCTAssertEqual(child.familyName, "Bob's Family")
         XCTAssertEqual(child.userId, UUID(uuidString: "550e8400-e29b-41d4-a716-446655440010"))
         XCTAssertEqual(child.id, child.userId)
     }
 
-    func testConnectionTrustUpdateEncoding() throws {
-        let update = ConnectionTrustUpdate(trusted: true)
+    func testConnectionTypeUpdateEncoding() throws {
+        let update = ConnectionTypeUpdate(caregiver: true)
         let encoder = JSONEncoder()
         encoder.keyEncodingStrategy = .convertToSnakeCase
         let data = try encoder.encode(update)
         let dict = try JSONSerialization.jsonObject(with: data) as! [String: Any]
-        XCTAssertEqual(dict["trusted"] as? Bool, true)
+        XCTAssertEqual(dict["caregiver"] as? Bool, true)
     }
 
-    // MARK: - Connection trust endpoint path tests
+    // MARK: - Connection type endpoint path tests
 
-    func testUpdateConnectionTrustEndpointPath() {
+    func testUpdateConnectionTypeEndpointPath() {
         let id = UUID(uuidString: "550e8400-e29b-41d4-a716-446655440000")!
-        let endpoint = APIEndpoint.updateConnectionTrust(id: id, trusted: true)
+        let endpoint = APIEndpoint.updateConnectionType(id: id, caregiver: true)
         XCTAssertTrue(endpoint.path.contains("/connections/"))
-        XCTAssertTrue(endpoint.path.hasSuffix("/trust"))
+        XCTAssertTrue(endpoint.path.hasSuffix("/type"))
         XCTAssertEqual(endpoint.method, .patch)
     }
 
-    func testListTrustedChildrenEndpointPath() {
+    func testListCaregiverChildrenEndpointPath() {
         let id = UUID(uuidString: "550e8400-e29b-41d4-a716-446655440000")!
-        let endpoint = APIEndpoint.listTrustedChildren(connectionId: id)
+        let endpoint = APIEndpoint.listCaregiverChildren(connectionId: id)
         XCTAssertTrue(endpoint.path.contains("/connections/"))
         XCTAssertTrue(endpoint.path.hasSuffix("/children"))
         XCTAssertEqual(endpoint.method, .get)

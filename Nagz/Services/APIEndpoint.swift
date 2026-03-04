@@ -123,11 +123,11 @@ struct APIEndpoint {
 
     // MARK: - Connections
 
-    static func inviteConnection(email: String) -> APIEndpoint {
+    static func inviteConnection(email: String, caregiver: Bool = false) -> APIEndpoint {
         APIEndpoint(
             path: "/connections/invite",
             method: .post,
-            body: ConnectionInvite(inviteeEmail: email)
+            body: ConnectionInvite(inviteeEmail: email, caregiver: caregiver)
         )
     }
 
@@ -164,15 +164,15 @@ struct APIEndpoint {
         APIEndpoint(path: "/connections/\(id)/revoke", method: .post)
     }
 
-    static func updateConnectionTrust(id: UUID, trusted: Bool) -> APIEndpoint {
+    static func updateConnectionType(id: UUID, caregiver: Bool) -> APIEndpoint {
         APIEndpoint(
-            path: "/connections/\(id)/trust",
+            path: "/connections/\(id)/type",
             method: .patch,
-            body: ConnectionTrustUpdate(trusted: trusted)
+            body: ConnectionTypeUpdate(caregiver: caregiver)
         )
     }
 
-    static func listTrustedChildren(connectionId: UUID) -> APIEndpoint {
+    static func listCaregiverChildren(connectionId: UUID) -> APIEndpoint {
         APIEndpoint(path: "/connections/\(connectionId)/children")
     }
 

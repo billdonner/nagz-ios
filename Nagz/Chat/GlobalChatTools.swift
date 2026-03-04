@@ -485,12 +485,15 @@ struct SubmitExcuseTool: Tool {
 
 struct InviteConnectionTool: Tool {
     let name = "inviteConnection"
-    let description = "Send a connection invite to someone by email address. This creates a PEER CONNECTION (not a family member). Use when user says 'connect to...', 'invite...', 'add [email]'. The person can accept in their Nagz app."
+    let description = "Send a connection invite to someone by email address. This creates a PEER CONNECTION (not a family member). Use when user says 'connect to...', 'invite...', 'add [email]'. Set caregiver=true for tutors, nannies, coaches, babysitters — they can nag your children but not you. Default is friend (can nag each other)."
 
     @Generable
     struct Arguments {
         @Guide(description: "Email address of the person to invite. Must be a valid email like user@example.com with no spaces.")
         let email: String
+
+        @Guide(description: "Set to true if this person is a caregiver (tutor, nanny, coach, babysitter) who should be able to nag the user's children. Default false for friend connections.")
+        let caregiver: Bool
     }
 
     let apiClient: APIClient
@@ -513,11 +516,15 @@ struct InviteConnectionTool: Tool {
         }
 
         let _: ConnectionResponse = try await apiClient.request(
-            .inviteConnection(email: email)
+            .inviteConnection(email: email, caregiver: arguments.caregiver)
         )
 
-        await collector.record("✓ Invited \(email)")
-        return "Connection invite sent to \(email). They'll see it when they open Nagz. Once they accept, you'll be connected as friends. If they should be a trusted connection (like a tutor or nanny who can nag your children), you can change that in the People tab after they accept."
+        await collector.record("✓ Invited \(email)\(arguments.caregiver ? " (caregiver)" : "")")
+        if arguments.caregiver {
+            return "Caregiver invite sent to \(email). Once they accept, they can nag your children but not you."
+        } else {
+            return "Connection invite sent to \(email). Once they accept, you'll be able to nag each other."
+        }
     }
 }
 

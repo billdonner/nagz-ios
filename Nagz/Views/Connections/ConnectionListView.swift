@@ -114,7 +114,7 @@ struct ConnectionListView: View {
                 Text("Active Connections")
             } footer: {
                 if !viewModel.connections.isEmpty {
-                    Text("**Friends** can nag each other. **Trusted** connections can nag your children but not you — ideal for tutors, coaches, or nannies.")
+                    Text("**Friends** can nag each other. **Caregivers** can nag your children but not you — ideal for tutors, coaches, or nannies.")
                 }
             }
 
@@ -199,17 +199,17 @@ struct ConnectionListView: View {
                     .font(.body.weight(.medium))
                 Spacer()
                 HStack(spacing: 4) {
-                    Image(systemName: connection.trusted ? "checkmark.shield.fill" : "shield")
-                        .foregroundStyle(connection.trusted ? .green : .secondary)
+                    Image(systemName: connection.caregiver ? "checkmark.shield.fill" : "shield")
+                        .foregroundStyle(connection.caregiver ? .green : .secondary)
                         .font(.caption)
-                    Text(connection.trusted ? "Trusted" : "Friend")
+                    Text(connection.caregiver ? "Caregiver" : "Friend")
                         .font(.caption.weight(.medium))
-                        .foregroundStyle(connection.trusted ? .green : .secondary)
+                        .foregroundStyle(connection.caregiver ? .green : .secondary)
                 }
-                Toggle("Trusted", isOn: Binding(
-                    get: { connection.trusted },
+                Toggle("Caregiver", isOn: Binding(
+                    get: { connection.caregiver },
                     set: { _ in
-                        Task { await viewModel.toggleTrust(id: connection.id, currentTrusted: connection.trusted) }
+                        Task { await viewModel.toggleType(id: connection.id, currentCaregiver: connection.caregiver) }
                     }
                 ))
                 .labelsHidden()
