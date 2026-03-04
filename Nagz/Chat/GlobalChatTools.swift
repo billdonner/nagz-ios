@@ -85,11 +85,68 @@ struct ListNagsTool: Tool {
     }
 }
 
+// MARK: - Press Nag Tool (escalate / update existing nag)
+
+struct PressNagTool: Tool {
+    let name = "pressNag"
+    let description = "Escalate or update an EXISTING nag by changing its message. Use when the user says 'tell X to hurry up', 'remind X again', 'change the message to...', 'press X on the task', or any phrase that implies nudging someone about something they're already supposed to do. This finds the open nag the user sent to that person and updates its description. Do NOT create a new nag."
+
+    @Generable
+    struct Arguments {
+        @Guide(description: "Name of the person whose nag to update.")
+        let recipientName: String
+
+        @Guide(description: "The new message/tagline to set on the nag. Write it as the message the recipient will see, e.g. 'No dinner tonight if this isn't done.'")
+        let newMessage: String
+    }
+
+    let apiClient: APIClient
+    let familyId: UUID?
+    let currentUserId: UUID
+    let collector: ToolResultCollector
+
+    nonisolated func call(arguments: Arguments) async throws -> String {
+        guard let familyId else {
+            return "No family set up yet."
+        }
+
+        // Load open nags sent by current user to others
+        let page: PaginatedResponse<NagResponse> = try await apiClient.request(
+            .listNags(familyId: familyId, status: .open)
+        )
+        let sentNags = page.items.filter { $0.creatorId == currentUserId && $0.recipientId != currentUserId }
+
+        // Fuzzy-match recipient name
+        let query = arguments.recipientName.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
+        let match = sentNags.first {
+            ($0.recipientDisplayName ?? "").lowercased() == query
+        } ?? sentNags.first {
+            let name = ($0.recipientDisplayName ?? "").lowercased()
+            return name.contains(query) || query.contains(name)
+        }
+
+        guard let nag = match else {
+            let names = Set(sentNags.compactMap(\.recipientDisplayName)).sorted().joined(separator: ", ")
+            await collector.record("❌ No open nag found for \"\(arguments.recipientName)\"")
+            return names.isEmpty
+                ? "You haven't sent any open nags to anyone yet."
+                : "No open nag found for \"\(arguments.recipientName)\". You have open nags for: \(names)."
+        }
+
+        let update = NagUpdate(description: arguments.newMessage)
+        let _: NagResponse = try await apiClient.request(.updateNag(nagId: nag.id, update: update))
+
+        let who = nag.recipientDisplayName ?? arguments.recipientName
+        await collector.record("✓ Updated nag for \(who): \(arguments.newMessage)")
+        return "Updated the nag for \(who). They'll now see: \"\(arguments.newMessage)\""
+    }
+}
+
 // MARK: - Create Nag Tool
 
 struct CreateNagTool: Tool {
     let name = "createNag"
-    let description = "Create a new nag/task/reminder. Use when the user says 'remind me to...', 'nag me about...', or 'add a task'. If they mention someone by name (e.g. 'tell Bobby to...'), set recipientName to that person's name. Leave recipientName empty or set to 'me'/'self' to assign to the current user."
+    let description = "Create a NEW nag/task/reminder. Use ONLY when the user wants to add a brand-new task that doesn't exist yet: 'remind me to...', 'nag me about...', 'add a task for...'. Do NOT use when the user wants to press or remind someone about an existing task — use pressNag instead."
 
     @Generable
     struct Arguments {

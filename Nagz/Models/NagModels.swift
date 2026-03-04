@@ -72,13 +72,15 @@ struct NagUpdate: Encodable {
     let doneDefinition: DoneDefinition?
     let committedAt: Date?
     let clearCommittedAt: Bool
+    let description: String?
 
-    init(dueAt: Date? = nil, category: NagCategory? = nil, doneDefinition: DoneDefinition? = nil, committedAt: Date? = nil, clearCommittedAt: Bool = false) {
+    init(dueAt: Date? = nil, category: NagCategory? = nil, doneDefinition: DoneDefinition? = nil, committedAt: Date? = nil, clearCommittedAt: Bool = false, description: String? = nil) {
         self.dueAt = dueAt
         self.category = category
         self.doneDefinition = doneDefinition
         self.committedAt = committedAt
         self.clearCommittedAt = clearCommittedAt
+        self.description = description
     }
 
     private enum CodingKeys: String, CodingKey {

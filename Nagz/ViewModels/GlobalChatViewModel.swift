@@ -79,6 +79,12 @@ final class GlobalChatViewModel {
             apiClient: apiClient,
             collector: toolCollector
         )
+        let pressTool = PressNagTool(
+            apiClient: apiClient,
+            familyId: familyId,
+            currentUserId: currentUserId,
+            collector: toolCollector
+        )
 
         let instructions = GlobalChatPrompt.build(
             userName: userName,
@@ -88,7 +94,7 @@ final class GlobalChatViewModel {
         )
 
         session = LanguageModelSession(
-            tools: [listTool, createTool, completeTool, rescheduleTool, statusTool, excuseTool, inviteTool]
+            tools: [listTool, pressTool, createTool, completeTool, rescheduleTool, statusTool, excuseTool, inviteTool]
         ) {
             instructions
         }
