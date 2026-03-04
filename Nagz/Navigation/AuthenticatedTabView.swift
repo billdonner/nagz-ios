@@ -177,6 +177,7 @@ private struct SettingsTabContent: View {
     @State private var showFeedbackMail = false
     @State private var showMailUnavailableAlert = false
     @State private var showOnboarding = false
+    @State private var serverReachable: Bool? = nil
 
     static var appVersion: String {
         Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "?"
@@ -339,7 +340,7 @@ private struct SettingsTabContent: View {
                         .foregroundStyle(.tertiary)
                     Text(AppEnvironment.current.baseURL.absoluteString)
                         .font(.caption2.monospaced())
-                        .foregroundStyle(.tertiary)
+                        .foregroundStyle(serverReachable == true ? Color.green : serverReachable == false ? Color.red : Color(uiColor: .tertiaryLabel))
                 }
                 .frame(maxWidth: .infinity, alignment: .center)
                 .listRowBackground(Color.clear)
@@ -352,6 +353,10 @@ private struct SettingsTabContent: View {
             }
         }
         .navigationTitle("Settings")
+        .task {
+            let url = AppEnvironment.current.baseURL.appendingPathComponent("metrics")
+            serverReachable = await (try? URLSession.shared.data(from: url)) != nil
+        }
         .alert("Export Complete", isPresented: $showExportSuccess) {
             Button("OK") {}
         } message: {
