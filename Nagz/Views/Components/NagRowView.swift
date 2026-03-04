@@ -51,7 +51,7 @@ struct NagRowView: View {
                             .font(.caption)
                             .foregroundStyle(.green)
                     } else {
-                        Text(nag.dueAt.relativeDisplay)
+                        Text(nag.dueAt, style: .relative)
                             .font(.caption)
                             .foregroundStyle(urgency.textColor)
                     }

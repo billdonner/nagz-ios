@@ -56,15 +56,22 @@ struct NagDetailView: View {
 
                     Section("Details") {
                         LabeledContent("Category", value: nag.category.displayName)
-                        LabeledContent("Due", value: nag.dueAt.relativeDisplay)
+                        LabeledContent("Due") {
+                            TimelineView(.periodic(from: .now, by: 30)) { _ in
+                                Text(nag.dueAt.relativeDisplay)
+                                    .foregroundStyle(nag.status == .open && nag.dueAt < Date() ? .orange : .secondary)
+                            }
+                        }
                         LabeledContent("Completion", value: nag.doneDefinition.displayName)
                         if let recurrence = nag.recurrence {
                             LabeledContent("Repeats", value: recurrence.displayName)
                         }
                         if let committedAt = nag.committedAt {
                             LabeledContent("Committed") {
-                                Text(committedAt.relativeDisplay)
-                                    .foregroundStyle(.purple)
+                                TimelineView(.periodic(from: .now, by: 30)) { _ in
+                                    Text(committedAt.relativeDisplay)
+                                        .foregroundStyle(.purple)
+                                }
                             }
                         }
                     }
