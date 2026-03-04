@@ -88,7 +88,7 @@ struct ConnectionListView: View {
                 }
             }
 
-            Section("Active Connections") {
+            Section {
                 if viewModel.connections.isEmpty && !viewModel.isLoading {
                     ContentUnavailableView {
                         Label("No Connections", systemImage: "person.2")
@@ -109,6 +109,12 @@ struct ConnectionListView: View {
                             }
                         }
                     }
+                }
+            } header: {
+                Text("Active Connections")
+            } footer: {
+                if !viewModel.connections.isEmpty {
+                    Text("**Friends** can nag each other. **Trusted** connections can nag your children but not you — ideal for tutors, coaches, or nannies.")
                 }
             }
 
@@ -192,10 +198,13 @@ struct ConnectionListView: View {
                 Text(connection.otherPartyDisplayName ?? connection.otherPartyEmail ?? connection.inviteeEmail)
                     .font(.body.weight(.medium))
                 Spacer()
-                if connection.trusted {
-                    Image(systemName: "checkmark.shield.fill")
-                        .foregroundStyle(.green)
+                HStack(spacing: 4) {
+                    Image(systemName: connection.trusted ? "checkmark.shield.fill" : "shield")
+                        .foregroundStyle(connection.trusted ? .green : .secondary)
                         .font(.caption)
+                    Text(connection.trusted ? "Trusted" : "Friend")
+                        .font(.caption.weight(.medium))
+                        .foregroundStyle(connection.trusted ? .green : .secondary)
                 }
                 Toggle("Trusted", isOn: Binding(
                     get: { connection.trusted },

@@ -117,6 +117,10 @@ struct APIEndpoint {
         )
     }
 
+    static func leaveFamily(familyId: UUID) -> APIEndpoint {
+        APIEndpoint(path: "/families/\(familyId)/leave", method: .post)
+    }
+
     // MARK: - Connections
 
     static func inviteConnection(email: String) -> APIEndpoint {

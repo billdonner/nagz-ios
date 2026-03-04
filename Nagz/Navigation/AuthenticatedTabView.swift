@@ -428,6 +428,9 @@ private struct FamilyTabContent: View {
     @State private var digest: DigestResponse?
     @AppStorage("hasSeenFamilyIntro") private var hasSeenFamilyIntro = false
     @State private var showFamilyIntro = false
+    @State private var showLeaveConfirmation = false
+    @State private var isLeaving = false
+    @State private var leaveError: String?
 
     private func memberColor(for role: FamilyRole) -> Color {
         switch role {
@@ -590,6 +593,16 @@ private struct FamilyTabContent: View {
                             Label("Send Invite", systemImage: "square.and.arrow.up")
                         }
                     }
+
+                    Section {
+                        Button(role: .destructive) {
+                            showLeaveConfirmation = true
+                        } label: {
+                            Label("Leave Family", systemImage: "rectangle.portrait.and.arrow.right")
+                        }
+                    } footer: {
+                        Text("Your open nags in this family will be cancelled. You can rejoin with an invite code.")
+                    }
                 }
                 .navigationTitle(family.name)
                 .onAppear {
@@ -623,6 +636,34 @@ private struct FamilyTabContent: View {
             if viewModel.family != nil && !hasSeenFamilyIntro {
                 showFamilyIntro = true
             }
+        }
+        .confirmationDialog(
+            "Leave Family?",
+            isPresented: $showLeaveConfirmation
+        ) {
+            Button("Leave", role: .destructive) {
+                guard let familyId = viewModel.family?.familyId else { return }
+                Task {
+                    isLeaving = true
+                    do {
+                        let _: MemberResponse = try await apiClient.request(.leaveFamily(familyId: familyId))
+                        viewModel.family = nil
+                        viewModel.members = []
+                    } catch let error as APIError {
+                        leaveError = error.errorDescription
+                    } catch {
+                        leaveError = error.localizedDescription
+                    }
+                    isLeaving = false
+                }
+            }
+        } message: {
+            Text("Your open nags will be cancelled and you'll be removed from this family. You can rejoin later with an invite code.")
+        }
+        .alert("Cannot Leave", isPresented: Binding(get: { leaveError != nil }, set: { if !$0 { leaveError = nil } })) {
+            Button("OK") { leaveError = nil }
+        } message: {
+            Text(leaveError ?? "")
         }
         .sheet(isPresented: $showFamilyIntro) {
             NavigationStack {
