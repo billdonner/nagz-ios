@@ -41,21 +41,25 @@ final class ConnectionListViewModel {
             return Int(Double(onTimeCount) / Double(completedCount) * 100)
         }
 
-        /// Reliability label based on completion + on-time rates
+        /// Reliability label based on blended score: 60% completion + 40% on-time
         var reliabilityLabel: String? {
             guard let cr = completionRate else { return nil }
-            if cr >= 90 { return "Reliable" }
-            if cr >= 70 { return "Usually Reliable" }
-            if cr >= 50 { return "Sometimes Late" }
+            let otr = onTimeRate ?? 0
+            let score = (cr * 60 + otr * 40) / 100
+            if score >= 80 { return "Reliable" }
+            if score >= 60 { return "Usually OK" }
+            if score >= 40 { return "Sometimes Late" }
             return "Needs Work"
         }
 
         /// Color for the reliability badge
         var reliabilityColor: String {
             guard let cr = completionRate else { return "gray" }
-            if cr >= 90 { return "green" }
-            if cr >= 70 { return "blue" }
-            if cr >= 50 { return "orange" }
+            let otr = onTimeRate ?? 0
+            let score = (cr * 60 + otr * 40) / 100
+            if score >= 80 { return "green" }
+            if score >= 60 { return "blue" }
+            if score >= 40 { return "orange" }
             return "red"
         }
     }

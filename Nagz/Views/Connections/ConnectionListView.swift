@@ -149,7 +149,9 @@ struct ConnectionListView: View {
         } content: {
             InviteConnectionView(viewModel: viewModel)
         }
-        .sheet(item: $connectionToNag) { connection in
+        .sheet(item: $connectionToNag) {
+            Task { await viewModel.loadConnections() }
+        } content: { connection in
             CreateNagView(
                 apiClient: viewModel.apiClient,
                 familyId: familyId,
@@ -211,7 +213,7 @@ struct ConnectionListView: View {
                     statPill(count: stats.openCount, label: "Open", icon: "circle.fill", color: .yellow)
                     statPill(count: stats.completedCount, label: "Done", icon: "checkmark.circle.fill", color: .green)
                     if stats.overdueCount > 0 {
-                        statPill(count: stats.overdueCount, label: "Late", icon: "exclamationmark.triangle.fill", color: .red)
+                        statPill(count: stats.overdueCount, label: "Late", icon: "exclamationmark.triangle.fill", color: .orange)
                     }
                 }
 
