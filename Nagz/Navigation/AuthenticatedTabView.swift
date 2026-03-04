@@ -73,6 +73,7 @@ struct AuthenticatedTabView: View {
             pushService.restorePendingNag()
             if let nagId = pushService.pendingNagId {
                 selectedTab = 1
+                nagNavigationPath = NavigationPath()
                 nagNavigationPath.append(nagId)
                 pushService.clearPendingNag()
             }
@@ -80,6 +81,8 @@ struct AuthenticatedTabView: View {
         .onChange(of: pushService.pendingNagId) { _, newValue in
             if let nagId = newValue {
                 selectedTab = 1
+                // Reset navigation stack before pushing to avoid stack corruption
+                nagNavigationPath = NavigationPath()
                 nagNavigationPath.append(nagId)
                 pushService.clearPendingNag()
             }
