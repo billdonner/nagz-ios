@@ -43,18 +43,37 @@ private final class NotificationDelegate: NSObject, UNUserNotificationCenterDele
         _ center: UNUserNotificationCenter,
         willPresent notification: UNNotification
     ) async -> UNNotificationPresentationOptions {
-        [.banner, .badge, .sound]
+        // Extract values in nonisolated context to avoid Sendable issues
+        let targetUserId = notification.request.content.userInfo["target_user_id"] as? String
+        let isForCurrent = await Self.isForCurrentUser(targetUserId: targetUserId)
+        guard isForCurrent else { return [] }
+        return [.banner, .badge, .sound]
     }
 
     nonisolated func userNotificationCenter(
         _ center: UNUserNotificationCenter,
         didReceive response: UNNotificationResponse
     ) async {
-        // Save to UserDefaults only — no MainActor dispatch during cold launch.
-        // The app picks this up via restorePendingNag() when the UI is ready.
+        let targetUserId = response.notification.request.content.userInfo["target_user_id"] as? String
         let nagIdString = response.notification.request.content.userInfo["nag_id"] as? String
+        let isForCurrent = await Self.isForCurrentUser(targetUserId: targetUserId)
+        guard isForCurrent else { return }
+
         if let nagIdString, let nagId = UUID(uuidString: nagIdString) {
             UserDefaults.standard.set(nagId.uuidString, forKey: "nagz_pending_nag_id")
         }
+    }
+
+    /// Check if the notification is intended for the currently logged-in user.
+    @MainActor
+    private static func isForCurrentUser(targetUserId: String?) -> Bool {
+        guard let targetUserId else {
+            // No target_user_id in payload — allow (backwards compatibility)
+            return true
+        }
+        guard let currentUserId = UserDefaults.standard.string(forKey: "nagz_user_id") else {
+            return false
+        }
+        return targetUserId == currentUserId
     }
 }

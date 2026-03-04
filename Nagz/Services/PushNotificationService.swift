@@ -44,6 +44,13 @@ final class PushNotificationService: NSObject {
     }
 
     func handleNotificationTap(userInfo: [AnyHashable: Any]) {
+        // Verify notification is for the current user
+        if let targetUserId = userInfo["target_user_id"] as? String,
+           let currentUserId = UserDefaults.standard.string(forKey: "nagz_user_id"),
+           targetUserId != currentUserId {
+            return
+        }
+
         if let nagIdString = userInfo["nag_id"] as? String,
            let nagId = UUID(uuidString: nagIdString) {
             pendingNagId = nagId
