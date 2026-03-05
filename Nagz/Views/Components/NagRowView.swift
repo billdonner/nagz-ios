@@ -4,11 +4,25 @@ struct NagRowView: View {
     let nag: NagResponse
     var currentUserId: UUID?
 
+    private var isClosed: Bool {
+        nag.status != .open
+    }
+
     private var urgency: Urgency {
         Urgency(dueAt: nag.dueAt, status: nag.status)
     }
 
     var body: some View {
+        if isClosed {
+            closedRow
+        } else {
+            openRow
+        }
+    }
+
+    // MARK: - Open row (existing design)
+
+    private var openRow: some View {
         HStack(spacing: 12) {
             Image(systemName: nag.category.iconName)
                 .font(.title3)
@@ -37,7 +51,7 @@ struct NagRowView: View {
                             .font(.caption2)
                             .foregroundStyle(.purple)
                     }
-                    if let committedAt = nag.committedAt, nag.status == .open {
+                    if let committedAt = nag.committedAt {
                         HStack(spacing: 2) {
                             Image(systemName: "clock.badge.checkmark")
                                 .font(.caption2)
@@ -46,24 +60,15 @@ struct NagRowView: View {
                         }
                         .foregroundStyle(.purple)
                     }
-                    if nag.status == .completed, let completedAt = nag.completedAt {
-                        Text("Done \(completedAt.agoDisplay)")
-                            .font(.caption)
-                            .foregroundStyle(.green)
-                    } else {
-                        Text(nag.dueAt, style: .relative)
-                            .font(.caption)
-                            .foregroundStyle(urgency.textColor)
-                    }
+                    Text(nag.dueAt, style: .relative)
+                        .font(.caption)
+                        .foregroundStyle(urgency.textColor)
                 }
             }
 
             Spacer()
 
-            if nag.status == .completed {
-                Image(systemName: "checkmark.circle.fill")
-                    .foregroundStyle(.green)
-            } else if nag.recipientDismissedAt != nil {
+            if nag.recipientDismissedAt != nil {
                 Image(systemName: "eye.slash")
                     .foregroundStyle(.secondary)
             } else {
@@ -73,19 +78,100 @@ struct NagRowView: View {
         .padding(.vertical, 4)
         .padding(.horizontal, 4)
         .background {
-            // Layer: direction tint underneath, urgency on top
             directionBackground
                 .overlay(urgency.backgroundColor)
         }
         .clipShape(RoundedRectangle(cornerRadius: 8))
-        .opacity(nag.status == .withdrawn ? 0.5 : 1.0)
         .overlay(alignment: .leading) {
-            // Sidebar always shows direction color (blue/orange/purple)
             if let color = directionColor {
                 RoundedRectangle(cornerRadius: 1.5)
                     .fill(color)
                     .frame(width: 4)
             }
+        }
+    }
+
+    // MARK: - Closed row (compact, muted, archived look)
+
+    private var closedRow: some View {
+        HStack(spacing: 10) {
+            // Small muted icon
+            Image(systemName: nag.category.iconName)
+                .font(.callout)
+                .foregroundStyle(.tertiary)
+                .frame(width: 24)
+
+            VStack(alignment: .leading, spacing: 2) {
+                Text(nag.description ?? nag.category.displayName)
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
+                    .lineLimit(1)
+                    .strikethrough(nag.status == .completed, color: .secondary)
+
+                // Counterpart name only — no due date noise
+                if let directionText = directionLabel {
+                    HStack(spacing: 2) {
+                        if let icon = directionIcon {
+                            Image(systemName: icon)
+                                .font(.caption2)
+                        }
+                        Text(directionText.replacingOccurrences(of: " •", with: ""))
+                    }
+                    .font(.caption)
+                    .foregroundStyle(.tertiary)
+                }
+            }
+
+            Spacer()
+
+            // Status pill
+            closedStatusPill
+        }
+        .padding(.vertical, 3)
+        .padding(.horizontal, 4)
+        .opacity(nag.status == .withdrawn ? 0.45 : 1.0)
+    }
+
+    @ViewBuilder
+    private var closedStatusPill: some View {
+        switch nag.status {
+        case .completed:
+            let ago = nag.completedAt.map { $0.agoDisplay } ?? ""
+            HStack(spacing: 3) {
+                Image(systemName: "checkmark")
+                    .font(.caption2.weight(.bold))
+                if !ago.isEmpty {
+                    Text(ago)
+                        .font(.caption2)
+                }
+            }
+            .padding(.horizontal, 7)
+            .padding(.vertical, 3)
+            .background(Color.green.opacity(0.15))
+            .foregroundStyle(Color.green)
+            .clipShape(Capsule())
+        case .missed:
+            HStack(spacing: 3) {
+                Image(systemName: "clock.badge.xmark")
+                    .font(.caption2)
+                Text("Missed")
+                    .font(.caption2)
+            }
+            .padding(.horizontal, 7)
+            .padding(.vertical, 3)
+            .background(Color.orange.opacity(0.12))
+            .foregroundStyle(Color.orange)
+            .clipShape(Capsule())
+        case .withdrawn:
+            Text("Withdrawn")
+                .font(.caption2)
+                .padding(.horizontal, 7)
+                .padding(.vertical, 3)
+                .background(Color.secondary.opacity(0.1))
+                .foregroundStyle(Color.secondary)
+                .clipShape(Capsule())
+        default:
+            EmptyView()
         }
     }
 
