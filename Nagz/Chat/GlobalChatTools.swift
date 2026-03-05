@@ -146,7 +146,7 @@ struct PressNagTool: Tool {
 
 struct CreateNagTool: Tool {
     let name = "createNag"
-    let description = "Create a NEW nag/task/reminder. Use for: 'remind me to...', 'nag X about...', 'add a task for...', 'make a recurring nag', 'snag X about...'. Also use when user asks to make something RECURRING ('every week', 'every Monday', 'daily') — set the recurrence field. Do NOT use when updating the message of an existing nag — use pressNag instead."
+    let description = "Create a NEW nag/task/reminder. Use for: 'remind me to...', 'nag/nags/nagz X about...', 'snag/snags/snagz X about...', 'add a task for...', 'add a reminder...', 'make a recurring nag/reminder'. Also use when user asks to make something RECURRING ('every week', 'every Monday', 'daily') — set the recurrence field. Do NOT use when updating the message of an existing nag — use pressNag instead."
 
     @Generable
     struct Arguments {
