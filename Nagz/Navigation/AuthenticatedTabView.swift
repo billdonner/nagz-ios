@@ -619,12 +619,13 @@ private struct FamilyTabContent: View {
                 }
             } else {
                 VStack(spacing: 20) {
-                    Text("Welcome to Nagz!")
+                    Text("Family (Optional)")
                         .font(.title2.weight(.semibold))
 
-                    Text("Create a family or join an existing one to get started.")
+                    Text("You don't need a family to use Nagz. You can nag friends and colleagues directly via the People tab — no family required.\n\nSet up a family only if you want to nag children or share tasks with household members.")
                         .foregroundStyle(.secondary)
                         .multilineTextAlignment(.center)
+                        .padding(.horizontal)
 
                     Button("Create Family") {
                         viewModel.showCreateSheet = true
