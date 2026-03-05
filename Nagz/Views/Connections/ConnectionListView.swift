@@ -198,21 +198,21 @@ struct ConnectionListView: View {
                 Text(connection.otherPartyDisplayName ?? connection.otherPartyEmail ?? connection.inviteeEmail)
                     .font(.body.weight(.medium))
                 Spacer()
-                HStack(spacing: 4) {
-                    Image(systemName: connection.caregiver ? "checkmark.shield.fill" : "shield")
-                        .foregroundStyle(connection.caregiver ? .green : .secondary)
-                        .font(.caption)
-                    Text(connection.caregiver ? "Caregiver" : "Friend")
-                        .font(.caption.weight(.medium))
-                        .foregroundStyle(connection.caregiver ? .green : .secondary)
-                }
-                Toggle("Caregiver", isOn: Binding(
-                    get: { connection.caregiver },
-                    set: { _ in
-                        Task { await viewModel.toggleType(id: connection.id, currentCaregiver: connection.caregiver) }
+                Button {
+                    Task { await viewModel.toggleType(id: connection.id, currentCaregiver: connection.caregiver) }
+                } label: {
+                    HStack(spacing: 4) {
+                        Image(systemName: connection.caregiver ? "checkmark.shield.fill" : "shield")
+                            .font(.caption)
+                        Text(connection.caregiver ? "Caregiver" : "Friend")
+                            .font(.caption.weight(.medium))
                     }
-                ))
-                .labelsHidden()
+                    .foregroundStyle(connection.caregiver ? .green : .secondary)
+                    .padding(.horizontal, 10)
+                    .padding(.vertical, 6)
+                    .background(connection.caregiver ? Color.green.opacity(0.1) : Color.secondary.opacity(0.08))
+                    .clipShape(Capsule())
+                }
                 .buttonStyle(.borderless)
             }
 
