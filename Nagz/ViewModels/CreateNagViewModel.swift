@@ -21,10 +21,15 @@ final class CreateNagViewModel {
     private let apiClient: APIClient
     private let familyId: UUID?
 
-    init(apiClient: APIClient, familyId: UUID?) {
+    init(apiClient: APIClient, familyId: UUID?, preselectedDate: Date? = nil) {
         self.apiClient = apiClient
         self.familyId = familyId
         self.contextFamilyId = familyId
+        if let date = preselectedDate {
+            // Use noon of the selected day as default due time
+            let cal = Calendar.current
+            self.dueAt = cal.date(bySettingHour: 12, minute: 0, second: 0, of: date) ?? date
+        }
     }
 
     var isValid: Bool {

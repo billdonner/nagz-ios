@@ -8,6 +8,7 @@ struct DayPlannerView: View {
     let onCommit: (UUID, Date) -> Void
     var onUncommit: ((UUID) -> Void)?
     var onCreateAtTime: ((Date) -> Void)?
+    var onCreateForDay: ((Date) -> Void)?
 
     @State private var selectedDate = Calendar.current.startOfDay(for: Date())
     @State private var schedulingNag: NagResponse?
@@ -85,23 +86,37 @@ struct DayPlannerView: View {
                     Button {
                         withAnimation(.easeInOut(duration: 0.2)) { selectedDate = date }
                     } label: {
-                        VStack(spacing: 2) {
-                            Text(dayLabel(date))
-                                .font(.caption2)
-                                .foregroundStyle(selected ? .white : .secondary)
-                            Text("\(calendar.component(.day, from: date))")
-                                .font(.title3.weight(.semibold))
-                                .foregroundStyle(selected ? .white : .primary)
-                            if count > 0 {
-                                Text("\(count)")
-                                    .font(.caption2.weight(.bold))
-                                    .foregroundStyle(selected ? .white.opacity(0.8) : .blue)
+                        ZStack(alignment: .topTrailing) {
+                            VStack(spacing: 2) {
+                                Text(dayLabel(date))
+                                    .font(.caption2)
+                                    .foregroundStyle(selected ? .white : .secondary)
+                                Text("\(calendar.component(.day, from: date))")
+                                    .font(.title3.weight(.semibold))
+                                    .foregroundStyle(selected ? .white : .primary)
+                                if count > 0 {
+                                    Text("\(count)")
+                                        .font(.caption2.weight(.bold))
+                                        .foregroundStyle(selected ? .white.opacity(0.8) : .blue)
+                                }
+                            }
+                            .frame(width: 48, height: 60)
+                            .background(selected ? Color.blue : Color(.systemGray6), in: RoundedRectangle(cornerRadius: 10))
+
+                            if selected, onCreateForDay != nil {
+                                Image(systemName: "plus.circle.fill")
+                                    .font(.caption.weight(.bold))
+                                    .foregroundStyle(.white.opacity(0.9))
+                                    .offset(x: 4, y: -4)
                             }
                         }
-                        .frame(width: 48, height: 60)
-                        .background(selected ? Color.blue : Color(.systemGray6), in: RoundedRectangle(cornerRadius: 10))
                     }
                     .buttonStyle(.plain)
+                    .simultaneousGesture(
+                        LongPressGesture(minimumDuration: 0.4).onEnded { _ in
+                            onCreateForDay?(date)
+                        }
+                    )
                 }
             }
             .padding(.horizontal)
@@ -229,7 +244,14 @@ struct DayPlannerView: View {
                         let slotDate = calendar.date(bySettingHour: hour, minute: 0, second: 0, of: selectedDate)!
                         onCreateAtTime?(slotDate)
                     } label: {
-                        Color.clear.frame(height: 1)
+                        HStack {
+                            Image(systemName: "plus")
+                                .font(.caption2)
+                                .foregroundStyle(Color.gray.opacity(0.35))
+                            Spacer()
+                        }
+                        .frame(height: 32)
+                        .contentShape(Rectangle())
                     }
                     .buttonStyle(.plain)
                 } else {

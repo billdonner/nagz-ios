@@ -14,6 +14,7 @@ struct NagListView: View {
     let webSocketService: WebSocketService
     @State private var viewMode: ViewMode = .list
     @State private var showCreateNag = false
+    @State private var createNagDate: Date? = nil
     @State private var wsTask: Task<Void, Never>?
     @State private var aiSummary: String?
     @State private var showAISummary = false
@@ -89,7 +90,7 @@ struct NagListView: View {
         .sheet(isPresented: $showCreateNag) {
             Task { await viewModel.loadNags() }
         } content: {
-            CreateNagView(apiClient: viewModel.apiClient, familyId: familyId, currentUserId: currentUserId)
+            CreateNagView(apiClient: viewModel.apiClient, familyId: familyId, currentUserId: currentUserId, preselectedDate: createNagDate)
         }
         .sheet(isPresented: $showSchedulePicker) {
             CommitTimePickerSheet { date in
@@ -202,6 +203,11 @@ struct NagListView: View {
                         }
                     },
                     onCreateAtTime: { date in
+                        createNagDate = date
+                        showCreateNag = true
+                    },
+                    onCreateForDay: { date in
+                        createNagDate = date
                         showCreateNag = true
                     }
                 )
@@ -246,6 +252,7 @@ struct NagListView: View {
         if canCreateNags {
             ToolbarItem(placement: .primaryAction) {
                 Button {
+                    createNagDate = nil
                     showCreateNag = true
                 } label: {
                     Image(systemName: "plus")

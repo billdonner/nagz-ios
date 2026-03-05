@@ -15,12 +15,12 @@ struct CreateNagView: View {
 
     private let preselectedConnectionId: UUID?
 
-    init(apiClient: APIClient, familyId: UUID?, currentUserId: UUID? = nil, preselectedConnectionId: UUID? = nil) {
+    init(apiClient: APIClient, familyId: UUID?, currentUserId: UUID? = nil, preselectedConnectionId: UUID? = nil, preselectedDate: Date? = nil) {
         self.apiClient = apiClient
         self.familyId = familyId
         self.currentUserId = currentUserId
         self.preselectedConnectionId = preselectedConnectionId
-        _viewModel = State(initialValue: CreateNagViewModel(apiClient: apiClient, familyId: familyId))
+        _viewModel = State(initialValue: CreateNagViewModel(apiClient: apiClient, familyId: familyId, preselectedDate: preselectedDate))
     }
 
     var body: some View {
