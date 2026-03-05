@@ -97,17 +97,20 @@ struct ConnectionListView: View {
                     }
                 } else {
                     ForEach(viewModel.connections) { connection in
-                        Button {
-                            connectionToNag = connection
-                        } label: {
-                            connectionRow(connection)
-                        }
-                        .buttonStyle(.plain)
-                        .swipeActions(edge: .trailing, allowsFullSwipe: false) {
-                            Button("Remove", role: .destructive) {
-                                connectionToRemove = connection
+                        connectionRow(connection)
+                            .swipeActions(edge: .leading, allowsFullSwipe: true) {
+                                Button {
+                                    connectionToNag = connection
+                                } label: {
+                                    Label("Nag", systemImage: "bell.fill")
+                                }
+                                .tint(.blue)
                             }
-                        }
+                            .swipeActions(edge: .trailing, allowsFullSwipe: false) {
+                                Button("Remove", role: .destructive) {
+                                    connectionToRemove = connection
+                                }
+                            }
                     }
                 }
             } header: {
@@ -215,6 +218,19 @@ struct ConnectionListView: View {
                     .padding(.vertical, 6)
                     .background(connection.caregiver ? Color.green.opacity(0.1) : Color.secondary.opacity(0.08))
                     .clipShape(Capsule())
+                }
+                .buttonStyle(.borderless)
+
+                Button {
+                    connectionToNag = connection
+                } label: {
+                    Image(systemName: "bell.fill")
+                        .font(.caption)
+                        .padding(.horizontal, 10)
+                        .padding(.vertical, 6)
+                        .background(Color.blue.opacity(0.1))
+                        .foregroundStyle(.blue)
+                        .clipShape(Capsule())
                 }
                 .buttonStyle(.borderless)
             }
