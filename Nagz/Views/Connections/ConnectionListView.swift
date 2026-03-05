@@ -141,6 +141,9 @@ struct ConnectionListView: View {
                 Text("This will disconnect you from \(conn.otherPartyDisplayName ?? conn.otherPartyEmail ?? conn.inviteeEmail). You'll need to re-invite them to reconnect.")
             }
         }
+        .navigationDestination(for: ConnectionNagFilter.self) { filter in
+            ConnectionNagListView(apiClient: viewModel.apiClient, filter: filter, currentUserId: currentUserId)
+        }
         .navigationTitle(userName.map { "\($0)'s People" } ?? "People")
         .toolbar {
             ToolbarItem(placement: .primaryAction) {
@@ -217,13 +220,19 @@ struct ConnectionListView: View {
             }
 
             if let stats = viewModel.connectionStats[connection.id] {
+                let name = connection.otherPartyDisplayName ?? connection.otherPartyEmail ?? connection.inviteeEmail
                 HStack(spacing: 0) {
-                    statPill(count: stats.sent, label: "Snt", icon: "arrow.up.circle.fill", color: .blue)
-                    statPill(count: stats.received, label: "Rcvd", icon: "arrow.down.circle.fill", color: .orange)
-                    statPill(count: stats.openCount, label: "Open", icon: "circle.fill", color: .yellow)
-                    statPill(count: stats.completedCount, label: "Done", icon: "checkmark.circle.fill", color: .green)
+                    statPill(count: stats.sent, label: "Snt", icon: "arrow.up.circle.fill", color: .blue,
+                             destination: .init(connectionId: connection.id, personName: name, filterType: .sent))
+                    statPill(count: stats.received, label: "Rcvd", icon: "arrow.down.circle.fill", color: .orange,
+                             destination: .init(connectionId: connection.id, personName: name, filterType: .received))
+                    statPill(count: stats.openCount, label: "Open", icon: "circle.fill", color: .yellow,
+                             destination: .init(connectionId: connection.id, personName: name, filterType: .open))
+                    statPill(count: stats.completedCount, label: "Done", icon: "checkmark.circle.fill", color: .green,
+                             destination: .init(connectionId: connection.id, personName: name, filterType: .done))
                     if stats.overdueCount > 0 {
-                        statPill(count: stats.overdueCount, label: "Late", icon: "exclamationmark.triangle.fill", color: .orange)
+                        statPill(count: stats.overdueCount, label: "Late", icon: "exclamationmark.triangle.fill", color: .orange,
+                                 destination: .init(connectionId: connection.id, personName: name, filterType: .late))
                     }
                 }
 
@@ -303,19 +312,103 @@ struct ConnectionListView: View {
         }
     }
 
-    private func statPill(count: Int, label: String, icon: String, color: Color) -> some View {
-        VStack(spacing: 2) {
-            HStack(spacing: 2) {
-                Image(systemName: icon)
-                    .foregroundStyle(color)
-                Text("\(count)")
-                    .fontWeight(.semibold)
+    private func statPill(count: Int, label: String, icon: String, color: Color, destination: ConnectionNagFilter) -> some View {
+        NavigationLink(value: destination) {
+            VStack(spacing: 2) {
+                HStack(spacing: 2) {
+                    Image(systemName: icon)
+                        .foregroundStyle(count > 0 ? color : Color.secondary)
+                    Text("\(count)")
+                        .fontWeight(.semibold)
+                        .foregroundStyle(count > 0 ? Color.primary : Color.secondary)
+                }
+                .font(.caption)
+                Text(label)
+                    .font(.caption2)
+                    .foregroundStyle(.secondary)
             }
-            .font(.caption)
-            Text(label)
-                .font(.caption2)
-                .foregroundStyle(.secondary)
+            .frame(maxWidth: .infinity)
         }
-        .frame(maxWidth: .infinity)
+        .buttonStyle(.plain)
+        .disabled(count == 0)
+    }
+}
+
+// MARK: - Navigation value
+
+struct ConnectionNagFilter: Hashable {
+    let connectionId: UUID
+    let personName: String
+    let filterType: FilterType
+
+    enum FilterType: String, Hashable {
+        case sent = "Sent"
+        case received = "Received"
+        case open = "Open"
+        case done = "Done"
+        case late = "Late"
+    }
+}
+
+// MARK: - Filtered nag list
+
+struct ConnectionNagListView: View {
+    let apiClient: APIClient
+    let filter: ConnectionNagFilter
+    let currentUserId: UUID?
+
+    @State private var nags: [NagResponse] = []
+    @State private var isLoading = false
+    @State private var errorMessage: String?
+
+    var body: some View {
+        Group {
+            if isLoading {
+                ProgressView()
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+            } else if nags.isEmpty {
+                ContentUnavailableView {
+                    Label("No Nagz", systemImage: "checkmark.circle")
+                } description: {
+                    Text("No \(filter.filterType.rawValue.lowercased()) nags with \(filter.personName).")
+                }
+            } else {
+                List(nags) { nag in
+                    NavigationLink(value: nag.id) {
+                        NagRowView(nag: nag, currentUserId: currentUserId)
+                    }
+                }
+            }
+        }
+        .navigationTitle("\(filter.personName) · \(filter.filterType.rawValue)")
+        .navigationBarTitleDisplayMode(.inline)
+        .task { await load() }
+        .refreshable { await load() }
+    }
+
+    private func load() async {
+        isLoading = true
+        defer { isLoading = false }
+        do {
+            let status: NagStatus? = switch filter.filterType {
+            case .done: .completed
+            case .sent, .received, .open, .late: .open
+            }
+            let page: PaginatedResponse<NagResponse> = try await apiClient.request(
+                .listNags(connectionId: filter.connectionId, status: status)
+            )
+            let now = Date()
+            nags = page.items.filter { nag in
+                switch filter.filterType {
+                case .sent:     return nag.creatorId == currentUserId
+                case .received: return nag.recipientId == currentUserId && nag.creatorId != currentUserId
+                case .open:     return true
+                case .done:     return true
+                case .late:     return nag.dueAt < now
+                }
+            }
+        } catch {
+            errorMessage = error.localizedDescription
+        }
     }
 }
