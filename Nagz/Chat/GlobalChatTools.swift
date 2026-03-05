@@ -146,21 +146,24 @@ struct PressNagTool: Tool {
 
 struct CreateNagTool: Tool {
     let name = "createNag"
-    let description = "Create a NEW nag/task/reminder. Use ONLY when the user wants to add a brand-new task that doesn't exist yet: 'remind me to...', 'nag me about...', 'add a task for...'. Do NOT use when the user wants to press or remind someone about an existing task — use pressNag instead."
+    let description = "Create a NEW nag/task/reminder. Use for: 'remind me to...', 'nag X about...', 'add a task for...', 'make a recurring nag', 'snag X about...'. Also use when user asks to make something RECURRING ('every week', 'every Monday', 'daily') — set the recurrence field. Do NOT use when updating the message of an existing nag — use pressNag instead."
 
     @Generable
     struct Arguments {
-        @Guide(description: "What the user wants to be reminded about.")
+        @Guide(description: "What the user wants to be reminded about. Short action item the recipient will see.")
         let taskDescription: String
 
         @Guide(description: "Category: chores, meds, homework, appointments, or other.")
         let category: String
 
-        @Guide(description: "Hours from now until due. Examples: 'tomorrow' = 18, 'in an hour' = 1, 'next week' = 168, 'tonight' = 8.")
+        @Guide(description: "Hours from now until first occurrence is due. 'tomorrow' = 18, 'in an hour' = 1, 'next week' = 168, 'tonight' = 8, 'Monday at 4pm' ≈ hours until next Monday 4pm.")
         let delayHours: Int
 
-        @Guide(description: "Name of the person to assign this nag to. Leave empty or set to 'me'/'self' to assign to the current user.")
+        @Guide(description: "Name of the person to assign this nag to. Leave empty or 'me' to assign to current user.")
         let recipientName: String
+
+        @Guide(description: "Recurrence if the user wants it repeated. Use: 'daily', 'weekly', 'monthly', 'hourly', or empty string for no repeat. 'every Monday' = 'weekly', 'every day' = 'daily'.")
+        let recurrence: String
     }
 
     let apiClient: APIClient
@@ -232,6 +235,17 @@ struct CreateNagTool: Tool {
         let dueAt = Date().addingTimeInterval(Double(hours) * 3600)
         let category = NagCategory(rawValue: arguments.category) ?? .other
 
+        // Map recurrence string to enum
+        let recurrence: Recurrence? = {
+            switch arguments.recurrence.lowercased().trimmingCharacters(in: .whitespacesAndNewlines) {
+            case "daily": return .daily
+            case "weekly": return .weekly
+            case "monthly": return .monthly
+            case "hourly": return .hourly
+            default: return nil
+            }
+        }()
+
         let attachmentId = await collector.pendingAttachmentId
         let nag = NagCreate(
             familyId: connectionId == nil ? familyId : nil,
@@ -241,6 +255,7 @@ struct CreateNagTool: Tool {
             category: category,
             doneDefinition: .binaryCheck,
             description: arguments.taskDescription,
+            recurrence: recurrence,
             attachmentIds: attachmentId.map { [$0] } ?? []
         )
 
@@ -255,8 +270,9 @@ struct CreateNagTool: Tool {
         let dateStr = formatter.string(from: created.dueAt)
 
         let shortLabel = recipientLabel == "you" ? "you" : recipientLabel
-        await collector.record("✓ Nagged \(shortLabel): \(arguments.taskDescription)")
-        return "Created task \"\(arguments.taskDescription)\" for \(recipientLabel), due \(dateStr)."
+        let recurrenceLabel = recurrence.map { " (\($0.displayName))" } ?? ""
+        await collector.record("✓ Nagged \(shortLabel): \(arguments.taskDescription)\(recurrenceLabel)")
+        return "Created task \"\(arguments.taskDescription)\" for \(recipientLabel), due \(dateStr)\(recurrenceLabel)."
     }
 
     private nonisolated func fuzzyMatch(query: String, target: String) -> Bool {
