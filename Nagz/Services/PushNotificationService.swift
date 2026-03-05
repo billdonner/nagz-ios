@@ -59,6 +59,11 @@ final class PushNotificationService: NSObject {
         }
     }
 
+    func setPendingNag(_ nagId: UUID) {
+        pendingNagId = nagId
+        UserDefaults.standard.set(nagId.uuidString, forKey: "nagz_pending_nag_id")
+    }
+
     func clearPendingNag() {
         pendingNagId = nil
         UserDefaults.standard.removeObject(forKey: "nagz_pending_nag_id")

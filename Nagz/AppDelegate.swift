@@ -59,8 +59,10 @@ private final class NotificationDelegate: NSObject, UNUserNotificationCenterDele
         let isForCurrent = await Self.isForCurrentUser(targetUserId: targetUserId)
         guard isForCurrent else { return }
 
-        if let nagIdString, let nagId = UUID(uuidString: nagIdString) {
-            UserDefaults.standard.set(nagId.uuidString, forKey: "nagz_pending_nag_id")
+        // Extract UUID before crossing actor boundary (String is Sendable, [AnyHashable:Any] is not)
+        guard let nagIdString, let nagId = UUID(uuidString: nagIdString) else { return }
+        await MainActor.run {
+            appDelegate?.pushService?.setPendingNag(nagId)
         }
     }
 
