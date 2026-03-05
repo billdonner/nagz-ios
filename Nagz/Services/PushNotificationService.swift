@@ -14,7 +14,8 @@ final class PushNotificationService: NSObject {
     }
 
     func requestPermissionAndRegister() {
-        UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .badge, .sound]) { granted, _ in
+        UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .badge, .sound]) { granted, error in
+            DebugLogger.shared.log("🔔 requestAuthorization: granted=\(granted) error=\(error?.localizedDescription ?? "none")", level: .info)
             guard granted else { return }
             DispatchQueue.main.async {
                 UIApplication.shared.registerForRemoteNotifications()
@@ -24,6 +25,7 @@ final class PushNotificationService: NSObject {
 
     func handleDeviceToken(_ deviceToken: Data) {
         let token = deviceToken.map { String(format: "%02.2hhx", $0) }.joined()
+        DebugLogger.shared.log("🔔 handleDeviceToken: \(token.prefix(16))…", level: .info)
 
         #if targetEnvironment(macCatalyst)
         let platform = DevicePlatform.macos
@@ -37,8 +39,9 @@ final class PushNotificationService: NSObject {
                 let _: DeviceTokenResponse = try await apiClient.request(
                     .registerDevice(platform: platform, token: token)
                 )
+                DebugLogger.shared.log("🔔 handleDeviceToken: registered with server OK", level: .info)
             } catch {
-                DebugLogger.shared.log("Failed to register device token: \(error)", level: .error)
+                DebugLogger.shared.log("🔔 handleDeviceToken: FAILED to register with server: \(error)", level: .error)
             }
         }
     }
@@ -48,23 +51,28 @@ final class PushNotificationService: NSObject {
         if let targetUserId = userInfo["target_user_id"] as? String,
            let currentUserId = UserDefaults.standard.string(forKey: "nagz_user_id"),
            targetUserId != currentUserId {
+            DebugLogger.shared.log("🔔 handleNotificationTap: ignored — wrong user", level: .info)
             return
         }
 
         if let nagIdString = userInfo["nag_id"] as? String,
            let nagId = UUID(uuidString: nagIdString) {
+            DebugLogger.shared.log("🔔 handleNotificationTap: setting pendingNagId=\(nagId)", level: .info)
             pendingNagId = nagId
-            // Persist for cold start recovery
             UserDefaults.standard.set(nagId.uuidString, forKey: "nagz_pending_nag_id")
+        } else {
+            DebugLogger.shared.log("🔔 handleNotificationTap: no nag_id in userInfo", level: .warning)
         }
     }
 
     func setPendingNag(_ nagId: UUID) {
+        DebugLogger.shared.log("🔔 setPendingNag: \(nagId) (was: \(pendingNagId?.uuidString ?? "nil"))", level: .info)
         pendingNagId = nagId
         UserDefaults.standard.set(nagId.uuidString, forKey: "nagz_pending_nag_id")
     }
 
     func clearPendingNag() {
+        DebugLogger.shared.log("🔔 clearPendingNag (was: \(pendingNagId?.uuidString ?? "nil"))", level: .info)
         pendingNagId = nil
         UserDefaults.standard.removeObject(forKey: "nagz_pending_nag_id")
     }
@@ -73,7 +81,10 @@ final class PushNotificationService: NSObject {
         if pendingNagId == nil,
            let savedId = UserDefaults.standard.string(forKey: "nagz_pending_nag_id"),
            let nagId = UUID(uuidString: savedId) {
+            DebugLogger.shared.log("🔔 restorePendingNag: restoring \(nagId)", level: .info)
             pendingNagId = nagId
+        } else {
+            DebugLogger.shared.log("🔔 restorePendingNag: nothing to restore (current=\(pendingNagId?.uuidString ?? "nil"))", level: .info)
         }
     }
 }

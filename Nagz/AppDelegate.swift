@@ -13,6 +13,10 @@ class AppDelegate: NSObject, UIApplicationDelegate {
         let delegate = NotificationDelegate(appDelegate: self)
         notificationDelegate = delegate
         UNUserNotificationCenter.current().delegate = delegate
+        DebugLogger.shared.log("📱 AppDelegate: didFinishLaunchingWithOptions", level: .info)
+        if let launchNotif = launchOptions?[.remoteNotification] as? [AnyHashable: Any] {
+            DebugLogger.shared.log("📱 AppDelegate: launched from notification — \(launchNotif)", level: .info)
+        }
         return true
     }
 
@@ -20,6 +24,8 @@ class AppDelegate: NSObject, UIApplicationDelegate {
         _ application: UIApplication,
         didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data
     ) {
+        let token = deviceToken.map { String(format: "%02.2hhx", $0) }.joined()
+        DebugLogger.shared.log("📱 AppDelegate: registered device token \(token.prefix(12))…", level: .info)
         pushService?.handleDeviceToken(deviceToken)
     }
 
@@ -27,7 +33,7 @@ class AppDelegate: NSObject, UIApplicationDelegate {
         _ application: UIApplication,
         didFailToRegisterForRemoteNotificationsWithError error: Error
     ) {
-        DebugLogger.shared.log("Failed to register for remote notifications: \(error.localizedDescription)", level: .error)
+        DebugLogger.shared.log("📱 AppDelegate: FAILED to register for remote notifications: \(error.localizedDescription)", level: .error)
     }
 }
 
@@ -43,10 +49,19 @@ private final class NotificationDelegate: NSObject, UNUserNotificationCenterDele
         _ center: UNUserNotificationCenter,
         willPresent notification: UNNotification
     ) async -> UNNotificationPresentationOptions {
-        // Extract values in nonisolated context to avoid Sendable issues
-        let targetUserId = notification.request.content.userInfo["target_user_id"] as? String
+        let userInfo = notification.request.content.userInfo
+        let targetUserId = userInfo["target_user_id"] as? String
+        let nagId = userInfo["nag_id"] as? String
+        let eventType = userInfo["event_type"] as? String
+        let title = notification.request.content.title
+        DebugLogger.shared.log("📬 willPresent: title='\(title)' event=\(eventType ?? "?") nag=\(nagId ?? "nil") target=\(targetUserId ?? "any")", level: .info)
+
         let isForCurrent = await Self.isForCurrentUser(targetUserId: targetUserId)
-        guard isForCurrent else { return [] }
+        if !isForCurrent {
+            DebugLogger.shared.log("📬 willPresent: SUPPRESSED — not for current user", level: .info)
+            return []
+        }
+        DebugLogger.shared.log("📬 willPresent: SHOWING banner+badge+sound", level: .info)
         return [.banner, .badge, .sound]
     }
 
@@ -54,13 +69,29 @@ private final class NotificationDelegate: NSObject, UNUserNotificationCenterDele
         _ center: UNUserNotificationCenter,
         didReceive response: UNNotificationResponse
     ) async {
-        let targetUserId = response.notification.request.content.userInfo["target_user_id"] as? String
-        let nagIdString = response.notification.request.content.userInfo["nag_id"] as? String
-        let isForCurrent = await Self.isForCurrentUser(targetUserId: targetUserId)
-        guard isForCurrent else { return }
+        let userInfo = response.notification.request.content.userInfo
+        let targetUserId = userInfo["target_user_id"] as? String
+        let nagIdString = userInfo["nag_id"] as? String
+        let actionId = response.actionIdentifier
+        let allKeys = userInfo.keys.map { "\($0)" }.sorted().joined(separator: ", ")
+        DebugLogger.shared.log("👆 didReceive: action='\(actionId)' nag=\(nagIdString ?? "nil") target=\(targetUserId ?? "any") keys=[\(allKeys)]", level: .info)
 
-        // Extract UUID before crossing actor boundary (String is Sendable, [AnyHashable:Any] is not)
-        guard let nagIdString, let nagId = UUID(uuidString: nagIdString) else { return }
+        let isForCurrent = await Self.isForCurrentUser(targetUserId: targetUserId)
+        if !isForCurrent {
+            DebugLogger.shared.log("👆 didReceive: IGNORED — not for current user", level: .info)
+            return
+        }
+
+        guard let nagIdString else {
+            DebugLogger.shared.log("👆 didReceive: NO nag_id in payload — cannot navigate", level: .warning)
+            return
+        }
+        guard let nagId = UUID(uuidString: nagIdString) else {
+            DebugLogger.shared.log("👆 didReceive: nag_id '\(nagIdString)' is not a valid UUID", level: .warning)
+            return
+        }
+
+        DebugLogger.shared.log("👆 didReceive: calling setPendingNag(\(nagId))", level: .info)
         await MainActor.run {
             appDelegate?.pushService?.setPendingNag(nagId)
         }
@@ -74,8 +105,13 @@ private final class NotificationDelegate: NSObject, UNUserNotificationCenterDele
             return true
         }
         guard let currentUserId = UserDefaults.standard.string(forKey: "nagz_user_id") else {
+            DebugLogger.shared.log("⚠️ isForCurrentUser: no nagz_user_id in UserDefaults", level: .warning)
             return false
         }
-        return targetUserId == currentUserId
+        let match = targetUserId == currentUserId
+        if !match {
+            DebugLogger.shared.log("⚠️ isForCurrentUser: mismatch — target=\(targetUserId.prefix(8)) current=\(currentUserId.prefix(8))", level: .info)
+        }
+        return match
     }
 }
