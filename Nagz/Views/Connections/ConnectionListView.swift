@@ -396,6 +396,9 @@ struct ConnectionNagListView: View {
                 }
             }
         }
+        .navigationDestination(for: UUID.self) { nagId in
+            NagDetailView(apiClient: apiClient, nagId: nagId, currentUserId: currentUserId ?? UUID())
+        }
         .navigationTitle("\(filter.personName) · \(filter.filterType.rawValue)")
         .navigationBarTitleDisplayMode(.inline)
         .task { await load() }

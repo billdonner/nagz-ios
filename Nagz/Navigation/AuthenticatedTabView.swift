@@ -70,23 +70,18 @@ struct AuthenticatedTabView: View {
                 await syncService.startPeriodicSync(familyId: familyId)
             }
             NagzShortcutsProvider.updateAppShortcutParameters()
-            DebugLogger.shared.log("🧭 .task: calling restorePendingNag", level: .info)
             pushService.restorePendingNag()
             if let nagId = pushService.pendingNagId {
-                DebugLogger.shared.log("🧭 .task: navigating to nag \(nagId), switching to tab 1", level: .info)
                 selectedTab = 1
                 nagNavigationPath = NavigationPath()
                 nagNavigationPath.append(nagId)
                 pushService.clearPendingNag()
-            } else {
-                DebugLogger.shared.log("🧭 .task: no pending nag at startup", level: .info)
             }
         }
         .onChange(of: pushService.pendingNagId) { _, newValue in
-            DebugLogger.shared.log("🧭 onChange(pendingNagId): \(newValue?.uuidString ?? "nil")", level: .info)
             if let nagId = newValue {
-                DebugLogger.shared.log("🧭 onChange: navigating to nag \(nagId), switching to tab 1", level: .info)
                 selectedTab = 1
+                // Reset navigation stack before pushing to avoid stack corruption
                 nagNavigationPath = NavigationPath()
                 nagNavigationPath.append(nagId)
                 pushService.clearPendingNag()
