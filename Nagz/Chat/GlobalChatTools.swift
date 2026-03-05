@@ -89,7 +89,7 @@ struct ListNagsTool: Tool {
 
 struct PressNagTool: Tool {
     let name = "pressNag"
-    let description = "Escalate or update an EXISTING nag by changing its message. Use when the user says 'tell X to hurry up', 'remind X again', 'change the message to...', 'press X on the task', or any phrase that implies nudging someone about something they're already supposed to do. This finds the open nag the user sent to that person and updates its description. Do NOT create a new nag."
+    let description = "Escalate an EXISTING nag by changing its message. Use ONLY when the user wants to update the message on a nag that already exists — e.g. 'remind X again', 'nudge X about the homework', 'change the message on the dishes nag', 'press X harder'. The existing nag must already exist. NEVER use for new tasks or first-time requests. 'Tell X to [do something]' is a NEW nag — use createNag instead."
 
     @Generable
     struct Arguments {
