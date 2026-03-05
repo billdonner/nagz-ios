@@ -223,7 +223,7 @@ struct CreateNagTool: Tool {
                 let available = people.map(\.name).joined(separator: ", ")
                 let hint = available.isEmpty ? "You don't have any people to nag yet. Add family members or connections first." : "Available people: \(available)."
                 await collector.record("❌ Couldn't find \"\(arguments.recipientName)\"")
-                return "Person '\(arguments.recipientName)' not found — never substitute another recipient. Tell the user this name wasn't recognized and ask who they meant. \(hint)"
+                return "Person '\(arguments.recipientName)' not found. Do not substitute another recipient and do not guess or invent an email address. Ask the user: 'I don't know \(arguments.recipientName) — what's their email so I can invite them?' \(hint)"
             }
 
             recipientId = match.id
@@ -563,7 +563,7 @@ struct SubmitExcuseTool: Tool {
 
 struct InviteConnectionTool: Tool {
     let name = "inviteConnection"
-    let description = "Send a connection invite to someone by email address. This creates a PEER CONNECTION (not a family member). Use when user says 'connect to...', 'invite...', 'add [email]'. Set caregiver=true for tutors, nannies, coaches, babysitters — they can nag your children but not you. Default is friend (can nag each other)."
+    let description = "Send a connection invite to someone by email address. ONLY call this when the user has explicitly provided a real email address in the conversation. NEVER guess, invent, or construct an email address. If you don't have a real email, ask the user for it."
 
     @Generable
     struct Arguments {
@@ -590,7 +590,16 @@ struct InviteConnectionTool: Tool {
               !parts[0].isEmpty,
               parts[1].contains("."),
               !email.contains(" ") else {
-            return "'\(arguments.email)' doesn't look like a valid email address. Please provide a full email like name@example.com."
+            return "'\(arguments.email)' doesn't look like a valid email address. Please ask the user for their real email address."
+        }
+
+        // Reject placeholder/hallucinated domains the AI commonly invents
+        let domain = String(parts[1])
+        let fakeDomains = ["example.com", "example.org", "example.net", "test.com", "fake.com",
+                           "placeholder.com", "email.com", "mail.com", "none.com", "nomail.com"]
+        if fakeDomains.contains(domain) {
+            await collector.record("❌ Fake email rejected: \(email)")
+            return "'\(email)' looks like a placeholder — I must have guessed it. Ask the user: 'What is [name]'s real email address?'"
         }
 
         let _: ConnectionResponse = try await apiClient.request(
