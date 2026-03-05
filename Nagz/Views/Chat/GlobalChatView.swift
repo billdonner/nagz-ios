@@ -214,17 +214,37 @@ struct GlobalChatView: View {
         isUploadingAttachment = true
         defer { isUploadingAttachment = false }
         do {
-            guard let data = try await item.loadTransferable(type: Data.self) else { return }
-            let uiImage = UIImage(data: data)
+            // Try loading as Data first; fall back to UIImage → JPEG conversion
+            var imageData: Data?
+            var uiImage: UIImage?
+
+            if let data = try await item.loadTransferable(type: Data.self) {
+                imageData = data
+                uiImage = UIImage(data: data)
+            }
+
+            // If we got data but UIImage failed (e.g. HEIC), re-encode as JPEG
+            if let d = imageData, uiImage == nil {
+                if let img = UIImage(data: d) {
+                    uiImage = img
+                    imageData = img.jpegData(compressionQuality: 0.85) ?? d
+                }
+            }
+
+            guard let finalData = imageData else {
+                viewModel.errorMessage = "Couldn't read image data."
+                return
+            }
+
             let response = try await apiClient.uploadAttachment(
-                data: data,
+                data: finalData,
                 filename: "image.jpg",
                 contentType: "image/jpeg"
             )
             viewModel.pendingAttachmentId = response.id
             viewModel.pendingAttachmentImage = uiImage
         } catch {
-            // Silently fail — user can try again
+            viewModel.errorMessage = "Image upload failed. Check your connection and try again."
         }
     }
 

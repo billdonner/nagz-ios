@@ -90,7 +90,7 @@ actor APIClient {
 
     /// Upload an image attachment. Returns the attachment ID and URL.
     func uploadAttachment(data: Data, filename: String, contentType: String) async throws -> AttachmentUploadResponse {
-        let url = baseURL.appendingPathComponent("/api/v1/attachments")
+        let url = baseURL.appendingPathComponent("attachments")
         var urlRequest = URLRequest(url: url)
         urlRequest.httpMethod = "POST"
 
@@ -121,9 +121,11 @@ actor APIClient {
 
     // MARK: - Raw Data Download
 
-    /// Download raw bytes from an authenticated path (e.g. /api/v1/attachments/{id}).
+    /// Download raw bytes from an authenticated path (e.g. /attachments/{id}).
+    /// Path is relative to the API prefix (baseURL already includes /api/v1).
     func downloadRaw(path: String) async throws -> Data {
-        let url = baseURL.appendingPathComponent(path)
+        let trimmed = path.trimmingCharacters(in: CharacterSet(charactersIn: "/"))
+        let url = baseURL.appendingPathComponent(trimmed)
         var urlRequest = URLRequest(url: url)
         urlRequest.httpMethod = "GET"
         if let token = await keychainService.accessToken {
