@@ -223,7 +223,7 @@ struct CreateNagTool: Tool {
                 let available = people.map(\.name).joined(separator: ", ")
                 let hint = available.isEmpty ? "You don't have any people to nag yet. Add family members or connections first." : "Available people: \(available)."
                 await collector.record("❌ Couldn't find \"\(arguments.recipientName)\"")
-                return "STOP. Recipient \"\(arguments.recipientName)\" not found. DO NOT call createNag again with a different recipient. Tell the user '\(arguments.recipientName)' doesn't exist and ask who they meant. \(hint)"
+                return "Person '\(arguments.recipientName)' not found — never substitute another recipient. Tell the user this name wasn't recognized and ask who they meant. \(hint)"
             }
 
             recipientId = match.id

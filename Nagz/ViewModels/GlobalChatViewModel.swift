@@ -167,6 +167,7 @@ final class GlobalChatViewModel {
                 errorMessage = "Apple Intelligence couldn't process that. Try rephrasing your request."
             }
         } catch {
+            print("🔴 GlobalChat non-GenerationError: \(type(of: error)) — \(error)")
             errorMessage = "Something went wrong. Try again or rephrase your request."
         }
 
