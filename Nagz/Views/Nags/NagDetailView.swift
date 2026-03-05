@@ -76,6 +76,19 @@ struct NagDetailView: View {
                         }
                     }
 
+                    if !nag.attachmentUrls.isEmpty {
+                        Section("Attachments") {
+                            ScrollView(.horizontal, showsIndicators: false) {
+                                HStack(spacing: 8) {
+                                    ForEach(nag.attachmentUrls, id: \.self) { urlPath in
+                                        AttachmentThumbnail(apiClient: apiClient, urlPath: urlPath)
+                                    }
+                                }
+                                .padding(.vertical, 4)
+                            }
+                        }
+                    }
+
                     if NagzAI.Router.isAppleIntelligenceAvailable {
                         AIInsightsSection(nagId: nag.id, nag: nag)
                     }
@@ -498,6 +511,67 @@ private struct StatusPill: View {
         case .completed: .green
         case .missed: .orange
         case .cancelledRelationshipChange, .withdrawn: .gray
+        }
+    }
+}
+
+// MARK: - Attachment Thumbnail
+
+private struct AttachmentThumbnail: View {
+    let apiClient: APIClient
+    let urlPath: String
+    @State private var image: UIImage?
+    @State private var isLoading = true
+    @State private var showFullScreen = false
+
+    var body: some View {
+        Button {
+            if image != nil { showFullScreen = true }
+        } label: {
+            Group {
+                if let img = image {
+                    Image(uiImage: img)
+                        .resizable()
+                        .scaledToFill()
+                } else if isLoading {
+                    ProgressView()
+                } else {
+                    Image(systemName: "photo.badge.exclamationmark")
+                        .foregroundStyle(.secondary)
+                }
+            }
+            .frame(width: 80, height: 80)
+            .clipShape(RoundedRectangle(cornerRadius: 8))
+            .overlay(RoundedRectangle(cornerRadius: 8).stroke(.quaternary))
+        }
+        .buttonStyle(.plain)
+        .task { await loadImage() }
+        .fullScreenCover(isPresented: $showFullScreen) {
+            if let img = image {
+                ZStack(alignment: .topTrailing) {
+                    Color.black.ignoresSafeArea()
+                    Image(uiImage: img)
+                        .resizable()
+                        .scaledToFit()
+                    Button { showFullScreen = false } label: {
+                        Image(systemName: "xmark.circle.fill")
+                            .font(.title2)
+                            .foregroundStyle(.white)
+                            .padding()
+                    }
+                }
+            }
+        }
+    }
+
+    private func loadImage() async {
+        isLoading = true
+        defer { isLoading = false }
+        do {
+            let data: Data = try await apiClient.downloadRaw(path: urlPath)
+            image = UIImage(data: data)
+        } catch {
+            // Silently fail — thumbnail shows broken icon
         }
     }
 }

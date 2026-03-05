@@ -78,6 +78,64 @@ actor APIClient {
         cache.removeAll()
     }
 
+    // MARK: - Multipart Upload
+
+    struct AttachmentUploadResponse: Decodable, Sendable {
+        let id: String
+        let url: String
+        let filename: String
+        let contentType: String
+        let size: Int
+    }
+
+    /// Upload an image attachment. Returns the attachment ID and URL.
+    func uploadAttachment(data: Data, filename: String, contentType: String) async throws -> AttachmentUploadResponse {
+        let url = baseURL.appendingPathComponent("/api/v1/attachments")
+        var urlRequest = URLRequest(url: url)
+        urlRequest.httpMethod = "POST"
+
+        if let token = await keychainService.accessToken {
+            urlRequest.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
+        }
+
+        let boundary = UUID().uuidString
+        urlRequest.setValue("multipart/form-data; boundary=\(boundary)", forHTTPHeaderField: "Content-Type")
+
+        var body = Data()
+        body.append("--\(boundary)\r\n".data(using: .utf8)!)
+        body.append("Content-Disposition: form-data; name=\"file\"; filename=\"\(filename)\"\r\n".data(using: .utf8)!)
+        body.append("Content-Type: \(contentType)\r\n\r\n".data(using: .utf8)!)
+        body.append(data)
+        body.append("\r\n--\(boundary)--\r\n".data(using: .utf8)!)
+        urlRequest.httpBody = body
+
+        let (responseData, response) = try await session.data(for: urlRequest)
+        guard let httpResponse = response as? HTTPURLResponse else {
+            throw APIError.unknown(0, "Invalid response")
+        }
+        if httpResponse.statusCode >= 400 {
+            throw parseError(data: responseData, statusCode: httpResponse.statusCode)
+        }
+        return try decoder.decode(AttachmentUploadResponse.self, from: responseData)
+    }
+
+    // MARK: - Raw Data Download
+
+    /// Download raw bytes from an authenticated path (e.g. /api/v1/attachments/{id}).
+    func downloadRaw(path: String) async throws -> Data {
+        let url = baseURL.appendingPathComponent(path)
+        var urlRequest = URLRequest(url: url)
+        urlRequest.httpMethod = "GET"
+        if let token = await keychainService.accessToken {
+            urlRequest.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
+        }
+        let (data, response) = try await session.data(for: urlRequest)
+        guard let httpResponse = response as? HTTPURLResponse, httpResponse.statusCode < 400 else {
+            throw APIError.unknown(0, "Download failed")
+        }
+        return data
+    }
+
     // MARK: - Private
 
     private func performRequestWithData<T: Decodable>(_ endpoint: APIEndpoint, isRetry: Bool) async throws -> (T, Data) {

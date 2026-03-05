@@ -6,6 +6,7 @@ import FoundationModels
 /// can display system messages (e.g. "✓ Rescheduled to Mar 5").
 actor ToolResultCollector {
     private var actions: [String] = []
+    var pendingAttachmentId: String?
 
     func record(_ action: String) {
         actions.append(action)
@@ -15,6 +16,10 @@ actor ToolResultCollector {
         let result = actions
         actions.removeAll()
         return result
+    }
+
+    func setPendingAttachment(_ id: String?) {
+        pendingAttachmentId = id
     }
 }
 

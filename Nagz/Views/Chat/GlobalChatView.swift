@@ -1,6 +1,7 @@
 #if canImport(FoundationModels)
 import SwiftUI
 import NagzAI
+import PhotosUI
 
 struct GlobalChatView: View {
     let apiClient: APIClient
@@ -15,6 +16,8 @@ struct GlobalChatView: View {
     @FocusState private var isInputFocused: Bool
     @AppStorage("nagz_ai_personality") private var personalityRaw: String = AIPersonality.standard.rawValue
     @AppStorage("selectedTab") private var selectedTab = 0
+    @State private var photosPickerItem: PhotosPickerItem?
+    @State private var isUploadingAttachment = false
 
     private var personality: AIPersonality {
         AIPersonality(rawValue: personalityRaw) ?? .standard
@@ -81,8 +84,50 @@ struct GlobalChatView: View {
 
                 Divider()
 
+                // Pending attachment preview
+                if let img = viewModel.pendingAttachmentImage {
+                    HStack(spacing: 8) {
+                        Image(uiImage: img)
+                            .resizable()
+                            .scaledToFill()
+                            .frame(width: 56, height: 56)
+                            .clipShape(RoundedRectangle(cornerRadius: 8))
+                        VStack(alignment: .leading, spacing: 2) {
+                            Text("Image attached")
+                                .font(.caption.weight(.medium))
+                            Text("Will be included with your next nag")
+                                .font(.caption2)
+                                .foregroundStyle(.secondary)
+                        }
+                        Spacer()
+                        Button {
+                            viewModel.pendingAttachmentId = nil
+                            viewModel.pendingAttachmentImage = nil
+                        } label: {
+                            Image(systemName: "xmark.circle.fill")
+                                .foregroundStyle(.secondary)
+                        }
+                    }
+                    .padding(.horizontal, 12)
+                    .padding(.vertical, 6)
+                    .background(.regularMaterial)
+                }
+
                 // Input bar
                 HStack(spacing: 8) {
+                    // Attachment button
+                    PhotosPicker(selection: $photosPickerItem, matching: .images) {
+                        if isUploadingAttachment {
+                            ProgressView()
+                                .frame(width: 28, height: 28)
+                        } else {
+                            Image(systemName: "paperclip")
+                                .font(.title3)
+                                .foregroundStyle(viewModel.pendingAttachmentId != nil ? .blue : .secondary)
+                        }
+                    }
+                    .disabled(isUploadingAttachment)
+
                     TextField("Ask me anything...", text: $viewModel.inputText, axis: .vertical)
                         .lineLimit(1...4)
                         .textFieldStyle(.plain)
@@ -104,6 +149,11 @@ struct GlobalChatView: View {
                 }
                 .padding(.horizontal, 12)
                 .padding(.vertical, 8)
+                .onChange(of: photosPickerItem) {
+                    guard let item = photosPickerItem else { return }
+                    photosPickerItem = nil
+                    Task { await uploadPickedImage(item) }
+                }
             }
             .navigationTitle("Talk to Nagz")
             .navigationBarTitleDisplayMode(.inline)
@@ -155,7 +205,27 @@ struct GlobalChatView: View {
     }
 
     private var canSend: Bool {
-        !viewModel.isGenerating && !viewModel.inputText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+        guard !viewModel.isGenerating else { return false }
+        let hasText = !viewModel.inputText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+        return hasText || viewModel.pendingAttachmentId != nil
+    }
+
+    private func uploadPickedImage(_ item: PhotosPickerItem) async {
+        isUploadingAttachment = true
+        defer { isUploadingAttachment = false }
+        do {
+            guard let data = try await item.loadTransferable(type: Data.self) else { return }
+            let uiImage = UIImage(data: data)
+            let response = try await apiClient.uploadAttachment(
+                data: data,
+                filename: "image.jpg",
+                contentType: "image/jpeg"
+            )
+            viewModel.pendingAttachmentId = response.id
+            viewModel.pendingAttachmentImage = uiImage
+        } catch {
+            // Silently fail — user can try again
+        }
     }
 
     @ViewBuilder

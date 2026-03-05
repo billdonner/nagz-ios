@@ -232,6 +232,7 @@ struct CreateNagTool: Tool {
         let dueAt = Date().addingTimeInterval(Double(hours) * 3600)
         let category = NagCategory(rawValue: arguments.category) ?? .other
 
+        let attachmentId = await collector.pendingAttachmentId
         let nag = NagCreate(
             familyId: connectionId == nil ? familyId : nil,
             connectionId: connectionId,
@@ -239,10 +240,14 @@ struct CreateNagTool: Tool {
             dueAt: dueAt,
             category: category,
             doneDefinition: .binaryCheck,
-            description: arguments.taskDescription
+            description: arguments.taskDescription,
+            attachmentIds: attachmentId.map { [$0] } ?? []
         )
 
         let created: NagResponse = try await apiClient.request(.createNag(nag))
+        if attachmentId != nil {
+            await collector.setPendingAttachment(nil)
+        }
 
         let formatter = DateFormatter()
         formatter.dateStyle = .medium

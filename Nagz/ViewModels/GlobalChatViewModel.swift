@@ -2,6 +2,7 @@
 import Foundation
 import FoundationModels
 import NagzAI
+import UIKit
 
 @Observable
 @MainActor
@@ -11,6 +12,10 @@ final class GlobalChatViewModel {
     var isGenerating = false
     var errorMessage: String?
     private(set) var hasFamily = false
+
+    /// Attachment pending for the next message
+    var pendingAttachmentId: String?
+    var pendingAttachmentImage: UIImage?
 
     private var session: LanguageModelSession?
     private var collector: ToolResultCollector?
@@ -23,6 +28,8 @@ final class GlobalChatViewModel {
         hasFamily = false
         session = nil
         collector = nil
+        pendingAttachmentId = nil
+        pendingAttachmentImage = nil
     }
 
     func setupSession(
@@ -108,15 +115,29 @@ final class GlobalChatViewModel {
 
     func send() async {
         let text = inputText.trimmingCharacters(in: .whitespacesAndNewlines)
-        guard !text.isEmpty, let session, let collector else { return }
+        guard (!text.isEmpty || pendingAttachmentId != nil), let session, let collector else { return }
 
         inputText = ""
         errorMessage = nil
-        messages.append(ChatMessage(role: .user, content: text))
+
+        // Build message text, injecting attachment context if present
+        var userText = text
+        if let attId = pendingAttachmentId {
+            let attContext = "[Image attached — attachment_id: \(attId)]"
+            userText = text.isEmpty ? attContext : "\(text)\n\(attContext)"
+            await collector.setPendingAttachment(attId)
+        }
+
+        let displayText = text.isEmpty ? "📎 Image attached" : text
+        messages.append(ChatMessage(role: .user, content: displayText))
         isGenerating = true
 
+        // Clear the local attachment preview (tool retains the ID until it uses it)
+        pendingAttachmentImage = nil
+        pendingAttachmentId = nil
+
         do {
-            let response = try await session.respond(to: text)
+            let response = try await session.respond(to: userText)
 
             let toolActions = await collector.drain()
             for action in toolActions {
