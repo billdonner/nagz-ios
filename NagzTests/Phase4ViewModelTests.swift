@@ -529,7 +529,8 @@ final class EditNagViewModelValidationTests: XCTestCase {
             "done_definition": "ack_only",
             "strategy_template": "friendly_reminder",
             "status": "open",
-            "created_at": "2026-02-01T10:00:00+00:00"
+            "created_at": "2026-02-01T10:00:00+00:00",
+            "attachment_urls": []
         }
         """.data(using: .utf8)!
         let decoder = JSONDecoder()

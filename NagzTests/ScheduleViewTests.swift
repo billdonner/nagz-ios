@@ -48,7 +48,8 @@ final class ScheduleViewTests: XCTestCase {
             "done_definition": "ack_only",
             "strategy_template": "friendly_reminder",
             "status": "\(status)",
-            "created_at": "2026-03-01T10:00:00Z"
+            "created_at": "2026-03-01T10:00:00Z",
+            "attachment_urls": []
             \(committedLine)
         }
         """

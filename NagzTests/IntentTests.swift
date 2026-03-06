@@ -89,7 +89,8 @@ struct IntentTests {
             createdAt: Date(),
             completedAt: nil,
             committedAt: nil,
-            recipientDismissedAt: nil
+            recipientDismissedAt: nil,
+            attachmentUrls: []
         )
 
         let entity = NagEntity(from: nag, recipientName: "Alice")
