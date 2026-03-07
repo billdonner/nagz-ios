@@ -76,6 +76,6 @@ private final class NotificationDelegate: NSObject, UNUserNotificationCenterDele
         guard let currentUserId = UserDefaults.standard.string(forKey: "nagz_user_id") else {
             return false
         }
-        return targetUserId == currentUserId
+        return targetUserId.caseInsensitiveCompare(currentUserId) == .orderedSame
     }
 }
