@@ -18,6 +18,11 @@ enum LoadState<T> {
         return nil
     }
 
+    var isIdle: Bool {
+        if case .idle = self { return true }
+        return false
+    }
+
     var error: Error? {
         if case .failure(let e) = self { return e }
         return nil

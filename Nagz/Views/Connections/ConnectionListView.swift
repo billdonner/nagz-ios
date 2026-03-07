@@ -383,7 +383,7 @@ struct ConnectionNagListView: View {
 
     var body: some View {
         Group {
-            if loadState.isLoading && nags.isEmpty {
+            if loadState.isIdle || (loadState.isLoading && nags.isEmpty) {
                 ProgressView()
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
             } else if nags.isEmpty {

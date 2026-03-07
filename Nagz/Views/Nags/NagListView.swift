@@ -111,9 +111,6 @@ struct NagListView: View {
             await viewModel.loadNags()
         }
         .onAppear {
-            if !viewModel.nags.isEmpty {
-                Task { await viewModel.loadNags() }
-            }
             startWebSocket()
         }
         .onDisappear { stopWebSocket() }
@@ -147,7 +144,7 @@ struct NagListView: View {
 
     @ViewBuilder
     private var contentArea: some View {
-        if viewModel.loadState.isLoading && viewModel.nags.isEmpty {
+        if viewModel.loadState.isIdle || (viewModel.loadState.isLoading && viewModel.nags.isEmpty) {
             ProgressView()
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
         } else if let error = viewModel.loadState.error, viewModel.nags.isEmpty {

@@ -17,7 +17,7 @@ struct ChildNagListView: View {
 
     var body: some View {
         Group {
-            if loadState.isLoading && nags.isEmpty {
+            if loadState.isIdle || (loadState.isLoading && nags.isEmpty) {
                 ProgressView("Loading your nags...")
             } else if nags.isEmpty {
                 ContentUnavailableView {
