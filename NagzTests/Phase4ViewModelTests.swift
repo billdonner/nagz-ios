@@ -709,9 +709,9 @@ final class NagListViewModelDefaultsTests: XCTestCase {
         let vm = NagListViewModel(apiClient: apiClient)
         XCTAssertTrue(vm.nags.isEmpty)
         XCTAssertEqual(vm.filter, .open)
-        XCTAssertFalse(vm.isLoading)
+        XCTAssertFalse(vm.loadState.isLoading)
         XCTAssertFalse(vm.isLoadingMore)
-        XCTAssertNil(vm.errorMessage)
+        XCTAssertNil(vm.loadState.error)
         XCTAssertFalse(vm.hasMore)
     }
 }
@@ -728,7 +728,7 @@ final class NagDetailViewModelDefaultsTests: XCTestCase {
         XCTAssertNil(vm.nag)
         XCTAssertNil(vm.escalation)
         XCTAssertTrue(vm.excuses.isEmpty)
-        XCTAssertFalse(vm.isLoading)
+        XCTAssertFalse(vm.loadState.isLoading)
         XCTAssertFalse(vm.isUpdating)
         XCTAssertFalse(vm.isRecomputing)
         XCTAssertNil(vm.errorMessage)

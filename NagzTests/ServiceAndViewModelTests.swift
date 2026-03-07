@@ -239,9 +239,9 @@ final class ViewModelActionTests: XCTestCase {
         let vm = NagListViewModel(apiClient: makeAPIClient())
         XCTAssertTrue(vm.nags.isEmpty)
         XCTAssertEqual(vm.filter, .open)
-        XCTAssertFalse(vm.isLoading)
+        XCTAssertFalse(vm.loadState.isLoading)
         XCTAssertFalse(vm.isLoadingMore)
-        XCTAssertNil(vm.errorMessage)
+        XCTAssertNil(vm.loadState.error)
         XCTAssertFalse(vm.hasMore)
     }
 
@@ -250,7 +250,7 @@ final class ViewModelActionTests: XCTestCase {
         let vm = NagListViewModel(apiClient: makeAPIClient())
         await vm.loadNags()
         // Should not crash, should not set error (early return)
-        XCTAssertFalse(vm.isLoading)
+        XCTAssertFalse(vm.loadState.isLoading)
         XCTAssertTrue(vm.nags.isEmpty)
     }
 
@@ -259,8 +259,8 @@ final class ViewModelActionTests: XCTestCase {
         let vm = NagListViewModel(apiClient: makeAPIClient())
         vm.setFamily(UUID())
         await vm.loadNags()
-        XCTAssertFalse(vm.isLoading)
-        XCTAssertNotNil(vm.errorMessage)
+        XCTAssertFalse(vm.loadState.isLoading)
+        XCTAssertNotNil(vm.loadState.error)
     }
 
     // MARK: - NagDetailViewModel
@@ -271,7 +271,7 @@ final class ViewModelActionTests: XCTestCase {
         XCTAssertNil(vm.nag)
         XCTAssertNil(vm.escalation)
         XCTAssertTrue(vm.excuses.isEmpty)
-        XCTAssertFalse(vm.isLoading)
+        XCTAssertFalse(vm.loadState.isLoading)
         XCTAssertFalse(vm.isUpdating)
         XCTAssertFalse(vm.isRecomputing)
         XCTAssertNil(vm.errorMessage)
@@ -281,8 +281,8 @@ final class ViewModelActionTests: XCTestCase {
     func testNagDetailLoadSetsErrorOnFailure() async {
         let vm = NagDetailViewModel(apiClient: makeAPIClient(), nagId: UUID())
         await vm.load()
-        XCTAssertFalse(vm.isLoading)
-        XCTAssertNotNil(vm.errorMessage)
+        XCTAssertFalse(vm.loadState.isLoading)
+        XCTAssertNotNil(vm.loadState.error)
     }
 
     @MainActor
