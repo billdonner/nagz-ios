@@ -12,7 +12,21 @@ class AppDelegate: NSObject, UIApplicationDelegate {
     ) -> Bool {
         let delegate = NotificationDelegate(appDelegate: self)
         notificationDelegate = delegate
-        UNUserNotificationCenter.current().delegate = delegate
+        let center = UNUserNotificationCenter.current()
+        center.delegate = delegate
+        // Register "nag" category with a View action — makes banners persistent
+        let viewAction = UNNotificationAction(
+            identifier: "VIEW_NAG",
+            title: "View",
+            options: [.foreground]
+        )
+        let nagCategory = UNNotificationCategory(
+            identifier: "NAG",
+            actions: [viewAction],
+            intentIdentifiers: [],
+            options: []
+        )
+        center.setNotificationCategories([nagCategory])
         return true
     }
 
