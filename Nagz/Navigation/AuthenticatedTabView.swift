@@ -3,6 +3,10 @@ import AppIntents
 import MessageUI
 import NagzAI
 
+private struct NotificationItem: Identifiable {
+    let id: UUID
+}
+
 struct AuthenticatedTabView: View {
     let authManager: AuthManager
     let apiClient: APIClient
@@ -72,25 +76,34 @@ struct AuthenticatedTabView: View {
             pushService.restorePendingNag()
             if let nagId = pushService.pendingNagId {
                 selectedTab = 1
-                pushService.nagNavigationPath = NavigationPath()
-                pushService.nagNavigationPath.append(nagId)
+                pushService.notificationNagId = nagId
                 pushService.clearPendingNag()
             }
         }
         .onChange(of: pushService.pendingNagId) { _, newValue in
-            print("🔔 pendingNagId changed: \(String(describing: newValue))")
             if let nagId = newValue {
-                print("🔔 navigating to nag \(nagId) — switching to tab 1, resetting path")
                 selectedTab = 1
-                pushService.nagNavigationPath = NavigationPath()
-                pushService.nagNavigationPath.append(nagId)
-                print("🔔 path set, clearing pendingNagId")
+                pushService.notificationNagId = nagId
                 pushService.clearPendingNag()
-                print("🔔 done")
             }
         }
-        .onChange(of: pushService.nagNavigationPath) { _, newValue in
-            print("🗺️ nagNavigationPath changed: count=\(newValue.count)")
+        .fullScreenCover(item: Binding(
+            get: { pushService.notificationNagId.map { NotificationItem(id: $0) } },
+            set: { if $0 == nil { pushService.notificationNagId = nil } }
+        )) { item in
+            NavigationStack {
+                NagDetailView(
+                    apiClient: apiClient,
+                    nagId: item.id,
+                    currentUserId: currentUserId,
+                    isGuardian: isGuardian
+                )
+                .toolbar {
+                    ToolbarItem(placement: .cancellationAction) {
+                        Button("Done") { pushService.notificationNagId = nil }
+                    }
+                }
+            }
         }
     }
 

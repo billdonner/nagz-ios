@@ -9,6 +9,7 @@ import Observation
 final class PushNotificationService: NSObject {
     private(set) var pendingNagId: UUID?
     var nagNavigationPath = NavigationPath()
+    var notificationNagId: UUID?
     private var apiClient: APIClient?
 
     func configure(apiClient: APIClient) {
