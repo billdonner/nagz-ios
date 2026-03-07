@@ -48,6 +48,7 @@ struct AuthenticatedTabView: View {
     }
 
     @AppStorage("selectedTab") private var selectedTab = 0
+    @Environment(\.scenePhase) private var scenePhase
 
     var body: some View {
         TabView(selection: $selectedTab) {
@@ -82,6 +83,13 @@ struct AuthenticatedTabView: View {
         }
         .onChange(of: pushService.pendingNagId) { _, newValue in
             if let nagId = newValue {
+                selectedTab = 1
+                pushService.notificationNagId = nagId
+                pushService.clearPendingNag()
+            }
+        }
+        .onChange(of: scenePhase) { _, newPhase in
+            if newPhase == .active, let nagId = pushService.pendingNagId {
                 selectedTab = 1
                 pushService.notificationNagId = nagId
                 pushService.clearPendingNag()
