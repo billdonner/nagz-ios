@@ -156,7 +156,7 @@ struct CreateNagTool: Tool {
         @Guide(description: "Category: chores, meds, homework, appointments, or other.")
         let category: String
 
-        @Guide(description: "Hours from now until first occurrence is due. 'tomorrow' = 18, 'in an hour' = 1, 'next week' = 168, 'tonight' = 8, 'Monday at 4pm' ≈ hours until next Monday 4pm.")
+        @Guide(description: "Hours from now until due. Use the current time from the system prompt to calculate accurately. 'in an hour' = 1, 'next week' = 168. For 'tonight'/'tomorrow'/specific times, calculate from current time as shown in the prompt.")
         let delayHours: Int
 
         @Guide(description: "Name of the person to assign this nag to. Leave empty or 'me' to assign to current user.")
@@ -185,8 +185,13 @@ struct CreateNagTool: Tool {
             recipientId = currentUserId
             recipientLabel = "you"
         } else {
-            // Fetch family members dynamically
+            // Fetch family members and connections in parallel
             var people: [(name: String, id: UUID, connectionId: UUID?)] = []
+
+            // Start connection fetch immediately (runs in parallel with member fetch)
+            async let connFetch: PaginatedResponse<ConnectionResponse> = apiClient.request(
+                .listConnections(status: .active)
+            )
 
             if let familyId {
                 let memberPage: PaginatedResponse<MemberDetail> = try await apiClient.request(
@@ -199,10 +204,7 @@ struct CreateNagTool: Tool {
                 }
             }
 
-            // Fetch connections dynamically
-            let connPage: PaginatedResponse<ConnectionResponse> = try await apiClient.request(
-                .listConnections(status: .active)
-            )
+            let connPage = try await connFetch
             for conn in connPage.items {
                 let otherId = conn.inviterId == currentUserId ? conn.inviteeId : conn.inviterId
                 if let otherId, let name = conn.otherPartyDisplayName {

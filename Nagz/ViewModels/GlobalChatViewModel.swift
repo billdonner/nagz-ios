@@ -97,7 +97,8 @@ final class GlobalChatViewModel {
             userName: userName,
             familyName: familyName,
             memberNames: memberNames,
-            personality: personality
+            personality: personality,
+            currentDate: Date()
         )
 
         session = LanguageModelSession(

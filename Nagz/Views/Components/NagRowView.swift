@@ -233,6 +233,158 @@ struct NagRowView: View {
     }
 }
 
+// MARK: - DoerNagRowView (Your List — you are the recipient)
+
+struct DoerNagRowView: View {
+    let nag: NagResponse
+    var currentUserId: UUID?
+
+    var body: some View {
+        HStack(alignment: .top, spacing: 12) {
+            RoundedRectangle(cornerRadius: 2)
+                .fill(categoryColor)
+                .frame(width: 3)
+                .padding(.vertical, 2)
+
+            VStack(alignment: .leading, spacing: 5) {
+                Text(nag.description ?? nag.category.displayName)
+                    .font(.body.weight(.medium))
+                    .lineLimit(2)
+                    .strikethrough(nag.status == .completed, color: .secondary)
+                    .foregroundStyle(nag.status == .open ? .primary : .secondary)
+
+                if let committedAt = nag.committedAt, nag.status == .open {
+                    HStack(spacing: 4) {
+                        Image(systemName: "clock.badge.checkmark")
+                            .font(.footnote.weight(.semibold))
+                        Text("Doing it \(committedAt, style: .relative)")
+                            .font(.footnote.weight(.semibold))
+                    }
+                    .foregroundStyle(.purple)
+                } else if nag.status == .open {
+                    HStack(spacing: 4) {
+                        Image(systemName: "clock")
+                            .font(.caption)
+                        Text(nag.dueAt < Date() ? "Overdue — was due \(nag.dueAt.relativeDisplay)" : "Due \(nag.dueAt, style: .relative)")
+                            .font(.caption)
+                    }
+                    .foregroundStyle(nag.dueAt < Date() ? .orange : .secondary)
+                }
+
+                if let from = fromLabel {
+                    Text(from)
+                        .font(.caption2)
+                        .foregroundStyle(.tertiary)
+                }
+            }
+
+            Spacer()
+
+            if nag.status != .open {
+                doerClosedChip
+            } else if nag.dueAt < Date() {
+                Image(systemName: "exclamationmark.triangle.fill")
+                    .font(.footnote)
+                    .foregroundStyle(.orange)
+                    .padding(.top, 2)
+            }
+        }
+        .padding(.vertical, 6)
+    }
+
+    private var fromLabel: String? {
+        guard let userId = currentUserId,
+              nag.creatorId != userId,
+              let name = nag.creatorDisplayName else { return nil }
+        return "from \(name)"
+    }
+
+    private var categoryColor: Color {
+        switch nag.category {
+        case .chores: .brown
+        case .meds: .pink
+        case .homework: .blue
+        case .appointments: .purple
+        case .other: .gray
+        }
+    }
+
+    @ViewBuilder
+    private var doerClosedChip: some View {
+        switch nag.status {
+        case .completed:
+            HStack(spacing: 2) {
+                Image(systemName: "checkmark")
+                    .font(.caption2.weight(.bold))
+                if let ago = nag.completedAt.map({ $0.agoDisplay }) {
+                    Text(ago).font(.caption2)
+                }
+            }
+            .padding(.horizontal, 7)
+            .padding(.vertical, 3)
+            .background(Color.green.opacity(0.15))
+            .foregroundStyle(Color.green)
+            .clipShape(Capsule())
+        default:
+            EmptyView()
+        }
+    }
+}
+
+// MARK: - AssignedNagRowView (You Assigned — compact monitoring view)
+
+struct AssignedNagRowView: View {
+    let nag: NagResponse
+
+    var body: some View {
+        HStack(spacing: 10) {
+            Image(systemName: nag.category.iconName)
+                .font(.footnote)
+                .foregroundStyle(.tertiary)
+                .frame(width: 18)
+
+            VStack(alignment: .leading, spacing: 2) {
+                Text(nag.description ?? nag.category.displayName)
+                    .font(.subheadline)
+                    .lineLimit(1)
+                    .strikethrough(nag.status == .completed, color: Color.secondary.opacity(0.5))
+                    .foregroundStyle(nag.status == .open ? .primary : .secondary)
+
+                HStack(spacing: 4) {
+                    Text(nag.recipientDisplayName ?? "someone")
+                        .font(.caption2)
+                        .foregroundStyle(.secondary)
+                    if let committedAt = nag.committedAt, nag.status == .open {
+                        Text("·").font(.caption2).foregroundStyle(.tertiary)
+                        HStack(spacing: 2) {
+                            Image(systemName: "clock.badge.checkmark").font(.caption2)
+                            Text(committedAt.relativeDisplay).font(.caption2)
+                        }
+                        .foregroundStyle(.purple)
+                    }
+                }
+            }
+
+            Spacer()
+
+            if nag.status == .open && nag.dueAt < Date() {
+                Text("Late")
+                    .font(.caption2.weight(.medium))
+                    .padding(.horizontal, 6)
+                    .padding(.vertical, 2)
+                    .background(Color.orange.opacity(0.12))
+                    .foregroundStyle(.orange)
+                    .clipShape(Capsule())
+            } else if nag.status == .completed {
+                Image(systemName: "checkmark.circle.fill")
+                    .font(.footnote)
+                    .foregroundStyle(Color.green.opacity(0.7))
+            }
+        }
+        .padding(.vertical, 4)
+    }
+}
+
 private struct StatusDot: View {
     let status: NagStatus
 

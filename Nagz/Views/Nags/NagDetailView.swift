@@ -27,6 +27,133 @@ struct NagDetailView: View {
         self.isGuardian = isGuardian
     }
 
+    /// True when the current user is the assigner, not the doer.
+    private var isGiver: Bool {
+        guard let nag = viewModel.nag else { return false }
+        return nag.creatorId == currentUserId && nag.recipientId != currentUserId
+    }
+
+    // MARK: - Giver status view (set-and-forget — assigner sees minimal status)
+
+    @ViewBuilder
+    private func giverStatusView(nag: NagResponse) -> some View {
+        List {
+            Section {
+                VStack(alignment: .leading, spacing: 14) {
+                    HStack(alignment: .top) {
+                        VStack(alignment: .leading, spacing: 4) {
+                            Text(nag.description ?? nag.category.displayName)
+                                .font(.title3.weight(.semibold))
+                            HStack(spacing: 5) {
+                                Image(systemName: "person")
+                                    .font(.caption)
+                                    .foregroundStyle(.secondary)
+                                Text(nag.recipientDisplayName ?? "someone")
+                                    .font(.subheadline)
+                                    .foregroundStyle(.secondary)
+                            }
+                        }
+                        Spacer()
+                        StatusPill(status: nag.status)
+                    }
+
+                    Divider()
+
+                    if let committedAt = nag.committedAt, nag.status == .open {
+                        HStack(spacing: 10) {
+                            Image(systemName: "clock.badge.checkmark")
+                                .foregroundStyle(.purple)
+                                .font(.callout)
+                            VStack(alignment: .leading, spacing: 1) {
+                                Text("Committed")
+                                    .font(.caption)
+                                    .foregroundStyle(.secondary)
+                                Text(committedAt.relativeDisplay)
+                                    .font(.subheadline.weight(.medium))
+                                    .foregroundStyle(.purple)
+                            }
+                        }
+                    } else if nag.status == .open {
+                        HStack(spacing: 10) {
+                            Image(systemName: "clock")
+                                .foregroundStyle(.secondary)
+                                .font(.callout)
+                            VStack(alignment: .leading, spacing: 1) {
+                                Text("Awaiting commitment")
+                                    .font(.subheadline)
+                                    .foregroundStyle(.secondary)
+                                Text("Due \(nag.dueAt.relativeDisplay)")
+                                    .font(.caption)
+                                    .foregroundStyle(nag.dueAt < Date() ? Color.orange : Color.secondary.opacity(0.6))
+                            }
+                        }
+                    } else if nag.status == .completed {
+                        HStack(spacing: 10) {
+                            Image(systemName: "checkmark.circle.fill")
+                                .foregroundStyle(.green)
+                                .font(.callout)
+                            Text(nag.completedAt.map { "Done \($0.relativeDisplay)" } ?? "Done")
+                                .font(.subheadline.weight(.medium))
+                                .foregroundStyle(.green)
+                        }
+                    }
+
+                    HStack {
+                        Label(nag.category.displayName, systemImage: nag.category.iconName)
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                        Spacer()
+                        if nag.status == .open {
+                            Label(nag.dueAt.relativeDisplay, systemImage: "calendar")
+                                .font(.caption)
+                                .foregroundStyle(nag.dueAt < Date() ? .orange : .secondary)
+                        }
+                    }
+                }
+                .padding(.vertical, 4)
+            }
+
+            if let escalation = viewModel.escalation {
+                Section {
+                    HStack {
+                        Text("Escalation")
+                        Spacer()
+                        EscalationBadge(phase: escalation.currentPhase)
+                    }
+                }
+            }
+
+            if !viewModel.excuses.isEmpty {
+                Section("Excuses") {
+                    ForEach(viewModel.excuses) { excuse in
+                        VStack(alignment: .leading, spacing: 4) {
+                            Text(excuse.summary).font(.body)
+                            if let at = excuse.at {
+                                Text(at.relativeDisplay).font(.caption).foregroundStyle(.secondary)
+                            }
+                        }
+                    }
+                }
+            }
+
+            if let error = viewModel.errorMessage {
+                Section { ErrorBanner(message: error) }
+            }
+
+            if nag.status == .open {
+                Section {
+                    Button("Withdraw Nag", role: .destructive) {
+                        Task {
+                            await viewModel.withdraw()
+                            if viewModel.errorMessage == nil { dismiss() }
+                        }
+                    }
+                    .disabled(viewModel.isUpdating)
+                }
+            }
+        }
+    }
+
     var body: some View {
         Group {
             if viewModel.loadState.isLoading && viewModel.nag == nil {
@@ -37,6 +164,8 @@ struct NagDetailView: View {
                 } description: {
                     Text(error.localizedDescription)
                 }
+            } else if isGiver, let nag = viewModel.nag {
+                giverStatusView(nag: nag)
             } else if let nag = viewModel.nag {
                 List {
                     Section("Status") {

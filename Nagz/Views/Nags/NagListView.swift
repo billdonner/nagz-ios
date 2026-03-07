@@ -21,8 +21,7 @@ struct NagListView: View {
     @State private var generatingSummary = false
     @State private var scheduleNagId: UUID?
     @State private var showSchedulePicker = false
-    @State private var collapsedSections: Set<String> = []
-    @State private var hasSetDefaults = false
+    @State private var assignedCollapsed = true
     @AppStorage("nagz_ai_personality") private var personalityRaw: String = AIPersonality.standard.rawValue
     @Environment(\.scenePhase) private var scenePhase
 
@@ -35,7 +34,9 @@ struct NagListView: View {
         self.webSocketService = webSocketService
     }
 
-    /// Nags sent to me by other people
+    // MARK: - Computed splits
+
+    /// Nags sent to me by others
     private var nagsForMe: [NagResponse] {
         guard let userId = currentUserId else { return viewModel.nags }
         return viewModel.nags.filter { $0.recipientId == userId && $0.creatorId != userId }
@@ -47,30 +48,29 @@ struct NagListView: View {
         return viewModel.nags.filter { $0.recipientId != userId }
     }
 
-    /// Self-nags: I created them for myself
+    /// Self-nags
     private var selfNags: [NagResponse] {
         guard let userId = currentUserId else { return [] }
         return viewModel.nags.filter { $0.recipientId == userId && $0.creatorId == userId }
     }
 
-    /// Group "For Me" nags by who sent them (counterpart = creator), sorted by committedAt ?? dueAt
-    private var nagsForMeByCounterpart: [(name: String, nags: [NagResponse])] {
-        let grouped = Dictionary(grouping: nagsForMe) { $0.creatorDisplayName ?? "Unknown" }
-        return grouped.sorted { $0.key < $1.key }.map { group in
-            let sorted = group.value.sorted { a, b in
-                let aTime = a.committedAt ?? a.dueAt
-                let bTime = b.committedAt ?? b.dueAt
-                return aTime < bTime
+    /// "Your List" — nags you need to act on, auto-fading completed > 24h old
+    private var myItems: [NagResponse] {
+        let cutoff = Date().addingTimeInterval(-24 * 3600)
+        let items = (nagsForMe + selfNags).filter { nag in
+            if nag.status == .completed, let completedAt = nag.completedAt {
+                return completedAt > cutoff
             }
-            return (name: group.key, nags: sorted)
+            return true
+        }
+        return items.sorted { a, b in
+            let aTime = a.committedAt ?? a.dueAt
+            let bTime = b.committedAt ?? b.dueAt
+            return aTime < bTime
         }
     }
 
-    /// Group "Nagz to Others" by who they're for (counterpart = recipient)
-    private var nagsForOthersByCounterpart: [(name: String, nags: [NagResponse])] {
-        let grouped = Dictionary(grouping: nagsForOthers) { $0.recipientDisplayName ?? "Unknown" }
-        return grouped.sorted { $0.key < $1.key }.map { (name: $0.key, nags: $0.value) }
-    }
+    // MARK: - Body
 
     var body: some View {
         VStack(spacing: 0) {
@@ -111,15 +111,12 @@ struct NagListView: View {
             await viewModel.loadNags()
         }
         .onAppear {
-            // Reload when returning from detail view (e.g. after completing a nag)
             if !viewModel.nags.isEmpty {
                 Task { await viewModel.loadNags() }
             }
             startWebSocket()
         }
-        .onDisappear {
-            stopWebSocket()
-        }
+        .onDisappear { stopWebSocket() }
         .onChange(of: scenePhase) {
             if scenePhase == .active {
                 Task { await viewModel.loadNags() }
@@ -130,18 +127,11 @@ struct NagListView: View {
         }
         .refreshable { await viewModel.refresh() }
         .onChange(of: viewModel.filter) {
-            Task {
-                await viewModel.loadNags()
-                applyDefaultCollapse()
-            }
-        }
-        .onChange(of: viewModel.nags.count) {
-            if !hasSetDefaults && !viewModel.nags.isEmpty {
-                hasSetDefaults = true
-                applyDefaultCollapse()
-            }
+            Task { await viewModel.loadNags() }
         }
     }
+
+    // MARK: - Filter picker
 
     private var filterPicker: some View {
         Picker("Filter", selection: $viewModel.filter) {
@@ -152,6 +142,8 @@ struct NagListView: View {
         .pickerStyle(.segmented)
         .padding()
     }
+
+    // MARK: - Content area
 
     @ViewBuilder
     private var contentArea: some View {
@@ -165,15 +157,6 @@ struct NagListView: View {
                 Text(error.localizedDescription)
             } actions: {
                 Button("Retry") { Task { await viewModel.loadNags() } }
-            }
-        } else if viewModel.nags.isEmpty {
-            ContentUnavailableView {
-                Label("No Nagz", systemImage: "checkmark.circle")
-            } description: {
-                VStack(spacing: 12) {
-                    Text(viewModel.filter == .open ? "All caught up!" : "No nagz to show.")
-                    SiriTipView(intent: CreateNagIntent(), isVisible: .constant(true))
-                }
             }
         } else if viewMode == .list {
             TimelineView(.periodic(from: .now, by: 60)) { _ in
@@ -214,6 +197,101 @@ struct NagListView: View {
             }
         }
     }
+
+    // MARK: - Nag list (flat Your List + collapsed You Assigned)
+
+    private var nagList: some View {
+        List {
+            // YOUR LIST
+            Section {
+                if myItems.isEmpty {
+                    if viewModel.filter == .open {
+                        HStack {
+                            Spacer()
+                            VStack(spacing: 6) {
+                                Image(systemName: "checkmark.circle.fill")
+                                    .font(.title2)
+                                    .foregroundStyle(.green)
+                                Text("All caught up!")
+                                    .font(.subheadline)
+                                    .foregroundStyle(.secondary)
+                            }
+                            .padding(.vertical, 12)
+                            Spacer()
+                        }
+                        .listRowBackground(Color.clear)
+                    }
+                } else {
+                    ForEach(myItems) { nag in
+                        NavigationLink(value: nag.id) {
+                            DoerNagRowView(nag: nag, currentUserId: currentUserId)
+                        }
+                        .swipeActions(edge: .trailing, allowsFullSwipe: false) {
+                            if nag.status == .open, let userId = currentUserId,
+                               nag.recipientId == userId, nag.creatorId != userId {
+                                Button {
+                                    swipeDismiss(nag)
+                                } label: {
+                                    Label("Dismiss", systemImage: "eye.slash")
+                                }
+                                .tint(.gray)
+                            }
+                        }
+                    }
+                }
+            } header: {
+                Text("Your List")
+                    .font(.headline.weight(.semibold))
+                    .textCase(nil)
+                    .foregroundStyle(.primary)
+            }
+
+            // YOU ASSIGNED (collapsible)
+            if !nagsForOthers.isEmpty {
+                Section {
+                    if !assignedCollapsed {
+                        ForEach(nagsForOthers) { nag in
+                            NavigationLink(value: nag.id) {
+                                AssignedNagRowView(nag: nag)
+                            }
+                            .swipeActions(edge: .trailing, allowsFullSwipe: false) {
+                                if nag.status == .open {
+                                    Button(role: .destructive) {
+                                        swipeWithdraw(nag)
+                                    } label: {
+                                        Label("Withdraw", systemImage: "arrow.uturn.backward")
+                                    }
+                                }
+                            }
+                        }
+                    }
+                } header: {
+                    Button {
+                        withAnimation { assignedCollapsed.toggle() }
+                    } label: {
+                        HStack {
+                            Text("You Assigned (\(nagsForOthers.count))")
+                                .font(.subheadline)
+                                .textCase(nil)
+                                .foregroundStyle(.secondary)
+                            Spacer()
+                            Image(systemName: assignedCollapsed ? "chevron.right" : "chevron.down")
+                                .font(.caption)
+                                .foregroundStyle(.tertiary)
+                        }
+                    }
+                    .buttonStyle(.plain)
+                }
+            }
+
+            if viewModel.isLoadingMore {
+                ProgressView().frame(maxWidth: .infinity)
+            }
+        }
+        .listStyle(.insetGrouped)
+    }
+
+    // MARK: - Toolbar
 
     @ToolbarContentBuilder
     private var nagToolbar: some ToolbarContent {
@@ -264,86 +342,7 @@ struct NagListView: View {
         }
     }
 
-    private var nagList: some View {
-        List {
-            ForEach(nagsForMeByCounterpart, id: \.name) { group in
-                CollapsibleNagSection(
-                    title: "From \(group.name)",
-                    count: group.nags.count,
-                    nags: group.nags,
-                    currentUserId: currentUserId,
-                    isCollapsed: collapsedSections.contains("from:\(group.name)"),
-                    onToggle: { toggleSection("from:\(group.name)") },
-                    onWithdraw: { nag in swipeWithdraw(nag) },
-                    onDismiss: { nag in swipeDismiss(nag) }
-                )
-            }
-
-            ForEach(nagsForOthersByCounterpart, id: \.name) { group in
-                CollapsibleNagSection(
-                    title: "To \(group.name)",
-                    count: group.nags.count,
-                    nags: group.nags,
-                    currentUserId: currentUserId,
-                    isCollapsed: collapsedSections.contains("to:\(group.name)"),
-                    onToggle: { toggleSection("to:\(group.name)") },
-                    onWithdraw: { nag in swipeWithdraw(nag) },
-                    onDismiss: { nag in swipeDismiss(nag) }
-                )
-            }
-
-            if !selfNags.isEmpty {
-                CollapsibleNagSection(
-                    title: "My Reminders",
-                    count: selfNags.count,
-                    nags: selfNags,
-                    currentUserId: currentUserId,
-                    isCollapsed: collapsedSections.contains("self"),
-                    onToggle: { toggleSection("self") },
-                    icon: "pin.fill"
-                )
-            }
-
-            if viewModel.isLoadingMore {
-                ProgressView()
-                    .frame(maxWidth: .infinity)
-            }
-        }
-        .listStyle(.insetGrouped)
-    }
-
-    private func toggleSection(_ key: String) {
-        withAnimation {
-            if collapsedSections.contains(key) {
-                collapsedSections.remove(key)
-            } else {
-                collapsedSections.insert(key)
-            }
-        }
-    }
-
-    /// Set default collapsed state based on filter tab
-    private func applyDefaultCollapse() {
-        var collapsed = Set<String>()
-        switch viewModel.filter {
-        case .open:
-            // Collapse "To" and "Self" sections, expand "From"
-            for group in nagsForOthersByCounterpart {
-                collapsed.insert("to:\(group.name)")
-            }
-            collapsed.insert("self")
-        case .completed, .all:
-            // Collapse everything
-            for group in nagsForMeByCounterpart {
-                collapsed.insert("from:\(group.name)")
-            }
-            for group in nagsForOthersByCounterpart {
-                collapsed.insert("to:\(group.name)")
-            }
-            collapsed.insert("self")
-        }
-        collapsedSections = collapsed
-    }
+    // MARK: - Swipe actions
 
     private func swipeWithdraw(_ nag: NagResponse) {
         Task {
@@ -358,6 +357,8 @@ struct NagListView: View {
             await viewModel.loadNags()
         }
     }
+
+    // MARK: - WebSocket
 
     private func startWebSocket() {
         guard let familyId, wsTask == nil else { return }
@@ -382,8 +383,9 @@ struct NagListView: View {
         Task { await webSocketService.disconnect() }
     }
 
+    // MARK: - AI Summary
+
     private func generateSummary() async {
-        // Only summarize nags assigned to me — not ones I sent to others
         let visibleNags = nagsForMe
         let items = visibleNags.map { nag in
             NagSummaryItem(
@@ -403,113 +405,6 @@ struct NagListView: View {
         } catch {
             aiSummary = "Couldn't generate summary."
             showAISummary = true
-        }
-    }
-}
-
-// MARK: - Collapsible Section
-
-private struct CollapsibleNagSection: View {
-    let title: String
-    let count: Int
-    let nags: [NagResponse]
-    let currentUserId: UUID?
-    let isCollapsed: Bool
-    let onToggle: () -> Void
-    var icon: String? = nil
-    var onWithdraw: ((NagResponse) -> Void)? = nil
-    var onDismiss: ((NagResponse) -> Void)? = nil
-
-    var body: some View {
-        Section {
-            if !isCollapsed {
-                ForEach(nags) { nag in
-                    NavigationLink(value: nag.id) {
-                        NagRowView(nag: nag, currentUserId: currentUserId)
-                    }
-                    .swipeActions(edge: .trailing, allowsFullSwipe: false) {
-                        if nag.status == .open, let userId = currentUserId {
-                            if nag.creatorId == userId && nag.recipientId != userId {
-                                Button(role: .destructive) {
-                                    onWithdraw?(nag)
-                                } label: {
-                                    Label("Withdraw", systemImage: "arrow.uturn.backward")
-                                }
-                            } else if nag.recipientId == userId && nag.creatorId != userId {
-                                Button {
-                                    onDismiss?(nag)
-                                } label: {
-                                    Label("Dismiss", systemImage: "eye.slash")
-                                }
-                                .tint(.gray)
-                            }
-                        }
-                    }
-                }
-            }
-        } header: {
-            Button(action: onToggle) {
-                HStack(spacing: 6) {
-                    if let icon {
-                        Image(systemName: icon)
-                    }
-                    Text(title)
-                    Text("(\(count))")
-                        .foregroundStyle(.secondary)
-                    UrgencySparkline(nags: nags)
-                    Spacer()
-                    Image(systemName: isCollapsed ? "chevron.right" : "chevron.down")
-                        .font(.caption.weight(.semibold))
-                        .foregroundStyle(.secondary)
-                }
-            }
-            .textCase(nil)
-        }
-    }
-}
-
-// MARK: - Urgency Sparkline
-
-private struct UrgencySparkline: View {
-    let nags: [NagResponse]
-
-    var body: some View {
-        HStack(spacing: 2) {
-            ForEach(Array(sortedPips.prefix(20).enumerated()), id: \.offset) { _, color in
-                RoundedRectangle(cornerRadius: 1)
-                    .fill(color)
-                    .frame(width: 3, height: 10)
-            }
-        }
-    }
-
-    private var sortedPips: [Color] {
-        nags.map { pipColor(for: $0) }
-            .sorted { $0.urgencyOrder < $1.urgencyOrder }
-    }
-
-    private func pipColor(for nag: NagResponse) -> Color {
-        if nag.status == .completed { return .green }
-        if nag.status == .missed { return .orange }
-        if nag.status == .withdrawn { return .gray }
-        guard nag.status == .open else { return .gray }
-        let interval = nag.dueAt.timeIntervalSince(Date())
-        if interval > 24 * 3600 { return .gray }
-        if interval > 2 * 3600 { return .blue }
-        if interval > 0 { return .yellow }
-        return .orange
-    }
-}
-
-private extension Color {
-    var urgencyOrder: Int {
-        switch self {
-        case .red: 0
-        case .orange: 1
-        case .yellow: 2
-        case .blue: 3
-        case .green: 4
-        default: 5
         }
     }
 }
