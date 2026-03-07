@@ -16,7 +16,10 @@ actor APIClient {
 
         let config = URLSessionConfiguration.default
         config.timeoutIntervalForRequest = 30
-        config.urlCache = URLCache(memoryCapacity: 10_000_000, diskCapacity: 50_000_000)
+        let urlCache = URLCache(memoryCapacity: 10_000_000, diskCapacity: 50_000_000)
+        // Clear disk cache on init to prevent stale encoded responses from causing decode failures
+        urlCache.removeAllCachedResponses()
+        config.urlCache = urlCache
         self.session = URLSession(configuration: config)
 
         self.decoder = JSONDecoder()
