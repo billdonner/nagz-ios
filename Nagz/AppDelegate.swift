@@ -3,7 +3,19 @@ import UserNotifications
 
 @MainActor
 class AppDelegate: NSObject, UIApplicationDelegate {
-    var pushService: PushNotificationService?
+    /// Nag ID received before pushService was wired up — drained when pushService is set.
+    var coldLaunchNagId: UUID?
+
+    var pushService: PushNotificationService? {
+        didSet {
+            // Drain any nag that arrived before pushService was ready
+            if let nagId = coldLaunchNagId {
+                pushService?.setPendingNag(nagId)
+                coldLaunchNagId = nil
+                print("🔔 drained coldLaunchNagId → pushService")
+            }
+        }
+    }
     private var notificationDelegate: NotificationDelegate?
 
     func application(
@@ -96,14 +108,17 @@ private final class NotificationDelegate: NSObject, UNUserNotificationCenterDele
         }
         print("🔔 calling setPendingNag(\(nagId))")
         await MainActor.run {
-            if let ps = appDelegate?.pushService {
+            guard let delegate = appDelegate else { return }
+            if let ps = delegate.pushService {
                 ps.setPendingNag(nagId)
                 print("🔔 setPendingNag done via pushService")
             } else {
-                // Cold launch: pushService not yet wired up — save directly to UserDefaults.
-                // restorePendingNag() will pick this up when AuthenticatedTabView appears.
+                // Cold launch: pushService not yet wired up.
+                // Store on AppDelegate — drained into pushService the moment it's set.
+                // Also write to UserDefaults as belt-and-suspenders fallback.
+                delegate.coldLaunchNagId = nagId
                 UserDefaults.standard.set(nagId.uuidString, forKey: "nagz_pending_nag_id")
-                print("🔔 cold launch: saved nag_id to UserDefaults directly")
+                print("🔔 cold launch: stored coldLaunchNagId + UserDefaults")
             }
         }
     }
