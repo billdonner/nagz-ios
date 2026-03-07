@@ -96,8 +96,15 @@ private final class NotificationDelegate: NSObject, UNUserNotificationCenterDele
         }
         print("🔔 calling setPendingNag(\(nagId))")
         await MainActor.run {
-            appDelegate?.pushService?.setPendingNag(nagId)
-            print("🔔 setPendingNag done, pushService=\(String(describing: appDelegate?.pushService))")
+            if let ps = appDelegate?.pushService {
+                ps.setPendingNag(nagId)
+                print("🔔 setPendingNag done via pushService")
+            } else {
+                // Cold launch: pushService not yet wired up — save directly to UserDefaults.
+                // restorePendingNag() will pick this up when AuthenticatedTabView appears.
+                UserDefaults.standard.set(nagId.uuidString, forKey: "nagz_pending_nag_id")
+                print("🔔 cold launch: saved nag_id to UserDefaults directly")
+            }
         }
     }
 
