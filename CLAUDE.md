@@ -9,8 +9,8 @@
 
 ## Common Commands
 - `cd ~/nagz-ios && xcodegen generate` — regenerate Xcode project from project.yml
-- `xcodebuild -project Nagz.xcodeproj -scheme Nagz -destination 'platform=iOS Simulator,name=iPhone 16 Pro Max,OS=18.5' build` — build
-- `xcodebuild test -scheme Nagz -destination 'platform=iOS Simulator,name=iPhone 16 Pro Max,OS=18.5'` — run tests (215 as of 2026-02-25)
+- `xcodebuild -project Nagz.xcodeproj -scheme Nagz -destination 'platform=iOS Simulator,name=iPhone 16 Pro Max,OS=26.0' build` — build
+- `xcodebuild test -scheme Nagz -destination 'platform=iOS Simulator,name=iPhone 16 Pro Max,OS=26.0'` — run tests (239 as of 2026-03-07)
 
 ## Cross-Project Sync
 After any change to models, API calls, or shared behavior:
