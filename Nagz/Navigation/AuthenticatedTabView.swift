@@ -11,7 +11,6 @@ struct AuthenticatedTabView: View {
     let webSocketService: WebSocketService
 
     @State private var familyViewModel: FamilyViewModel
-    @State private var nagNavigationPath = NavigationPath()
 
     init(authManager: AuthManager, apiClient: APIClient, pushService: PushNotificationService, syncService: SyncService, webSocketService: WebSocketService) {
         self.authManager = authManager
@@ -73,24 +72,31 @@ struct AuthenticatedTabView: View {
             pushService.restorePendingNag()
             if let nagId = pushService.pendingNagId {
                 selectedTab = 1
-                nagNavigationPath = NavigationPath()
-                nagNavigationPath.append(nagId)
+                pushService.nagNavigationPath = NavigationPath()
+                pushService.nagNavigationPath.append(nagId)
                 pushService.clearPendingNag()
             }
         }
         .onChange(of: pushService.pendingNagId) { _, newValue in
+            print("🔔 pendingNagId changed: \(String(describing: newValue))")
             if let nagId = newValue {
+                print("🔔 navigating to nag \(nagId) — switching to tab 1, resetting path")
                 selectedTab = 1
-                // Reset navigation stack before pushing to avoid stack corruption
-                nagNavigationPath = NavigationPath()
-                nagNavigationPath.append(nagId)
+                pushService.nagNavigationPath = NavigationPath()
+                pushService.nagNavigationPath.append(nagId)
+                print("🔔 path set, clearing pendingNagId")
                 pushService.clearPendingNag()
+                print("🔔 done")
             }
+        }
+        .onChange(of: pushService.nagNavigationPath) { _, newValue in
+            print("🗺️ nagNavigationPath changed: count=\(newValue.count)")
         }
     }
 
     private var nagsTab: some View {
-        NavigationStack(path: $nagNavigationPath) {
+        @Bindable var ps = pushService
+        return NavigationStack(path: $ps.nagNavigationPath) {
             NagListView(
                 apiClient: apiClient,
                 familyId: familyViewModel.family?.familyId,

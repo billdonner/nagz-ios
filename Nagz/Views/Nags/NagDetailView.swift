@@ -340,7 +340,11 @@ struct NagDetailView: View {
                 Task { await viewModel.load() }
             }
         }
-        .task { await viewModel.load() }
+        .task {
+            print("📄 NagDetailView.task — loading")
+            await viewModel.load()
+            print("📄 NagDetailView loaded — nag=\(viewModel.nag?.description ?? "nil") error=\(viewModel.errorMessage ?? "none")")
+        }
         .overlay {
             if showCompletionCelebration {
                 CompletionCelebrationView()

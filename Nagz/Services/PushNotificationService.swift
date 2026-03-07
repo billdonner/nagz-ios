@@ -1,4 +1,5 @@
 import Foundation
+import SwiftUI
 import UIKit
 import UserNotifications
 import Observation
@@ -7,6 +8,7 @@ import Observation
 @MainActor
 final class PushNotificationService: NSObject {
     private(set) var pendingNagId: UUID?
+    var nagNavigationPath = NavigationPath()
     private var apiClient: APIClient?
 
     func configure(apiClient: APIClient) {

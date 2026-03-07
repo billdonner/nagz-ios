@@ -68,15 +68,22 @@ private final class NotificationDelegate: NSObject, UNUserNotificationCenterDele
         _ center: UNUserNotificationCenter,
         didReceive response: UNNotificationResponse
     ) async {
-        let targetUserId = response.notification.request.content.userInfo["target_user_id"] as? String
-        let nagIdString = response.notification.request.content.userInfo["nag_id"] as? String
+        let userInfo = response.notification.request.content.userInfo
+        let targetUserId = userInfo["target_user_id"] as? String
+        let nagIdString = userInfo["nag_id"] as? String
+        print("🔔 didReceive — nag_id=\(nagIdString ?? "nil") target=\(targetUserId ?? "nil") keys=\(userInfo.keys.map{"\($0)"})")
         let isForCurrent = await Self.isForCurrentUser(targetUserId: targetUserId)
+        print("🔔 isForCurrentUser=\(isForCurrent)")
         guard isForCurrent else { return }
 
-        // Extract UUID before crossing actor boundary (String is Sendable, [AnyHashable:Any] is not)
-        guard let nagIdString, let nagId = UUID(uuidString: nagIdString) else { return }
+        guard let nagIdString, let nagId = UUID(uuidString: nagIdString) else {
+            print("🔔 failed to parse nag UUID from: \(nagIdString ?? "nil")")
+            return
+        }
+        print("🔔 calling setPendingNag(\(nagId))")
         await MainActor.run {
             appDelegate?.pushService?.setPendingNag(nagId)
+            print("🔔 setPendingNag done, pushService=\(String(describing: appDelegate?.pushService))")
         }
     }
 
