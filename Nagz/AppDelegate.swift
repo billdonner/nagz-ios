@@ -10,6 +10,20 @@ class AppDelegate: NSObject, UIApplicationDelegate {
         _ application: UIApplication,
         didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil
     ) -> Bool {
+        // Cold-launch from notification tap: pushService isn't wired yet so
+        // save the nag_id directly to UserDefaults for restorePendingNag() to pick up.
+        if let userInfo = launchOptions?[.remoteNotification] as? [AnyHashable: Any],
+           let nagIdString = userInfo["nag_id"] as? String,
+           let _ = UUID(uuidString: nagIdString) {
+            let targetUserId = userInfo["target_user_id"] as? String
+            let currentUserId = UserDefaults.standard.string(forKey: "nagz_user_id")
+            let isForCurrentUser = targetUserId == nil || targetUserId == currentUserId
+            if isForCurrentUser {
+                UserDefaults.standard.set(nagIdString, forKey: "nagz_pending_nag_id")
+                print("🔔 cold launch nag_id=\(nagIdString) saved to UserDefaults")
+            }
+        }
+
         let delegate = NotificationDelegate(appDelegate: self)
         notificationDelegate = delegate
         let center = UNUserNotificationCenter.current()

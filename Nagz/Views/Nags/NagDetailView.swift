@@ -156,7 +156,7 @@ struct NagDetailView: View {
 
     var body: some View {
         Group {
-            if viewModel.loadState.isLoading && viewModel.nag == nil {
+            if viewModel.nag == nil && viewModel.loadState.error == nil {
                 ProgressView()
             } else if let error = viewModel.loadState.error, viewModel.nag == nil {
                 ContentUnavailableView {
