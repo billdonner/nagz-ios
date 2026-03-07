@@ -95,6 +95,16 @@ struct AuthenticatedTabView: View {
                 pushService.clearPendingNag()
             }
         }
+        // Cold-launch safety net: didReceive may write to UserDefaults before
+        // pushService is wired up. React to that write regardless of timing.
+        .onReceive(NotificationCenter.default.publisher(for: UserDefaults.didChangeNotification)) { _ in
+            guard pushService.pendingNagId == nil,
+                  let saved = UserDefaults.standard.string(forKey: "nagz_pending_nag_id"),
+                  let nagId = UUID(uuidString: saved) else { return }
+            selectedTab = 1
+            pushService.notificationNagId = nagId
+            pushService.clearPendingNag()
+        }
         .fullScreenCover(item: Binding(
             get: { pushService.notificationNagId.map { NotificationItem(id: $0) } },
             set: { if $0 == nil { pushService.notificationNagId = nil } }

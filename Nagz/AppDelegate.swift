@@ -75,7 +75,7 @@ private final class NotificationDelegate: NSObject, UNUserNotificationCenterDele
         let targetUserId = notification.request.content.userInfo["target_user_id"] as? String
         let isForCurrent = await Self.isForCurrentUser(targetUserId: targetUserId)
         guard isForCurrent else { return [] }
-        return [.banner, .badge, .sound]
+        return [.banner, .badge, .sound, .list]
     }
 
     nonisolated func userNotificationCenter(
