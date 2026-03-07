@@ -67,6 +67,15 @@ struct AuthenticatedTabView: View {
         }
         .task {
             pushService.requestPermissionAndRegister()
+            // Handle notification navigation BEFORE any slow awaits.
+            // onChange(of: pendingNagId) won't fire if the value was already set
+            // before this view appeared (cold-launch drain from AppDelegate.didSet).
+            pushService.restorePendingNag()
+            if let nagId = pushService.pendingNagId {
+                selectedTab = 1
+                pushService.notificationNagId = nagId
+                pushService.clearPendingNag()
+            }
             if familyViewModel.family == nil,
                let savedId = UserDefaults.standard.string(forKey: "nagz_family_id"),
                let familyId = UUID(uuidString: savedId) {
@@ -74,12 +83,6 @@ struct AuthenticatedTabView: View {
                 await syncService.startPeriodicSync(familyId: familyId)
             }
             NagzShortcutsProvider.updateAppShortcutParameters()
-            pushService.restorePendingNag()
-            if let nagId = pushService.pendingNagId {
-                selectedTab = 1
-                pushService.notificationNagId = nagId
-                pushService.clearPendingNag()
-            }
         }
         .onChange(of: pushService.pendingNagId) { _, newValue in
             if let nagId = newValue {
