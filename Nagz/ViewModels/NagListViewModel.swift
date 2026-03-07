@@ -18,11 +18,9 @@ enum NagFilter: String, CaseIterable {
 @Observable
 @MainActor
 final class NagListViewModel {
-    var nags: [NagResponse] = []
+    var loadState: LoadState<[NagResponse]> = .idle
     var filter: NagFilter = .open
-    var isLoading = false
     var isLoadingMore = false
-    var errorMessage: String?
 
     let apiClient: APIClient
     private var familyId: UUID?
@@ -33,21 +31,21 @@ final class NagListViewModel {
         self.apiClient = apiClient
     }
 
-    var hasMore: Bool {
-        offset < total
-    }
+    /// Current nags — empty during loading/error, populated on success.
+    var nags: [NagResponse] { loadState.value ?? [] }
+
+    var hasMore: Bool { offset < total }
 
     func setFamily(_ familyId: UUID?) {
         self.familyId = familyId
     }
 
     func loadNags() async {
-        guard !isLoading else { return }
-        isLoading = true
-        errorMessage = nil
+        guard !loadState.isLoading else { return }
+        // Keep showing existing data during refresh; only go to .loading on first load.
+        if loadState.value == nil { loadState = .loading }
         offset = 0
         do {
-            // Fetch family-scoped nags
             let shouldExcludeDismissed = filter == .open
             let familyResponse: PaginatedResponse<NagResponse> = try await apiClient.request(
                 .listNags(familyId: familyId, status: filter.nagStatus, excludeDismissed: shouldExcludeDismissed, offset: 0)
@@ -55,40 +53,38 @@ final class NagListViewModel {
             var allNags = familyResponse.items
             total = familyResponse.total
 
-            // Also fetch connection nags (where user is creator/recipient via connections)
             if familyId != nil {
                 let connectionResponse: PaginatedResponse<NagResponse> = try await apiClient.request(
                     .listNags(status: filter.nagStatus, excludeDismissed: shouldExcludeDismissed, offset: 0)
                 )
-                // Merge: add connection nags not already in the family list
                 let familyIds = Set(allNags.map(\.id))
                 let connectionOnly = connectionResponse.items.filter { !familyIds.contains($0.id) }
                 allNags.append(contentsOf: connectionOnly)
                 total += connectionOnly.count
             }
 
-            // Sort by due date (newest first)
             allNags.sort { $0.dueAt > $1.dueAt }
-            nags = allNags
-            offset = nags.count
-        } catch let error as APIError {
-            errorMessage = error.errorDescription
+            loadState = .success(allNags)
+            offset = allNags.count
         } catch {
-            errorMessage = error.localizedDescription
+            // On refresh failure, keep existing data rather than blanking the screen.
+            if loadState.value == nil {
+                loadState = .failure(error)
+            }
         }
-        isLoading = false
     }
 
     func loadMore() async {
-        guard hasMore, !isLoadingMore else { return }
+        guard hasMore, !isLoadingMore, case .success(var existing) = loadState else { return }
         isLoadingMore = true
         do {
             let response: PaginatedResponse<NagResponse> = try await apiClient.request(
                 .listNags(familyId: familyId, status: filter.nagStatus, offset: offset)
             )
-            nags.append(contentsOf: response.items)
+            existing.append(contentsOf: response.items)
             total = response.total
             offset += response.items.count
+            loadState = .success(existing)
         } catch {
             DebugLogger.shared.log("Pagination load failed: \(error.localizedDescription)", level: .warning)
         }

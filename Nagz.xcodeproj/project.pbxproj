@@ -21,6 +21,7 @@
 		286523391EC02803D1DD724E /* EditNagView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 185EF763DF413C6E39A88743 /* EditNagView.swift */; };
 		2A63ED0A586E3570ED2CDA8D /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72F118F344FB4C3411FAAEC4 /* LoginView.swift */; };
 		2C5C0179A7849D66DDBE2A57 /* MemberListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAD16D6E59A98D9D44F48D03 /* MemberListViewModel.swift */; };
+		308EBDDDE30373396BF9F1D3 /* LoadState.swift in Sources */ = {isa = PBXBuildFile; fileRef = E04ED64F15FDFC329B8DEE18 /* LoadState.swift */; };
 		30EACC0DF07C98604911212D /* ChildSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E1FCB46DE5A18A14B9B3D86 /* ChildSettingsView.swift */; };
 		30FA929AFB9BFB4C088C904F /* ChildLoginViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80CC6ECFE73948450B574D3E /* ChildLoginViewModel.swift */; };
 		30FE0CA1C7AE1A7C39EBC6A1 /* ExcuseModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 159D7C43D155D86EE40E00A7 /* ExcuseModels.swift */; };
@@ -292,6 +293,7 @@
 		D917295C9B5550C0BE6F63EF /* VersionChecker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VersionChecker.swift; sourceTree = "<group>"; };
 		D9F6250F88777E53820A4F59 /* CompleteNagIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompleteNagIntent.swift; sourceTree = "<group>"; };
 		DAD16D6E59A98D9D44F48D03 /* MemberListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MemberListViewModel.swift; sourceTree = "<group>"; };
+		E04ED64F15FDFC329B8DEE18 /* LoadState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadState.swift; sourceTree = "<group>"; };
 		E4A715516D53FF9CD1661B2E /* ReportsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReportsView.swift; sourceTree = "<group>"; };
 		E5B561981AFC048F7946AFD5 /* NagzShortcutsProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NagzShortcutsProvider.swift; sourceTree = "<group>"; };
 		E61A148835BBEB04BDAF0A20 /* GlobalChatView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlobalChatView.swift; sourceTree = "<group>"; };
@@ -668,6 +670,7 @@
 				9DBB9A681F612EC3473C6868 /* GamificationViewModel.swift */,
 				95FD83ED1507E85C16ECE9B0 /* GlobalChatViewModel.swift */,
 				FC1268A6068C60F603BC606E /* IncentiveRulesViewModel.swift */,
+				E04ED64F15FDFC329B8DEE18 /* LoadState.swift */,
 				0AA44AE0BEBA58C043C996A1 /* LoginViewModel.swift */,
 				95C278AF89622477580059EE /* ManageMembersViewModel.swift */,
 				DAD16D6E59A98D9D44F48D03 /* MemberListViewModel.swift */,
@@ -887,6 +890,7 @@
 				FA33F894752016C4B3020AB3 /* LegalDocumentView.swift in Sources */,
 				3D690C5895332B064AB5750A /* LegalModels.swift in Sources */,
 				DC17FA6987A2F88885F7B15F /* ListNagsIntent.swift in Sources */,
+				308EBDDDE30373396BF9F1D3 /* LoadState.swift in Sources */,
 				2A63ED0A586E3570ED2CDA8D /* LoginView.swift in Sources */,
 				A162D3663B6E637EFC3AC318 /* LoginViewModel.swift in Sources */,
 				ABE7491D55FBA095F89BFD3A /* ManageMembersView.swift in Sources */,
@@ -1049,7 +1053,7 @@
 				CODE_SIGN_ENTITLEMENTS = Nagz/Nagz.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 114;
+				CURRENT_PROJECT_VERSION = 115;
 				DEVELOPMENT_TEAM = NEAY582ME4;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				INFOPLIST_FILE = Nagz/Info.plist;
@@ -1137,7 +1141,7 @@
 				CODE_SIGN_ENTITLEMENTS = Nagz/Nagz.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 114;
+				CURRENT_PROJECT_VERSION = 115;
 				DEVELOPMENT_TEAM = NEAY582ME4;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				INFOPLIST_FILE = Nagz/Info.plist;

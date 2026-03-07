@@ -90,7 +90,7 @@ struct ConnectionListView: View {
             }
 
             Section {
-                if viewModel.connections.isEmpty && !viewModel.isLoading {
+                if viewModel.connections.isEmpty && !viewModel.loadState.isLoading {
                     ContentUnavailableView {
                         Label("No Connections", systemImage: "person.2")
                     } description: {
@@ -377,13 +377,13 @@ struct ConnectionNagListView: View {
     let filter: ConnectionNagFilter
     let currentUserId: UUID?
 
-    @State private var nags: [NagResponse] = []
-    @State private var isLoading = false
-    @State private var errorMessage: String?
+    @State private var loadState: LoadState<[NagResponse]> = .idle
+
+    private var nags: [NagResponse] { loadState.value ?? [] }
 
     var body: some View {
         Group {
-            if isLoading {
+            if loadState.isLoading && nags.isEmpty {
                 ProgressView()
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
             } else if nags.isEmpty {
@@ -410,8 +410,7 @@ struct ConnectionNagListView: View {
     }
 
     private func load() async {
-        isLoading = true
-        defer { isLoading = false }
+        if loadState.value == nil { loadState = .loading }
         do {
             let status: NagStatus? = switch filter.filterType {
             case .done: .completed
@@ -421,7 +420,7 @@ struct ConnectionNagListView: View {
                 .listNags(connectionId: filter.connectionId, status: status)
             )
             let now = Date()
-            nags = page.items.filter { nag in
+            loadState = .success(page.items.filter { nag in
                 switch filter.filterType {
                 case .sent:     return nag.creatorId == currentUserId
                 case .received: return nag.recipientId == currentUserId && nag.creatorId != currentUserId
@@ -429,9 +428,9 @@ struct ConnectionNagListView: View {
                 case .done:     return true
                 case .late:     return nag.dueAt < now
                 }
-            }
+            })
         } catch {
-            errorMessage = error.localizedDescription
+            if loadState.value == nil { loadState = .failure(error) }
         }
     }
 }

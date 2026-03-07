@@ -8,16 +8,16 @@ struct ChildNagListView: View {
     let currentUserId: UUID?
     let webSocketService: WebSocketService
 
-    @State private var nags: [NagResponse] = []
-    @State private var isLoading = true
-    @State private var errorMessage: String?
+    @State private var loadState: LoadState<[NagResponse]> = .idle
     @State private var wsTask: Task<Void, Never>?
     @State private var aiSummary: String?
     @State private var showAISummary = false
 
+    private var nags: [NagResponse] { loadState.value ?? [] }
+
     var body: some View {
         Group {
-            if isLoading {
+            if loadState.isLoading && nags.isEmpty {
                 ProgressView("Loading your nags...")
             } else if nags.isEmpty {
                 ContentUnavailableView {
@@ -62,17 +62,16 @@ struct ChildNagListView: View {
 
     private func loadNags() async {
         guard let familyId else { return }
-        isLoading = nags.isEmpty
+        if loadState.value == nil { loadState = .loading }
         do {
             let response: PaginatedResponse<NagResponse> = try await apiClient.request(
                 .listNags(familyId: familyId, status: .open)
             )
             // Only show nags where the child is the recipient
-            nags = response.items.filter { $0.recipientId == currentUserId }
+            loadState = .success(response.items.filter { $0.recipientId == currentUserId })
         } catch {
-            errorMessage = error.localizedDescription
+            if loadState.value == nil { loadState = .failure(error) }
         }
-        isLoading = false
     }
 
     private func completeNag(_ nag: NagResponse) async {
@@ -80,9 +79,12 @@ struct ChildNagListView: View {
             let _: NagResponse = try await apiClient.request(
                 .updateNagStatus(nagId: nag.id, status: .completed)
             )
-            nags.removeAll { $0.id == nag.id }
+            if case .success(var current) = loadState {
+                current.removeAll { $0.id == nag.id }
+                loadState = .success(current)
+            }
         } catch {
-            errorMessage = error.localizedDescription
+            // error swallowed — row stays visible until next refresh
         }
     }
 

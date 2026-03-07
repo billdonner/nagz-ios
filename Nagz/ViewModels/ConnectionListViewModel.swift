@@ -8,7 +8,7 @@ final class ConnectionListViewModel {
     var pendingInvites: [ConnectionResponse] = []
     var sentInvites: [ConnectionResponse] = []
     var connectionStats: [UUID: ConnectionNagStats] = [:]
-    var isLoading = false
+    var loadState: LoadState<Void> = .idle
     var errorMessage: String?
     var inviteEmail = ""
     var isInviting = false
@@ -71,7 +71,8 @@ final class ConnectionListViewModel {
     }
 
     func loadConnections() async {
-        isLoading = true
+        guard !loadState.isLoading else { return }
+        loadState = .loading
         errorMessage = nil
         do {
             async let activeResult: PaginatedResponse<ConnectionResponse> = apiClient.request(
@@ -91,12 +92,14 @@ final class ConnectionListViewModel {
             sentInvites = allPending.items.filter { !inboundIds.contains($0.id) }
             // Load nag stats per active connection
             await loadConnectionStats(connections: active.items)
+            loadState = .success(())
         } catch let error as APIError {
+            loadState = .failure(error)
             errorMessage = error.errorDescription
         } catch {
+            loadState = .failure(error)
             errorMessage = error.localizedDescription
         }
-        isLoading = false
     }
 
     private func loadConnectionStats(connections: [ConnectionResponse]) async {

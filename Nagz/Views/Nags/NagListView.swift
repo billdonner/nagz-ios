@@ -155,14 +155,14 @@ struct NagListView: View {
 
     @ViewBuilder
     private var contentArea: some View {
-        if viewModel.isLoading && viewModel.nags.isEmpty {
+        if viewModel.loadState.isLoading && viewModel.nags.isEmpty {
             ProgressView()
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
-        } else if let error = viewModel.errorMessage, viewModel.nags.isEmpty {
+        } else if let error = viewModel.loadState.error, viewModel.nags.isEmpty {
             ContentUnavailableView {
                 Label("Error", systemImage: "exclamationmark.triangle")
             } description: {
-                Text(error)
+                Text(error.localizedDescription)
             } actions: {
                 Button("Retry") { Task { await viewModel.loadNags() } }
             }

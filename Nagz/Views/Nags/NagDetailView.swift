@@ -29,13 +29,13 @@ struct NagDetailView: View {
 
     var body: some View {
         Group {
-            if viewModel.isLoading && viewModel.nag == nil {
+            if viewModel.loadState.isLoading && viewModel.nag == nil {
                 ProgressView()
-            } else if let error = viewModel.errorMessage, viewModel.nag == nil {
+            } else if let error = viewModel.loadState.error, viewModel.nag == nil {
                 ContentUnavailableView {
                     Label("Error", systemImage: "exclamationmark.triangle")
                 } description: {
-                    Text(error)
+                    Text(error.localizedDescription)
                 }
             } else if let nag = viewModel.nag {
                 List {

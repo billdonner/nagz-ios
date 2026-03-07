@@ -4,13 +4,18 @@ import Observation
 @Observable
 @MainActor
 final class NagDetailViewModel {
-    var nag: NagResponse?
+    var loadState: LoadState<NagResponse> = .idle
     var escalation: EscalationResponse?
     var excuses: [ExcuseResponse] = []
-    var isLoading = false
     var isUpdating = false
     var isRecomputing = false
-    var errorMessage: String?
+    var errorMessage: String?   // mutation errors only
+
+    /// Convenience accessor; setting it updates loadState.
+    var nag: NagResponse? {
+        get { loadState.value }
+        set { if let v = newValue { loadState = .success(v) } }
+    }
 
     private let apiClient: APIClient
     private let nagId: UUID
@@ -21,15 +26,16 @@ final class NagDetailViewModel {
     }
 
     func load() async {
-        isLoading = true
-        errorMessage = nil
+        guard !loadState.isLoading else { return }
+        if loadState.value == nil { loadState = .loading }
 
         do {
             let loadedNag: NagResponse = try await apiClient.request(.getNag(id: nagId))
-            nag = loadedNag
+            loadState = .success(loadedNag)
         } catch {
-            errorMessage = (error as? APIError)?.errorDescription ?? error.localizedDescription
-            isLoading = false
+            if loadState.value == nil {
+                loadState = .failure(error)
+            }
             return
         }
 
@@ -48,8 +54,6 @@ final class NagDetailViewModel {
         } catch {
             // Excuses might not exist
         }
-
-        isLoading = false
     }
 
     func markComplete(note: String? = nil) async {
