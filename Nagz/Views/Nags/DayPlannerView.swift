@@ -76,51 +76,60 @@ struct DayPlannerView: View {
     // MARK: - Date Strip
 
     private var dateStrip: some View {
-        ScrollView(.horizontal, showsIndicators: false) {
-            HStack(spacing: 12) {
-                ForEach(0..<8, id: \.self) { offset in
-                    let date = calendar.date(byAdding: .day, value: offset, to: calendar.startOfDay(for: Date()))!
-                    let selected = calendar.isDate(date, inSameDayAs: selectedDate)
-                    let count = nagsForDay(date)
+        ScrollViewReader { proxy in
+            ScrollView(.horizontal, showsIndicators: false) {
+                HStack(spacing: 8) {
+                    ForEach(-7..<8, id: \.self) { offset in
+                        let date = calendar.date(byAdding: .day, value: offset, to: calendar.startOfDay(for: Date()))!
+                        let selected = calendar.isDate(date, inSameDayAs: selectedDate)
+                        let isToday = offset == 0
+                        let count = nagsForDay(date)
 
-                    Button {
-                        withAnimation(.spring(response: 0.3, dampingFraction: 0.8)) { selectedDate = date }
-                    } label: {
-                        ZStack(alignment: .topTrailing) {
+                        Button {
+                            withAnimation(.spring(response: 0.3, dampingFraction: 0.8)) { selectedDate = date }
+                        } label: {
                             VStack(spacing: 2) {
                                 Text(dayLabel(date))
                                     .font(.caption2)
-                                    .foregroundStyle(selected ? .white : .secondary)
+                                    .foregroundStyle(selected ? .white : (isToday ? .blue : .secondary))
                                 Text("\(calendar.component(.day, from: date))")
                                     .font(.title3.weight(.semibold))
-                                    .foregroundStyle(selected ? .white : .primary)
-                                if count > 0 {
-                                    Text("\(count)")
-                                        .font(.caption2.weight(.bold))
-                                        .foregroundStyle(selected ? .white.opacity(0.8) : .blue)
+                                    .foregroundStyle(selected ? .white : (isToday ? .blue : .primary))
+                                // Fixed-height count slot — always present so tiles don't resize
+                                Group {
+                                    if count > 0 {
+                                        Text("\(count)")
+                                            .font(.caption2.weight(.bold))
+                                            .foregroundStyle(selected ? .white.opacity(0.8) : .blue)
+                                    } else {
+                                        Text("·")
+                                            .font(.caption2)
+                                            .foregroundStyle(.clear)
+                                    }
                                 }
+                                .frame(height: 14)
                             }
-                            .frame(width: 48, height: 60)
-                            .background(selected ? Color.blue : Color(.systemGray6), in: RoundedRectangle(cornerRadius: 10))
-
-                            if selected, onCreateForDay != nil {
-                                Image(systemName: "plus.circle.fill")
-                                    .font(.caption.weight(.bold))
-                                    .foregroundStyle(.white.opacity(0.9))
-                                    .offset(x: 4, y: -4)
-                            }
+                            .frame(width: 44, height: 62)
+                            .background(
+                                selected ? Color.blue : (isToday ? Color.blue.opacity(0.08) : Color(.systemGray6)),
+                                in: RoundedRectangle(cornerRadius: 10)
+                            )
                         }
+                        .buttonStyle(.plain)
+                        .id(offset)
+                        .simultaneousGesture(
+                            LongPressGesture(minimumDuration: 0.4).onEnded { _ in
+                                onCreateForDay?(date)
+                            }
+                        )
                     }
-                    .buttonStyle(.plain)
-                    .simultaneousGesture(
-                        LongPressGesture(minimumDuration: 0.4).onEnded { _ in
-                            onCreateForDay?(date)
-                        }
-                    )
                 }
+                .padding(.horizontal)
+                .padding(.vertical, 8)
             }
-            .padding(.horizontal)
-            .padding(.vertical, 8)
+            .onAppear {
+                proxy.scrollTo(0, anchor: .center)
+            }
         }
         .background(.bar)
     }
@@ -128,6 +137,7 @@ struct DayPlannerView: View {
     private func dayLabel(_ date: Date) -> String {
         if calendar.isDateInToday(date) { return "Today" }
         if calendar.isDateInTomorrow(date) { return "Tmrw" }
+        if calendar.isDateInYesterday(date) { return "Yest" }
         let fmt = DateFormatter()
         fmt.dateFormat = "EEE"
         return fmt.string(from: date)
