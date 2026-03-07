@@ -18,8 +18,16 @@ struct ScheduleNagListView: View {
     }
 
     var body: some View {
-        List {
-            ForEach(sections) { section in
+        Group {
+          if sections.isEmpty {
+            ContentUnavailableView {
+                Label("No Scheduled Nags", systemImage: "calendar.badge.clock")
+            } description: {
+                Text("Nags you've been assigned will appear here. Tap the clock icon to schedule them.")
+            }
+          } else {
+            List {
+              ForEach(sections) { section in
                 Section {
                     ForEach(section.nags) { entry in
                         NavigationLink(value: entry.nag.id) {
@@ -49,8 +57,10 @@ struct ScheduleNagListView: View {
                     }
                 }
             }
+            }
+            .listStyle(.insetGrouped)
+          }
         }
-        .listStyle(.insetGrouped)
     }
 
     // MARK: - Grouping Logic

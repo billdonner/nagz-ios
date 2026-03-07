@@ -20,14 +20,10 @@ struct ChildNagListView: View {
             if isLoading {
                 ProgressView("Loading your nags...")
             } else if nags.isEmpty {
-                VStack(spacing: 16) {
-                    Image(systemName: "checkmark.circle.fill")
-                        .font(.system(size: 56))
-                        .foregroundStyle(.green)
-                    Text("All done!")
-                        .font(.title2.bold())
+                ContentUnavailableView {
+                    Label("All Done!", systemImage: "checkmark.circle.fill")
+                } description: {
                     Text("No nags right now. Great job!")
-                        .foregroundStyle(.secondary)
                 }
             } else {
                 ScrollView {
@@ -53,6 +49,7 @@ struct ChildNagListView: View {
                         Image(systemName: "sparkles")
                     }
                     .disabled(nags.isEmpty)
+                    .accessibilityLabel("AI Summary")
                 }
             }
         }

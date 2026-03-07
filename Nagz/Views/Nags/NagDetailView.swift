@@ -563,6 +563,7 @@ private struct AttachmentThumbnail: View {
                             .foregroundStyle(.white)
                             .padding()
                     }
+                    .accessibilityLabel("Close")
                 }
             }
         }

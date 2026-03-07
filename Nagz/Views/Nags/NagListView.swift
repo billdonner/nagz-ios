@@ -238,6 +238,7 @@ struct NagListView: View {
                     }
                 }
                 .disabled(viewModel.nags.isEmpty || generatingSummary)
+                .accessibilityLabel("AI Summary")
             }
         }
         ToolbarItem(placement: .topBarTrailing) {
@@ -248,6 +249,7 @@ struct NagListView: View {
             } label: {
                 Image(systemName: viewMode == .list ? "calendar" : "list.bullet")
             }
+            .accessibilityLabel(viewMode == .list ? "Schedule View" : "List View")
         }
         if canCreateNags {
             ToolbarItem(placement: .primaryAction) {
@@ -257,6 +259,7 @@ struct NagListView: View {
                 } label: {
                     Image(systemName: "plus")
                 }
+                .accessibilityLabel("Create Nag")
             }
         }
     }

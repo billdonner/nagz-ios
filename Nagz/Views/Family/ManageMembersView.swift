@@ -35,6 +35,7 @@ struct ManageMembersView: View {
                             } label: {
                                 Image(systemName: "doc.on.doc")
                             }
+                            .accessibilityLabel("Copy child login code")
                         }
                         .padding()
                         .background(Color(.systemYellow).opacity(0.15))
@@ -105,6 +106,7 @@ struct ManageMembersView: View {
                         } label: {
                             Image(systemName: "ellipsis.circle")
                         }
+                        .accessibilityLabel("Options for \(member.displayName ?? "member")")
                     } else if member.role != .guardian {
                         Button(role: .destructive) {
                             viewModel.memberToRemove = member
@@ -112,6 +114,7 @@ struct ManageMembersView: View {
                         } label: {
                             Image(systemName: "person.badge.minus")
                         }
+                        .accessibilityLabel("Remove \(member.displayName ?? "member")")
                     }
                 }
             }
@@ -128,6 +131,7 @@ struct ManageMembersView: View {
                 } label: {
                     Image(systemName: "person.badge.plus")
                 }
+                .accessibilityLabel("Add member")
             }
         }
         .refreshable { await viewModel.load() }

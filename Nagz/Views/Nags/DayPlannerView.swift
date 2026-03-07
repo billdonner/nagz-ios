@@ -84,7 +84,7 @@ struct DayPlannerView: View {
                     let count = nagsForDay(date)
 
                     Button {
-                        withAnimation(.easeInOut(duration: 0.2)) { selectedDate = date }
+                        withAnimation(.spring(response: 0.3, dampingFraction: 0.8)) { selectedDate = date }
                     } label: {
                         ZStack(alignment: .topTrailing) {
                             VStack(spacing: 2) {
@@ -250,7 +250,7 @@ struct DayPlannerView: View {
                                 .foregroundStyle(Color.gray.opacity(0.35))
                             Spacer()
                         }
-                        .frame(height: 32)
+                        .frame(minHeight: 32)
                         .contentShape(Rectangle())
                     }
                     .buttonStyle(.plain)

@@ -72,6 +72,7 @@ struct ConnectionListView: View {
                                 Image(systemName: "xmark.circle")
                             }
                             .buttonStyle(.borderless)
+                            .accessibilityLabel("Cancel invite")
                         }
                     }
                 } header: {
@@ -155,6 +156,7 @@ struct ConnectionListView: View {
                 } label: {
                     Image(systemName: "plus")
                 }
+                .accessibilityLabel("Invite someone")
             }
         }
         .sheet(isPresented: $showInvite) {
@@ -220,6 +222,7 @@ struct ConnectionListView: View {
                     .clipShape(Capsule())
                 }
                 .buttonStyle(.borderless)
+                .accessibilityLabel(connection.caregiver ? "Switch to Friend" : "Switch to Caregiver")
 
                 Button {
                     connectionToNag = connection
@@ -233,6 +236,7 @@ struct ConnectionListView: View {
                         .clipShape(Capsule())
                 }
                 .buttonStyle(.borderless)
+                .accessibilityLabel("Nag \(connection.otherPartyDisplayName ?? connection.otherPartyEmail ?? "person")")
             }
 
             if let stats = viewModel.connectionStats[connection.id] {
